@@ -1,0 +1,229 @@
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Inter", sans-serif;
+}
+
+body {
+    background: #1D1C1C;
+    display: flex;
+    justify-content: center;
+    padding: 40px 15px;
+    color: #fff;
+}
+
+/* PAGE WRAPPER */
+.page-container {
+    width: 100%;
+    max-width: 900px;
+}
+
+/* LOGO */
+.header-logo {
+    display: flex;
+    text-align: center;
+    margin-bottom: 25px;
+    justify-content: center;
+}
+
+.header-logo img {
+    width: 110px;
+    object-fit: contain;
+}
+
+.logo-text {
+    font-size: 2.1em;
+    font-weight: 700;
+    line-height: 0.9;
+    color: #474B4E;
+    margin-top: 20px;
+}
+
+.logo-text .highlight {
+    color: #ffc107;
+}
+
+/* MAIN CARD */
+.main-card {
+    background: #111;
+    border-radius: 16px;
+    padding: 35px;
+    padding-bottom: 50px;
+    border: 1px solid #1f1f1f;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+/* TEXTS */
+.title {
+    font-size: 1.2em;
+    font-weight: 700;
+}
+
+.subtitle {
+    font-size: 0.95em;
+    margin-top: 3px;
+    opacity: 0.8;
+}
+
+.redirect-text {
+    margin-top: 18px;
+    font-size: 0.9em;
+    opacity: 0.8;
+}
+
+.suggested-text {
+    margin: 10px 0;
+    font-size: 1em;
+    font-weight: 600;
+}
+
+/* SEARCH BAR */
+.search-row {
+    margin-top: 12px;
+    background: #161616;
+    border-radius: 30px;
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid #222;
+}
+
+.search-row input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    color: #fff;
+    font-size: 1em;
+}
+
+.search-row input::placeholder {
+    color: #777;
+}
+
+.search-row .type-name {
+    font-size: 0.86em;
+    color: #999;
+}
+
+/* SCHOOL LIST ITEMS */
+.school-item {
+    background: #161616;
+    padding: 14px 18px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    border: 1px solid #222;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.school-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.badge {
+    background: #333;
+    padding: 7px 10px;
+    border-radius: 8px;
+    font-size: 0.75em;
+    font-weight: 700;
+}
+
+.school-name {
+    font-size: 1em;
+    font-weight: 600;
+}
+
+.school-domain {
+    font-size: 0.85em;
+    opacity: 0.7;
+}
+
+.school-saml {
+    background: #222;
+    font-size: 0.75em;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-weight: 700;
+}
+
+/* SELECTED SCHOOL */
+.selected {
+    border: 1px solid #4a4a4a;
+}
+
+.selected-tag {
+    background: #333;
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 0.75em;
+    margin-bottom: 5px;
+    display: inline-block;
+}
+
+.school-domain-right {
+    font-size: 0.95em;
+    opacity: 0.8;
+}
+
+/* BUTTONS */
+.btn {
+    width: 100%;
+    padding: 14px 0;
+    margin-top: 18px;
+    font-size: 1.1em;
+    font-weight: 600;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.primary {
+    background: #ffc107;
+    color: #1e1e1e;
+}
+
+.primary:hover {
+    background-color: #e0ac00; /* slightly deeper gold */
+    transform: translateY(-3px); /* lift effect */
+    box-shadow: 0 6px 15px rgba(255, 193, 7, 0.4);
+}
+
+.secondary {
+    background: #111;
+    color: #fff;
+    border: 1px solid #333;
+}
+
+.secondary:hover {
+    background-color: #2a2a2a; /* darker shade */
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(255, 255, 255, 0.15);
+}
+
+/* RESPONSIVE */
+@media (max-width: 500px) {
+    .main-card {
+        padding: 25px;
+    }
+
+    .school-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .school-domain-right {
+        align-self: flex-end;
+    }
+
+    .search-row {
+        padding: 10px 14px;
+    }
+}

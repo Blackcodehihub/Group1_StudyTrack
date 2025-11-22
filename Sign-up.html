@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyTrack Sign Up</title>
+
+    <!-- Link ONLY to the Sign Up specific styles -->
+    <link rel="stylesheet" href="sign-up-styles.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="login-container">
+
+    <!-- LEFT PANEL (Image side: 40% with gradient) -->
+    <div class="panel signup-image-panel panel-gradient-bg">
+        <div class="phone-wrapper">
+            <img src="images/Mock2.png" alt="App Mockup">
+        </div>
+    </div>
+
+    <!-- RIGHT PANEL (Form side: 60%) -->
+    <div class="panel signup-form-panel">
+
+        <!-- BACK BUTTON -->
+        <a href="landingpage.html" class="back-btn"><i class="fa-solid fa-circle-xmark"></i> </a>
+
+        <div class="auth-wrapper">
+
+            <div class="logo">
+                <img src="images/logo.png" alt="Logo">
+                <span class="logo-text">STUDY<br> <span class="highlight">TRACK</span></span>
+            </div>
+
+            <h1>Create Your account</h1>
+            <p class="subtitle">Start organizing your classes and assignments</p>
+
+            <form>
+                <div class="input-row">
+                    <div class="input-group">
+                        <!--<label for="signup-first-name">First name</label>-->
+                        <input type="text" id="signup-first-name" placeholder="First Name" required>
+                    </div>
+                    <div class="input-group">
+                       <!--<label for="signup-last-name">Last name</label>-->
+                        <input type="text" id="signup-last-name" placeholder="Last Name" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <!--<label for="signup-email">Email</label>-->
+                    <input type="email" id="signup-email" placeholder="Email" required>
+                </div>
+
+                <div class="input-group password-group">
+                    <!--<label for="signup-password">Password</label>-->
+                    <input type="password" id="signup-password" placeholder="Password" required>
+                    <i class="fa-solid fa-eye"></i>
+                </div>
+                
+                <div class="input-group password-group">
+                    <!--<label for="signup-confirm-password">Confirm Password</label>-->
+                    <input type="password" id="signup-confirm-password" placeholder="Confirm Password" required>
+                    <i class="fa-solid fa-eye"></i>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="terms" required>
+                    <label for="terms">I agree to the Terms and Privacy Policy</label>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Log in</button>
+                <button type="button" class="btn btn-secondary">Continue with School ID</button>
+            </form>
+
+            <p class="new-user-prompt">Already have an account? <a href="Sign-in.html">Sign in</a></p>
+
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

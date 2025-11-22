@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyTrack Sign In</title>
+
+    <link rel="stylesheet" href="sign-in-styles.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="login-container">
+
+    <!-- LEFT PANEL -->
+    <div class="left-panel">
+
+        <!-- BACK BUTTON -->
+        <a href="landingpage.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back</a>
+
+        <div class="auth-wrapper">
+
+            <div class="logo">
+                <img src="images/logo.png" alt="Logo">
+                <span class="logo-text">STUDY<br> <span class="highlight">TRACK</span></span>
+            </div>
+
+            <h1>Sign in</h1>
+
+            <form>
+                <div class="input-group">
+                    <label for="signin-email">Email</label>
+                    <input type="email" id="signin-email" placeholder="name@gmail.com" required>
+                </div>
+
+                <div class="input-group password-group">
+                    <label for="signin-password">Password</label>
+                    <input type="password" id="signin-password" placeholder="Create a strong password" required>
+                    <i class="fa-solid fa-eye"></i>
+                </div>
+
+                <div class="forgot-password">
+                    <a href="forgot.html">Forgot password?</a>
+                </div>                
+
+                <button type="submit" class="btn btn-primary">Log in</button>
+                <button type="button" class="btn btn-secondary">Continue with School ID</button>
+            </form>
+
+            <p class="new-user-prompt">New here? <a href="Sign-up.html">Create an Account</a></p>
+
+        </div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
+        <div class="phone-wrapper">
+            <img src="images/Mock.png" alt="App Mockup">
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
