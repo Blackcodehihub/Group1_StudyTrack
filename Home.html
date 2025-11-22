@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyTrack Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #121212;
+            --card: #1b1b1b;
+            --text: #ffffff;
+            --text-dim: #b5b5b5;
+            --accent: #f3c229;
+            --border: #333333;
+            --sidebar-bg: #1b1b1b;
+            --day-bg: #2d2d2d;
+            --day-active-bg: #f3c229;
+            --day-active-text: #000;
+        }
+        .light-theme {
+            --bg: #ffffff;
+            --card: #f5f5f5;
+            --text: #000000;
+            --text-dim: #555555;
+            --border: #cccccc;
+            --sidebar-bg: #f0f0f0;
+            --day-bg: #e0e0e0;
+            --day-active-text: #000;
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
+        body { background:var(--bg); color:var(--text); min-height:100vh; display:flex; transition:all .3s; }
+
+        /* Sidebar */
+        .sidebar {
+            width:260px; background:var(--sidebar-bg); padding:30px 20px; border-right:1px solid var(--border);
+            position:fixed; height:93%; z-index:10; overflow-y:none;margin-top: 30px;border-top-right-radius: 50px;
+            border-bottom-right-radius: 50px;
+        }
+        .logo img { height:100px; display:block; margin:0 auto 10px; }
+        .nav-menu a {
+            display:flex; align-items:center; gap:15px; padding:14px 18px; border-top-left-radius: 14px;
+            border-bottom-left-radius: 14px;
+            color:var(--text-dim); text-decoration:none; font-size:15px; transition:all .3s;
+        }
+        .bot-nav {
+            margin-top: 70%;
+        }
+        .nav-menu a:hover, .nav-menu a.active { background:var(--bg); color:var(--text); width: 240px;}
+        .nav-menu a.active { color:var(--text); font-weight:800;}
+        .nav-menu img { width:24px; height:24px; opacity:0.7; }
+        .nav-menu a:hover img, .nav-menu a.active img { opacity:1; }
+
+        /* Inactive links = white icons (dark theme) */
+.nav-menu a:not(.active) img {
+    filter: brightness(0) invert(1);
+}
+
+/* Inactive links = black icons (light theme) */
+.light-theme .nav-menu a:not(.active) img {
+    filter: none;
+}
+
+/* Active link – your existing look */
+
+.nav-menu a.active img {
+    filter: brightness(0) invert(1);
+}
+
+
+        /* Main Content */
+        .main-content { margin-left:260px; padding:30px; width:calc(100% - 260px); }
+        .container { max-width:1350px; margin:0 auto; }
+
+        /* Header */
+        .header {
+            display:flex; align-items:center; gap:15px; margin-bottom:30px; position:relative;
+        }
+        .user-icon img {
+            width:50px; height:50px; border-radius:60%; background:var(--card); margin-right: 10px;object-fit: cover;
+        }
+        .greeting h2 { font-size:22px; }
+        .greeting p { color:var(--text-dim); font-size:14px; }
+
+        /* Theme Toggle Button (Top Right) */
+        .theme-toggle {
+            margin-left:auto; background:var(--card); padding:12px; border-radius:50%;
+            cursor:pointer; width:50px; height:50px; display:flex; align-items:center; justify-content:center;
+            transition:all .3s;
+        }
+        .theme-toggle img { width:42px; height:28px; transition:all .3s; }
+
+        /* Cards & Layout */
+        .card { background:var(--card); padding:24px; border-radius:18px; border:1px solid var(--border); margin-bottom:25px; }
+        h3 { font-size:18px; margin-bottom:20px; display:flex; align-items:center; gap:10px; }
+        h3 img { width:24px; height:24px; }
+.date-days-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+.classes-header-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+
+.classes-header-row h3 {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 75px;
+}
+
+.classes-header-row .days {
+    flex: 1;
+    overflow-x: auto;
+}
+/* Make the icon white */
+.class-date-picker::-webkit-calendar-picker-indicator {
+    filter: brightness(0) invert(1);   /* turns icon white */
+}
+
+/* When theme changes to light mode, revert to black */
+.light-theme .class-date-picker::-webkit-calendar-picker-indicator {
+    filter: none;
+}
+        .class-date-picker {
+            width:20%; padding:10px 14px; background:var(--card);; border:1px solid var(--border);
+            border-radius:12px; color:var(--text); font-size:14px; margin-bottom:15px; margin-right: 30px;
+        }
+        .days {
+            display:flex; gap:10px; overflow-x:auto; padding-bottom:8px; margin-bottom:20px;
+        }
+        .day {
+            padding:10px 18px; background:var(--day-bg); color:var(--text);
+            border-radius:12px; border:none; font-size:14px; white-space:nowrap; cursor:pointer;
+        }
+        .day.active { background:var(--day-active-bg); color:var(--day-active-text); font-weight:bold; }
+
+        .class-box {
+            display:flex; gap:15px; padding:18px; background:var(--card); border-radius:14px;
+            border:1px solid var(--border); line-height: 1.5;
+        }
+        .class-box p{
+            font-size: 13px;
+        }
+        .class-box img { width:40px; height:40px; filter: invert(1);}
+        .light-theme .class-box img {
+    filter: invert(0);
+}
+
+        .row { display:flex; gap:25px; margin-bottom:25px; }
+        .habit-card, .streak-card, .wallet-card, .overview-card{ flex:1; background:var(--card); padding:20px; border-radius:18px;
+            border:1px solid var(--border); text-align:center; letter-spacing: 0.8px;}
+        
+            .overview-list {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 8px;
+    line-height: 1.7;
+    font-size: 16px;
+}
+
+.overview-list li::before {
+    content: "• ";
+    color: var(--text);
+}
+.overview-card {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.overview-row {
+    display: flex;
+    gap: 25px;
+}
+
+.overview-center {
+    flex: 1;
+    text-align: left;
+    line-height: 1.5;
+    margin-top: -20px;
+}
+
+.habit-card {
+    background: var(--card);
+    padding: 24px;
+    border-radius: 18px;
+    border: 1px solid var(--border);
+    text-align: left;
+}
+
+.habit-card h3 {
+    font-size: 18px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.habit-row {
+    margin-bottom: 28px;
+}
+
+.habit-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    font-size: 15px;
+}
+
+.habit-line img {
+    width: 20px;
+    height: 20px;
+    margin-right: 12px;
+    flex-shrink: 0;
+    filter: invert(1);
+}
+
+.light-theme .habit-line img{
+    filter: invert(0);
+}
+
+.habit-line span {
+    flex: 1;
+    color: var(--text-dim);
+}
+
+.habit-line strong {
+    flex: 2;
+    font-weight: 600;
+    color: var(--text);
+    min-width: 40px;
+    text-align: left;
+}
+
+/* Footer with circle + label */
+.habit-footer {
+    display: flex;
+    justify-content: center;     /* centers everything horizontally */
+    margin-top: -150px;
+    margin-left: 50%;
+}
+
+.circle-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;                   /* space between circle and text */
+}
+
+.circle-progress {
+    width: 120px;
+    height: 120px;
+    position: relative;
+}
+
+.circle-progress svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.circle-bg {
+    fill: none;
+    stroke: #2d2d2d;
+    stroke-width: 10;
+}
+
+.circle-fill {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 12;
+    stroke-linecap: round;
+    stroke-dasharray: 345.4;     /* circumference of r=55 */
+    stroke-dashoffset: 335.1;    /* 3% filled → 97% offset */
+    transition: stroke-dashoffset 0.8s ease;
+}
+
+.circle-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 32px;
+    font-weight: bold;
+    color: var(--text);
+}
+
+.completion-label {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text-dim);
+    letter-spacing: 0.5px;
+}
+
+        .habit-item { display:flex; justify-content:space-between; margin:15px 0; font-size:15px; }
+.streak-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 20px 0;
+    font-size: 16px;
+    letter-spacing: 1.0px;
+}
+
+.streak-item img {
+    width: 28px;
+    height: 28px;   
+    margin-right: 10px;      
+}
+
+.streak-item span {
+    flex: 1;
+    text-align: left;
+}
+
+/* Progress bar styling (already in your code, just confirming) */
+.progress-bar {
+    height: 18px;
+    background: #2d2d2d;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-top: 15px;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 50%;            /* 7 out of 14 days → ~50% */
+    background: var(--accent);
+    border-radius: 6px;
+}
+.spending-bar {
+    height: 20px;
+    background: #2d2d2d;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-top: 15px;
+}
+.wallet-card, .overview-card {
+    flex: 1;
+}
+        .spending-fill { height:100%; width:90%; background:var(--accent); }
+        .wallet-balance .amount { font-size:42px; font-weight:bold; color:var(--accent); text-align:center; margin:15px 0; }
+
+        /* Responsive */
+        @media (max-width: 1000px) {
+            .sidebar { left:-260px; transition:left .3s; }
+            .sidebar.active { left:0; }
+            .main-content { margin-left:0; width:100%; padding:20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="logo">
+            <img src="logo.png" alt="StudyTrack">
+        </div>
+        <div class="nav-menu">
+            <a href="#" class="active"><img src="home.png" alt=""> Home</a>
+            <a href="#"><img src="class.png" alt=""> Classes</a>
+            <a href="#"><img src="assignment.png" alt=""> Assignment</a>
+            <a href="#"><img src="reminder.png" alt=""> Reminder</a>
+            <a href="#"><img src="wallet.png" alt=""> Wallet</a>
+            <a href="#"><img src="streak.png" alt=""> Habit</a>
+            <div class="bot-nav">
+            <a href="#"><img src="settings.png" alt=""> Settings</a>
+           <a href="#"><img src="logout.png" alt=""> Log out</a>
+            </div>
+
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+
+            <!-- Header with Theme Toggle -->
+            <div class="header">
+                <div class="user-icon">
+                    <img src="user.png" alt="User">
+                </div>
+                <div class="greeting">
+                    <h2>Good afternoon, User</h2>
+                    <p>September 8, 2023</p>
+                </div>
+                <button class="theme-toggle" id="themeToggle">
+                    <img src="sun.png" alt="Toggle Theme" id="themeIcon">
+                </button>
+            </div>
+
+
+<!-- Today's Classes -->
+<div class="card">
+
+    <div class="classes-header-row">
+        <h3>Today's Classes</h3>
+
+        <input type="date" id="classDate" class="class-date-picker">
+        
+        <div class="days" id="daysContainer"></div>
+    </div>
+
+    <div class="class-box">
+        <img src="book.png" alt="">
+        <div>
+            <h4>CS 201, Data Structures</h4>
+            <p>9:00 AM - 10:15 AM, BSIT Department CL 2</p>
+        </div>
+    </div>
+
+</div>
+
+            <!-- Habit + Streak -->
+            <div class="row">
+                <div class="habit-card">
+    <h3>Habit Summary</h3>
+
+    <div class="habit-row">
+        <div class="habit-line">
+            <img src="active-habit.png" alt="Active"> 
+            <span>Active habit</span>
+            <strong>10</strong>
+        </div>
+        <div class="habit-line">
+            <img src="complete.png  " alt="Completed"> 
+            <span>Completed today</span>
+            <strong>3</strong>
+        </div>
+        <div class="habit-line">
+            <img src="missed.png" alt="Missed"> 
+            <span>Missed today</span>
+            <strong>1</strong>
+        </div>
+    </div>
+
+<div class="habit-footer">
+    <div class="circle-wrapper">
+        <div class="circle-progress">
+            <svg>
+                <circle class="circle-bg" cx="60" cy="60" r="55"></circle>
+                <circle class="circle-fill" cx="60" cy="60" r="55" 
+                        stroke-dasharray="345.4" stroke-dashoffset="335.1"></circle>
+            </svg>
+            <div class="circle-text">3%</div>
+        </div>
+        <p class="completion-label">Today's completion</p>
+    </div>
+</div>
+</div>
+<div class="streak-card">
+    <h3> Streak Stats</h3>
+
+<div class="streak-item">
+        <img src="gold_fire.png" alt="Current" style="width:28px; height:28px;">
+        <span><strong>Current Streak: 7 days</strong></span>
+    </div>
+
+    <div class="streak-item">
+        <img src="trophy.png" alt="Best" style="width:28px; height:28px;">
+        <span style="color: var(--text-dim);">Best Streak: 14 days</span>
+    </div>
+
+    <div class="progress-bar">
+        <div class="progress-fill"></div>
+    </div>
+</div>
+            </div>
+
+             <div class="row">
+            <div class="wallet-card">
+                <h3><strong>Wallet Balance</strong></h3>
+                <div class="amount" style="text-align: left;font-size: 30px; font-weight: 800;">₱ 400.00</div>
+                <div style="display:flex; justify-content:space-between; margin:20px 0;">
+                    <div style="text-align:left;">
+                        <div style="color:var(--text-dim);">Income This Month</div>
+                        <div style="font-size:20px;font-weight:600;">₱ 500.00</div>
+                    </div>
+                    <div style="text-align:left;">
+                        <div style="color:var(--text-dim);">Expend This Month</div>
+                        <div style="font-size:20px;font-weight:600;">₱ 100.00</div>
+                    </div>
+                </div>
+               <div class="spending-bar">
+                        <div class="spending-fill"></div>
+                    </div>
+            </div>
+
+<div class="overview-card">
+    <h3><strong>Income & Spending Overview</strong></h3>
+
+    <div class="overview-row">
+        <!-- Income Column -->
+        <div class="overview-center">
+            <div style="color:var(--text-dim);font-size:14px;">Income (This month)</div>
+
+            <ul class="overview-list">
+                <li>₱ 500.00 — Salary</li>
+                <li>₱ 200.00 — Freelance</li>
+                <li>₱ 150.00 — Extra Work</li>
+            </ul>
+        </div>
+
+        <!-- Expense Column -->
+        <div class="overview-center">
+            <div style="color:var(--text-dim);font-size:14px;">Expend (This month)</div>
+
+            <ul class="overview-list">
+                <li>₱ 60.00 — Food</li>
+                <li>₱ 40.00 — Transportation</li>
+                <li>₱ 20.00 — Supplies</li>
+            </ul>
+        </div>
+    </div>
+</div>
+        </div>
+
+        </div>
+    </div>
+
+<script>
+// Theme Toggle
+const themeToggle = document.getElementById('themeToggle');
+const themeIcon = document.getElementById('themeIcon');
+
+if (localStorage.getItem('theme') === 'light') {
+    document.body.classList.add('light-theme');
+    themeIcon.src = 'moon.png';
+} else {
+    themeIcon.src = 'sun.png';
+}
+
+themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('light-theme');
+    if (document.body.classList.contains('light-theme')) {
+        localStorage.setItem('theme', 'light');
+        themeIcon.src = 'moon.png';
+    } else {
+        localStorage.setItem('theme', 'dark');
+        themeIcon.src = 'sun.png';
+    }
+});
+
+// Week Days Generator
+const classDateInput = document.getElementById('classDate');
+const daysContainer = document.getElementById('daysContainer');
+classDateInput.valueAsDate = new Date();
+
+function generateWeekDays(startFrom) {
+    daysContainer.innerHTML = '';
+    const weekDays = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const today = new Date();
+    const startDate = new Date(startFrom);
+
+    for (let i = 0; i < 7; i++) {
+        const dayDate = new Date(startDate);
+        dayDate.setDate(startDate.getDate() + i);
+        const btn = document.createElement('button');
+        btn.className = 'day';
+        btn.textContent = `${weekDays[dayDate.getDay()]} ${dayDate.getDate()}`;
+        if (dayDate.toDateString() === today.toDateString()) {
+            btn.classList.add('active');
+            setTimeout(() => btn.scrollIntoView({behavior:'smooth', inline:'center'}), 100);
+        }
+        daysContainer.appendChild(btn);
+    }
+}
+generateWeekDays(new Date());
+classDateInput.addEventListener('change', () => generateWeekDays(classDateInput.value));
+</script>
+
+</body>
+</html>
