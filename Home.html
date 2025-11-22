@@ -30,7 +30,7 @@
         }
 
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
-        body { background:var(--bg); color:var(--text); min-height:100vh; display:flex; transition:all .3s; }
+        body {  background:var(--bg); color:var(--text); min-height:100vh; display:flex; transition:all .3s; }
 
         /* Sidebar */
         .sidebar {
@@ -370,8 +370,8 @@
             <img src="logo.png" alt="StudyTrack">
         </div>
         <div class="nav-menu">
-            <a href="#" class="active"><img src="home.png" alt=""> Home</a>
-            <a href="#"><img src="class.png" alt=""> Classes</a>
+            <a href="Home.html" class="active"><img src="home.png" alt=""> Home</a>
+            <a href="Classes.html"><img src="class.png" alt=""> Classes</a>
             <a href="#"><img src="assignment.png" alt=""> Assignment</a>
             <a href="#"><img src="reminder.png" alt=""> Reminder</a>
             <a href="#"><img src="wallet.png" alt=""> Wallet</a>
@@ -580,6 +580,16 @@ function generateWeekDays(startFrom) {
 }
 generateWeekDays(new Date());
 classDateInput.addEventListener('change', () => generateWeekDays(classDateInput.value));
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    setTimeout(() => window.scrollTo(0, 0), 100);
+});
+
+window.addEventListener("load", () => {
+    setTimeout(() => window.scrollTo(0, 0), 100);
+});
 </script>
 
 </body>
