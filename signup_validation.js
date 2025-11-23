@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         return errors;
     }
+    
 
     // Attach listener to the form submission
     form.addEventListener('submit', function(event) {
