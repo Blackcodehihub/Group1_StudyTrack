@@ -6,144 +6,193 @@
     <title>StudyTrack - Classes</title>
     <link rel="icon" href="fav logo.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg: #121212;
-            --card: #1b1b1b;
-            --text: #ffffff;
-            --text-dim: #b5b5b5;
-            --accent: #f3c229;
-            --border: #333333;
-            --sidebar-bg: #1b1b1b;
-        }
-        .light-theme {
-            --bg: #ffffff;
-            --card: #f5f5f5;
-            --text: #000000;
-            --text-dim: #555555;
-            --border: #cccccc;
-            --sidebar-bg: #f0f0f0;
-        }
+<style>
+    :root {
+        --bg: #121212;
+        --card: #1b1b1b;
+        --text: #ffffff;
+        --text-dim: #b5b5b5;
+        --accent: #f3c229;
+        --border: #333333;
+        --sidebar-bg: #1b1b1b;
+    }
+    .light-theme {
+        --bg: #ffffff;
+        --card: #f5f5f5;
+        --text: #000000;
+        --text-dim: #555555;
+        --border: #cccccc;
+        --sidebar-bg: #f0f0f0;
+    }
 
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
-        body { background:var(--bg); color:var(--text); min-height:100vh; display:flex; transition:all .3s; }
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
+    body { 
+        background:var(--bg); 
+        color:var(--text); 
+        min-height:100vh; 
+        display:flex; 
+        transition:all .3s;
+        overflow: auto;
+    }
 
-        /* Sidebar */
+    /* ==================== SIDEBAR (IDENTICAL TO HOME) ==================== */
+    .sidebar {
+        width:235px;
+        background:var(--sidebar-bg);
+        padding:30px 20px;
+        border-right:1px solid var(--border);
+        position:fixed;
+        height:93%;
+        z-index:10;
+        overflow-y: none;
+        margin-top:27px;
+        border-top-right-radius:45px;
+        border-bottom-right-radius:45px;
+        transition:left .3s ease;
+    }
+    .logo img { height: 95px; display:block; margin-top: -2px;  }
+    .nav-menu a {
+        display:flex; align-items:center; gap:15px; padding:12px 18px;
+        border-top-left-radius:14px; border-bottom-left-radius:14px;
+        color:var(--text-dim); text-decoration:none; font-size:15px; transition:all .3s;
+    }
+       .nav-menu {
+            margin-top: 12px;
+        }
+        .bot-nav {
+            margin-top: 95%;
+        }
+        .nav-menu a:hover, .nav-menu a.active { background:var(--bg); color:var(--text); width: 240px;}
+        .nav-menu a.active { color:var(--text);}
+        .nav-menu img { width:22px; height:22px; opacity:0.7; }
+        .nav-menu a:hover img, .nav-menu a.active img { opacity:1; }
+
+        /* Inactive links = white icons (dark theme) */
+.nav-menu a:not(.active) img {
+    filter: brightness(0) invert(1);
+}
+
+/* Inactive links = black icons (light theme) */
+.light-theme .nav-menu a:not(.active) img {
+    filter: none;
+}
+
+/* Active link – your existing look */
+
+.nav-menu a.active img {
+    filter: brightness(0) invert(1);
+}
+
+.light-theme .nav-menu a.active img {
+    filter: invert(0);
+}
+
+
+
+    /* ==================== MAIN CONTENT ==================== */
+    .main-content {
+        margin-left:260px;
+        padding:30px;
+        width:calc(100% - 260px);
+        transition:all .3s;
+    }
+    .container { max-width:1350px; margin:0 auto; }
+
+    /* ==================== HEADER ==================== */
+    .header {
+        display:flex; align-items:center; gap:15px; margin-bottom:30px; position:relative;
+    }
+    .greeting h2 { font-size:28px; font-weight:700; color:var(--accent); margin-bottom:4px; }
+    .greeting p { color:var(--text-dim); font-size:15px; }
+
+    /* ==================== THEME TOGGLE ==================== */
+    .theme-toggle {
+        margin-left:auto; background:var(--card); padding:12px; border-radius:50%;
+        cursor:pointer; width:50px; height:50px; display:flex; align-items:center; justify-content:center;
+    }
+    .theme-toggle img { width:42px; height:28px; }
+
+    /* ==================== HAMBURGER ==================== */
+    .hamburger {
+        display:none; font-size:28px; background:var(--card); color:var(--text);
+        border:1px solid var(--border); padding:8px 12px; border-radius:10px; cursor:pointer;
+    }
+
+    /* ==================== CLASSES PAGE SPECIFIC STYLES ==================== */
+    .card { background:var(--card); padding:28px; border-radius:18px; border:1px solid var(--border); }
+
+    .classes-header-row {
+        display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;
+    }
+    .classes-header-row h3 { font-size:20px; font-weight:600; }
+    .add-class-btn {
+        background:var(--card); border:1px solid var(--border); color:var(--text);
+        padding:10px 24px; border-radius:30px; font-size:14px; cursor:pointer; transition:all .3s;
+    }
+    .add-class-btn:hover { background:var(--accent); color:#000; }
+
+    .classes-subtitle {
+        color:var(--text-dim); font-size:14px; margin-bottom:20px;
+    }
+
+    .class-item {
+        background:var(--card); border:1px solid var(--border); border-radius:16px;
+        padding:18px; display:flex; align-items:center; justify-content:space-between;
+        position:relative; margin-top:20px;
+    }
+    .class-info { display:flex; align-items:center; gap:16px; }
+    .class-info img { width:42px; height:42px; filter:invert(1); }
+    .light-theme .class-info img { filter:invert(0); }
+    .class-info h4 { margin:0; font-size:16px; font-weight:600; }
+    .class-info p { margin:4px 0 0; font-size:13px; color:var(--text-dim); }
+    .class-time { text-align:right; font-weight:600; font-size:15px; }
+
+    .delete-btn {
+        position:absolute; top:-5px; right:-2px;
+        background:#ff4d4f; color:white; border:none; border-radius:50%;
+        width:24px; height:24px; cursor:pointer; font-size:16px;
+        display:flex; align-items:center; justify-content:center;
+        transition:background .3s;
+    }
+    .delete-btn:hover { background:#ff1f1f; }
+
+    /* ==================== RESPONSIVE ==================== */
+    @media (max-width: 900px) {
+        .hamburger { display:block; }
         .sidebar {
-            width:260px; background:var(--sidebar-bg); padding:30px 20px; border-right:1px solid var(--border);
-            position:fixed; height:93%; z-index:10; overflow-y:none;margin-top: 30px;border-top-right-radius: 50px;
-            border-bottom-right-radius: 50px;
+            position:fixed; height:100%; left:-260px; top:0; margin-top:0;
+            border-radius:0; transition:left .3s ease; z-index:1000;
         }
-                .bot-nav {
-            margin-top: 70%;
+        .sidebar.active { left:0; }
+        .main-content {
+            margin-left:0 !important; width:100% !important; padding:20px;
         }
-        .logo img { height:100px; display:block; margin:0 auto 10px; }
-        .nav-menu a {
-            display:flex; align-items:center; gap:15px; padding:14px 18px;
-            border-top-left-radius:14px; border-bottom-left-radius:14px;
-            color:var(--text-dim); text-decoration:none; font-size:15px; transition:all .3s;
-        }
-        .nav-menu a:hover, .nav-menu a.active { background:var(--bg); color:var(--text); width:240px; font-weight:600; }
-        .nav-menu a.active { font-weight:800; }
-        .nav-menu img { width:24px; height:24px; opacity:0.7; }
-        .nav-menu a:hover img, .nav-menu a.active img { filter: brightness(0) invert(1); opacity:1; }
-        .nav-menu a:not(.active) img { filter: brightness(0) invert(1); }
-        .light-theme .nav-menu a:not(.active) img { filter: none; }
-        .light-theme .nav-menu a.active img { filter: brightness(0) invert(0    ); }
-        .bot-nav { margin-top:70%; }
+        .main-content.shift { transform:translateX(260px); }
+    }
 
-        /* Main Content */
-        .main-content { margin-left:260px; padding:30px; width:calc(100% - 260px); }
-        .container { max-width:1350px; margin:0 auto; }
+    @media (max-width: 768px) {
+        .classes-header-row { flex-direction:column; align-items:flex-start; gap:10px; }
+        .class-item { flex-direction:column; align-items:flex-start; gap:10px; }
+        .class-time { text-align:left; }
+    }
 
-        /* Header */
-        .header {
-            display:flex; align-items:center; gap:15px; margin-bottom:30px; position:relative;
-        }
-        .user-icon img { width:50px; height:50px; border-radius:60%; object-fit:cover; }
-        .greeting h2 { font-size:28px; font-weight:700; color:var(--accent); margin-bottom:4px; }
-        .greeting p { color:var(--text-dim); font-size:15px; }
-
-        /* Theme Toggle */
-        .theme-toggle {
-            margin-left:auto; background:var(--card); padding:12px; border-radius:50%;
-            cursor:pointer; width:50px; height:50px; display:flex; align-items:center; justify-content:center;
-        }
-        .theme-toggle img { width:42px; height:28px; }
-
-        /* Card */
-        .card { background:var(--card); padding:28px; border-radius:18px; border:1px solid var(--border); }
-
-        /* Classes Section */
-        .classes-header-row {
-            display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;
-        }
-        .classes-header-row h3 { font-size:20px; font-weight:600; }
-        .add-class-btn {
-            background:var(--card); border:1px solid var(--border); color:var(--text);
-            padding:10px 24px; border-radius:30px; font-size:14px; cursor:pointer;
-            transition:all .3s;
-        }
-        .add-class-btn:hover { background:var(--accent); color:#000; }
-
-        .classes-subtitle {
-            color:var(--text-dim); font-size:14px; margin-bottom:20px;
-        }
-
-        /* Class Item */
-        .class-item {
-            background:var(--card); border:1px solid var(--border); border-radius:16px;
-            padding:18px; display:flex; align-items:center; justify-content:space-between;
-            position:relative; margin-top:20px;
-        }
-        .class-info {
-            display:flex; align-items:center; gap:16px;
-        }
-        .class-info img { width:42px; height:42px; filter:invert(1); }
-        .light-theme .class-info img { filter:invert(0); }
-        .class-info h4 { margin:0; font-size:16px; font-weight:600; }
-        .class-info p { margin:4px 0 0; font-size:13px; color:var(--text-dim); }
-
-        .class-time { text-align:right; font-weight:600; font-size:15px; }
-        .notification-dot {
-            position:absolute; top:12px; right:12px;
-            background:#ff0000; color:white; font-weight:bold;
-            width:20px; height:20px; border-radius:50%;
-            display:flex; align-items:center; justify-content:center; font-size:14px;
-        }
-
-        .delete-btn {
-    position: absolute;
-    top: -5px;
-    right: -2px;
-    background: #ff4d4f; /* red color */
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    cursor: pointer;
-    font-size: 16px;
-    line-height: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.3s;
-}
-.delete-btn:hover {
-    background: #ff1f1f;
-}
-    </style>
+    @media (max-width: 480px) {
+        .header { flex-direction:column; align-items:flex-start; gap:10px; }
+        .greeting h2 { font-size:clamp(20px,5vw,26px); }
+        .add-class-btn { padding:8px 16px; font-size:13px; }
+        .card { padding:20px; }
+    }
+</style>
 </head>
 <body>
 
-    <!-- Sidebar -->
-    <aside class="sidebar">
+    <!-- Sidebar - Now matches Home perfectly -->
+    <aside class="sidebar" id="sidebar">        
         <div class="logo">
             <img src="logo.png" alt="StudyTrack">
         </div>
         <div class="nav-menu">
-            <a href="Home.html"><img src="home.png" alt=""> Home</a>
+            <a href="c.html" ><img src="home.png" alt=""> Home</a>
             <a href="Classes.html" class="active"><img src="class.png" alt=""> Classes</a>
             <a href="#"><img src="assignment.png" alt=""> Assignment</a>
             <a href="#"><img src="reminder.png" alt=""> Reminder</a>
@@ -162,8 +211,9 @@
 
             <!-- Header -->
             <div class="header">
+                <button class="hamburger" id="hamburgerBtn">☰</button>
                 <div class="greeting">
-                    <h2><strong style="color: var(--border); text-shadow: var();">Your</strong> Classes</h2>
+                    <h2><strong style="color: var(--border);">Your</strong> Classes</h2>
                     <p>Organize lectures, labs, and study blocks</p>
                 </div>
                 <button class="theme-toggle" id="themeToggle">
@@ -179,7 +229,6 @@
                 </div>
                 <div class="classes-subtitle">See all your enrolled classes and Schedules</div>
 
-                <!-- Single Class -->
                 <div class="class-item">
                     <div class="class-info">
                         <img src="book.png" alt="Book">
@@ -189,15 +238,16 @@
                         </div>
                     </div>
                     <div class="class-time">Today 9:00 AM</div>
-                    <button class="delete-btn">&times;</button>
+                    <button class="delete-btn">×</button>
                 </div>
             </div>
 
         </div>
     </div>
 
-    <!-- Theme Toggle Script -->
+    <!-- Scripts -->
     <script>
+        // Theme Toggle
         const themeToggle = document.getElementById('themeToggle');
         const themeIcon = document.getElementById('themeIcon');
 
@@ -216,6 +266,26 @@
             } else {
                 localStorage.setItem('theme', 'dark');
                 themeIcon.src = 'sun.png';
+            }
+        });
+
+        // Hamburger Menu
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.querySelector('.main-content');
+
+        hamburgerBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            sidebar.classList.toggle('active');
+            mainContent.classList.toggle('shift');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (sidebar.classList.contains('active') && 
+                !sidebar.contains(e.target) && 
+                !hamburgerBtn.contains(e.target)) {
+                sidebar.classList.remove('active');
+                mainContent.classList.remove('shift');
             }
         });
     </script>
