@@ -36,7 +36,7 @@
     }
 
     /* ==================== SIDEBAR (IDENTICAL TO HOME) ==================== */
-    .sidebar {
+ .sidebar {
         width:235px;
         background:var(--sidebar-bg);
         padding:30px 20px;
@@ -49,7 +49,14 @@
         border-top-right-radius:45px;
         border-bottom-right-radius:45px;
         transition:left .3s ease;
+        justify-content: space-between;
     }
+.nav-menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 85%;
+}
     .logo img { height: 95px; display:block; margin-top: -2px;  }
     .nav-menu a {
         display:flex; align-items:center; gap:15px; padding:12px 18px;
@@ -58,9 +65,7 @@
     }
        .nav-menu {
             margin-top: 12px;
-        }
-        .bot-nav {
-            margin-top: 95%;
+            
         }
         .nav-menu a:hover, .nav-menu a.active { background:var(--bg); color:var(--text); width: 240px;}
         .nav-menu a.active { color:var(--text);}
@@ -86,6 +91,7 @@
 .light-theme .nav-menu a.active img {
     filter: invert(0);
 }
+
 
 
 
@@ -567,19 +573,20 @@ padding-right: 48px !important;        /* gives space for the arrow */
             <img src="logo.png" alt="StudyTrack">
         </div>
         <div class="nav-menu">
+            <div class="top-nav">
             <a href="HomeF.html" ><img src="home.png" alt=""> Home</a>
             <a href="Classes.html" class="active"><img src="class.png" alt=""> Classes</a>
             <a href="Assignment.html"><img src="assignment.png" alt=""> Assignment</a>
-            <a href="Reminder.html"><img src="reminder.png" alt=""> Reminder</a>
+            <a href="Reminder.html" ><img src="reminder.png" alt=""> Reminder</a>
             <a href="#"><img src="wallet.png" alt=""> Wallet</a>
             <a href="#"><img src="streak.png" alt=""> Habit</a>
+            </div>
             <div class="bot-nav">
                 <a href="#"><img src="settings.png" alt=""> Settings</a>
                 <a href="#"><img src="logout.png" alt=""> Log out</a>
             </div>
         </div>
     </aside>
-
     <!-- Main Content -->
     <div class="main-content">
         <div class="container">
@@ -612,7 +619,7 @@ padding-right: 48px !important;        /* gives space for the arrow */
                             <p>Mon & Wed 9:00 AM - 10:15 AM, BSIT Department CL 2</p>
                         </div>
                     </div>
-                    <div class="class-time">Today 9:00 AM</div>
+                    <div class="class-time">Today <br>9:00 AM</div>
                     <button class="delete-btn">×</button>
                 </div>
             </div>

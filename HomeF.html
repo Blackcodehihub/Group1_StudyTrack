@@ -48,8 +48,15 @@
         margin-top:27px;
         border-top-right-radius:45px;
         border-bottom-right-radius:45px;
-        transition:left .3s ease;
+        justify-content: space-between;
     }
+     .nav-menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 85%; 
+}
+   
     .logo img { height: 95px; display:block; margin-top: -2px;  }
     .nav-menu a {
         display:flex; align-items:center; gap:15px; padding:12px 18px;
@@ -59,9 +66,7 @@
        .nav-menu {
             margin-top: 12px;
         }
-        .bot-nav {
-            margin-top: 95%;
-        }
+
         .nav-menu a:hover, .nav-menu a.active { background:var(--bg); color:var(--text); width: 240px;}
         .nav-menu a.active { color:var(--text);}
         .nav-menu img { width:22px; height:22px; opacity:0.7; }
@@ -455,6 +460,8 @@
     }
 }
 
+
+
 /* Tablets & Medium Screens */
 @media (max-width: 900px) {
 
@@ -677,12 +684,14 @@
             <img src="logo.png" alt="StudyTrack">
         </div>
         <div class="nav-menu">
+            <div class="top-nav">
             <a href="HomeF.html" class="active"><img src="home.png" alt=""> Home</a>
             <a href="Classes.html" ><img src="class.png" alt=""> Classes</a>
-            <a href="#"><img src="assignment.png" alt=""> Assignment</a>
+            <a href="Assignment.html"><img src="assignment.png" alt=""> Assignment</a>
             <a href="Reminder.html"><img src="reminder.png" alt=""> Reminder</a>
             <a href="#"><img src="wallet.png" alt=""> Wallet</a>
             <a href="#"><img src="streak.png" alt=""> Habit</a>
+            </div>
             <div class="bot-nav">
                 <a href="#"><img src="settings.png" alt=""> Settings</a>
                 <a href="#"><img src="logout.png" alt=""> Log out</a>
