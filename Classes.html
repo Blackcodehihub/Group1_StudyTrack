@@ -182,6 +182,201 @@
         .add-class-btn { padding:8px 16px; font-size:13px; }
         .card { padding:20px; }
     }
+
+    /* ==================== RESPONSIVE ADD CLASS MODAL ==================== */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.modal {
+    background: var(--card);
+    width: 100%;
+    max-width:560px;
+    border-radius: 20px;
+    padding: 28px 24px;
+    position: relative;
+    border: 1px solid var(--border);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+    max-height: 90vh;
+    overflow-y: hidden;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+    margin-top: -12px;
+}
+.modal-header h3 {
+    font-size: 20px;
+    font-weight: 600;
+}
+.close-modal {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color:  var(--text-dim);
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: right;
+    justify-content: right;
+    border-radius: 50%;
+    
+}
+
+.modal label {
+    margin-top: -5px;
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: var(--text-dim);
+    font-weight: 500;
+}
+
+.modal input, .modal select {
+    width: 100%;
+    padding: 14px 16px;
+    background: #2a2a2a;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text);
+    font-size: 15px;
+    margin-bottom: 18px;
+}
+
+.modal input[type="time"] {
+    cursor: pointer;
+}
+.light-theme .modal input,
+.light-theme .modal select {
+    background: #f0f0f0;
+    color: #000;
+}
+
+.time-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+/* Time picker clock icon color follows theme */
+input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: brightness(0) invert(1); /* White in dark mode */
+    cursor: pointer;
+}
+
+/* When light theme is active → make clock icon black */
+.light-theme input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: none;
+}
+
+/* Optional: bigger & nicer click area */
+input[type="time"]::-webkit-calendar-picker-indicator {
+    margin-right: -8px;
+}
+
+.repeat-days {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 14px 0 22px;
+}
+.day-btn {
+    min-width: 50px;
+    height: 48px;
+    border-radius: 35%;
+    background: var(--border);
+    color: var(--text);
+    border: 1px solid var(--border);
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all .2s;
+}
+.day-btn.active {
+    background: var(--accent);
+    color: #000;
+    border-color: var(--accent);
+}
+
+.reminder-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+.reminder-row select { flex: 1; width: 510px; margin-bottom: 0; }
+.reminder-row a {
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+}
+.btn-cancel, .btn-save {
+    flex: 1;
+    padding: 14px 20px;
+    border-radius: 30px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+}
+.btn-cancel {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+}
+.btn-save {
+    background: var(--accent);
+    border: none;
+    color: #000;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 480px) {
+    .modal {
+        padding: 24px 20px;
+        border-radius: 16px;
+    }
+    .time-row {
+        grid-template-columns: 1fr;
+    }
+    .modal-actions {
+        flex-direction: column;
+    }
+    .day-btn {
+        min-width: 44px;
+        height: 44px;
+        font-size: 13px;
+    }
+    .reminder-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .reminder-row a {
+        text-align: center;
+        margin-top: 8px;
+    }
+}
 </style>
 </head>
 <body>
@@ -225,7 +420,7 @@
             <div class="card">
                 <div class="classes-header-row">
                     <h3>Classes</h3>
-                    <button class="add-class-btn">+ Add Class</button>
+                    <button class="add-class-btn" id="openModalBtn">+ Add Class</button>
                 </div>
                 <div class="classes-subtitle">See all your enrolled classes and Schedules</div>
 
@@ -244,6 +439,62 @@
 
         </div>
     </div>
+
+    <!-- Add Class Modal (Fully Responsive) -->
+<div class="modal-overlay" id="addClassModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>Add Class</h3>
+            <button class="close-modal" id="closeModalBtn">X</button>
+        </div>
+
+        <label>Subject name</label>
+        <input type="text" placeholder="CS 201, Data Structures">
+
+        <label>Instructor</label>
+        <input type="text" placeholder="Prof. Jane">
+
+        <label>Location</label>
+        <input type="text" placeholder="BSIT Department CL 2">
+
+        <div class="time-row">
+            <div>
+                <label>Start Time</label>
+                <input type="time" value="09:00" required>
+            </div>
+            <div>
+                <label>End Time</label>
+                <input type="time" value="10:15" required>
+            </div>
+        </div>
+
+        <label>Repeat</label>
+        <div class="repeat-days">
+            <button type="button" class="day-btn">Mon</button>
+            <button type="button" class="day-btn">Tue</button>
+            <button type="button" class="day-btn">Wed</button>
+            <button type="button" class="day-btn">Thu</button>
+            <button type="button" class="day-btn">Fri</button>
+        </div>
+
+        <div class="reminder-row">
+            <div>
+                <label>Reminder Time</label>
+                <select>
+                    <option>15 minutes before</option>
+                    <option>30 minutes before</option>
+                    <option>1 hour before</option>
+                    <option>None</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="modal-actions">
+            <button class="btn-cancel" id="cancelBtn">Cancel</button>
+            <button class="btn-save">Save Class</button>
+        </div>
+    </div>
+</div>
 
     <!-- Scripts -->
     <script>
@@ -288,6 +539,35 @@
                 mainContent.classList.remove('shift');
             }
         });
+
+        // ========== MODAL CONTROL ==========
+const openModalBtn = document.getElementById('openModalBtn');
+const modal = document.getElementById('addClassModal');
+const closeModalBtn = document.getElementById('closeModalBtn');
+const cancelBtn = document.getElementById('cancelBtn');
+
+function openModal() {
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+openModalBtn.addEventListener('click', openModal);
+closeModalBtn.addEventListener('click', closeModal);
+cancelBtn.addEventListener('click', closeModal);
+
+// Close when clicking outside the modal content
+modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+});
+
+// Day buttons toggle
+document.querySelectorAll('.day-btn').forEach(btn => {
+    btn.addEventListener('click', () => btn.classList.toggle('active'));
+});
     </script>
 </body>
 </html>
