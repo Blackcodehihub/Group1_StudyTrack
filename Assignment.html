@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyTrack - Classes</title>
+    <link rel="icon" href="fav logo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #121212;
+            --card: #1b1b1b;
+            --text: #ffffff;
+            --text-dim: #b5b5b5;
+            --accent: #f3c229;
+            --border: #333333;
+            --sidebar-bg: #1b1b1b;
+            --success: #34c759; /* Green color for success */
+        }
+        .light-theme {
+            --bg: #ffffff;
+            --card: #f5f5f5;
+            --text: #000000;
+            --text-dim: #555555;
+            --border: #cccccc;
+            --sidebar-bg: #f0f0f0;
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
+        body { background:var(--bg); color:var(--text); min-height:100vh; display:flex; transition:all .3s; }
+
+        /* Sidebar */
+        .sidebar {
+            width:260px; background:var(--sidebar-bg); padding:30px 20px; border-right:1px solid var(--border);
+            position:fixed; height:93%; z-index:10; overflow-y:none;margin-top: 30px;border-top-right-radius: 50px;
+            border-bottom-right-radius: 50px;
+        }
+                .bot-nav {
+            margin-top: 70%;
+        }
+        .logo img { height:100px; display:block; margin:0 auto 10px; }
+        .nav-menu a {
+            display:flex; align-items:center; gap:15px; padding:14px 18px;
+            border-top-left-radius:14px; border-bottom-left-radius:14px;
+            color:var(--text-dim); text-decoration:none; font-size:15px; transition:all .3s;
+        }
+        .nav-menu a:hover, .nav-menu a.active { background:var(--bg); color:var(--text); width:240px; font-weight:600; }
+        .nav-menu a.active { font-weight:800; }
+        .nav-menu img { width:24px; height:24px; opacity:0.7; }
+        .nav-menu a:hover img, .nav-menu a.active img { filter: brightness(0) invert(1); opacity:1; }
+        .nav-menu a:not(.active) img { filter: brightness(0) invert(1); }
+        .light-theme .nav-menu a:not(.active) img { filter: none; }
+        .light-theme .nav-menu a.active img { filter: brightness(0) invert(0    ); }
+        .bot-nav { margin-top:70%; }
+
+        /* Main Content */
+        .main-content { margin-left:260px; padding:30px; width:calc(100% - 260px); }
+        .container { max-width:1350px; margin:0 auto; }
+
+        /* Header */
+        .header {
+            display:flex; align-items:center; gap:15px; margin-bottom:30px; position:relative;
+        }
+        .user-icon img { width:50px; height:50px; border-radius:60%; object-fit:cover; }
+        .greeting h2 { font-size:28px; font-weight:700; color:var(--accent); margin-bottom:4px; }
+        .greeting p { color:var(--text-dim); font-size:15px; }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            margin-left:auto; background:var(--card); padding:12px; border-radius:50%;
+            cursor:pointer; width:50px; height:50px; display:flex; align-items:center; justify-content:center;
+        }
+        .theme-toggle img { width:42px; height:28px; }
+
+        /* Card */
+        .card { background:var(--card); padding:28px; border-radius:18px; border:1px solid var(--border); }
+
+        /* Classes Section */
+        .assignment-header-row {
+            display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;
+        }
+        .assignment-header-row h3 { font-size:20px; font-weight:600; }
+        .add-assignment-btn {
+            background:var(--card); border:1px solid var(--border); color:var(--text);
+            padding:10px 24px; border-radius:30px; font-size:14px; cursor:pointer;
+            transition:all .3s;
+        }
+        .add-assignment-btn:hover { background:var(--accent); color:#000; }
+
+        .assignment-subtitle {
+            color:var(--text-dim); font-size:14px; margin-bottom:20px;
+        }
+
+        /* Class Item */
+        .class-item {
+            background:var(--card); border:1px solid var(--border); border-radius:16px;
+            padding:18px; display:flex; align-items:center; justify-content:space-between;
+            position:relative; margin-top:20px;
+        }
+        .class-info {
+            display:flex; align-items:center; gap:16px;
+        }
+        .class-info img { width:42px; height:42px; filter:invert(1); }
+        .light-theme .class-info img { filter:invert(0); }
+        .class-info h4 { margin:0; font-size:16px; font-weight:600; }
+        .class-info p { margin:4px 0 0; font-size:13px; color:var(--text-dim); }
+
+        .due-time { text-align:center; font-weight:600; font-size:15px; }
+        .priority-level {
+            background-color: #a61d1d56;      
+            padding: 6px 16px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 6px;
+        }
+
+        .priority-level p {
+            color: #F43434;                
+            font-size: 15px;
+            font-weight: 600;
+            margin: 0;
+        }
+        .notification-dot {
+            position:absolute; top:12px; right:12px;
+            background:#ff0000; color:white; font-weight:bold;
+            width:20px; height:20px; border-radius:50%;
+            display:flex; align-items:center; justify-content:center; font-size:14px;
+        }
+        
+        /* ===== Modal Background Overlay (Shared) ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0,0,0,0.55);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+        }
+
+        /* ===== Modal Content (Add/Edit) ===== */
+        .modal-content {
+            background: #1c1c1c;
+            width: 480px;
+            padding: 25px;
+            border-radius: 18px;
+            color: white;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 15px;
+            color: #ffc107;
+            font-size: 1.8em;
+            font-weight: 700;
+        }
+
+        /* ===== Modal Content (Confirmation) - New Styles ===== */
+        .confirmation-modal-content {
+            background: #1c1c1c;
+            width: 480px;
+            padding: 40px 30px;
+            border-radius: 18px;
+            color: white;
+            animation: fadeIn 0.25s ease;
+            text-align: center;
+            position: relative; /* Added for the close button positioning */
+        }
+
+        .confirmation-modal-content h2 {
+            font-size: 1.6em;
+            font-weight: 700;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .confirmation-modal-content h2::before {
+            content: '✓'; 
+            color: var(--success);
+            font-size: 1.5em;
+            line-height: 0;
+        }
+
+        .confirmation-modal-content p {
+            color: var(--text-dim);
+            font-size: 0.9em;
+            margin-bottom: 30px;
+        }
+
+        /* Confirmation Button Group */
+        .confirmation-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .confirmation-actions button {
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .confirmation-actions .add-new-btn {
+            background: #333;
+            color: white;
+        }
+
+        .confirmation-actions .view-edit-btn {
+            background: var(--accent);
+            color: #1c1c1c;
+        }
+
+        /* Modal Close Button (New Style) */
+        .modal-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: transparent;
+            color: var(--text-dim);
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            line-height: 1;
+            padding: 5px;
+            transition: color 0.2s;
+        }
+        .modal-close-btn:hover {
+            color: var(--text);
+        }
+        /* End New Styles */
+
+        label {
+            font-size: 0.95em;
+            display: block;
+            margin: 10px 0 6px;
+            color: #ddd;
+        }
+
+        input, textarea {
+            width: 100%;
+            background: #2b2b2b;
+            border: none;
+            outline: none;
+            padding: 12px;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1em;
+        }
+
+        textarea {
+            height: 80px;
+            resize: none;
+        }
+
+        .row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .priority-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .priority-btn {
+            padding: 8px 14px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: white;
+        }
+
+        .priority-btn.low { background: #4b4b4b; }
+        .priority-btn.med { background: #6d6d6d; }
+        .priority-btn.high { background: #ff3b3b; }
+
+        .reminder-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .reminder-btn {
+            padding: 8px 14px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: white;
+            background-color: #4b4b4b;
+        }
+
+        /* Buttons (Add/Edit Modal) */
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 15px;
+            gap: 10px;
+        }
+
+        .cancel-btn {
+            background: #333;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .save-btn {
+            background: #ffc107;
+            color: #1c1c1c;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Fade In Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: -5px;
+            right: -2px;
+            background: #ff4d4f; /* red color */
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+        .delete-btn:hover {
+            background: #ff1f1f;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo">
+            <img src="logo.png" alt="StudyTrack">
+        </div>
+        <div class="nav-menu">
+            <a href="Home.html"><img src="home.png" alt=""> Home</a>
+            <a href="Classes.html"><img src="class.png" alt=""> Classes</a>
+            <a href="Assignemnt.html" class="active"><img src="assignment.png" alt=""> Assignment</a>
+            <a href="#"><img src="reminder.png" alt=""> Reminder</a>
+            <a href="#"><img src="wallet.png" alt=""> Wallet</a>
+            <a href="#"><img src="streak.png" alt=""> Habit</a>
+            <div class="bot-nav">
+                <a href="#"><img src="settings.png" alt=""> Settings</a>
+                <a href="#"><img src="logout.png" alt=""> Log out</a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+
+            <!-- Header -->
+            <div class="header">
+                <div class="greeting">
+                    <h2><strong style="color: var(--border); text-shadow: var();">Your</strong> Assignemnt</h2>
+                    <p>Stay on top of due dates and priorities</p>
+                </div>
+                <button class="theme-toggle" id="themeToggle">
+                    <img src="sun.png" alt="Toggle Theme" id="themeIcon">
+                </button>
+            </div>
+
+            <!-- Assignemnt Card -->
+            <div class="card">
+                <div class="assignment-header-row">
+                    <h3>Assignemnt</h3>
+                    <button id="openAddAssignment" class="add-assignment-btn">+ Add Assignment</button>
+                </div>
+                <div class="assignment-subtitle">fill in the basics now, you can adjust it later.</div>
+
+                <!-- Single Class -->
+                <div class="class-item">
+                    <div class="class-info">
+                        <img src="book.png" alt="Book">
+                        <div>
+                            <h4>CS 201, Linked lists</h4>
+                            <p>CS 201, Data Structures, 1200- 1500 words, online submission</p>
+                        </div>
+                    </div>
+                    <div class="due-time">
+                        <h3>Due today, 11:59</h3>
+                        <div class="priority-level">
+                            <p>High Priority</p>
+                        </div>
+                    </div>
+                    <button class="delete-btn">&times;</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- 1. ADD ASSIGNMENT MODAL -->
+    <div class="modal-overlay" id="assignmentModal">
+        <div class="modal-content">
+
+            <h2>Add Assignment</h2>
+
+            <label>Title</label>
+            <input type="text" placeholder="Title">
+
+            <label>Class</label>
+            <input type="text" placeholder="Class">
+
+            <div class="row">
+                <div>
+                    <label>Due Date</label>
+                    <input type="date">
+                </div>
+                <div>
+                    <label>Due Time</label>
+                    <input type="time">
+                </div>
+            </div>
+
+            <label>Priority</label>
+            <div class="priority-row">
+                <button class="priority-btn low">Low</button>
+                <button class="priority-btn med">Medium</button>
+                <button class="priority-btn high">High</button>
+            </div>
+
+            <label>Notes</label>
+            <textarea placeholder="Write your notes..."></textarea>
+
+            <label>Reminder</label>
+            <div class="reminder-row">
+                <button class="reminder-btn">1 day before</button>
+                <button class="reminder-btn">3 days before</button>
+                <button class="reminder-btn">1 week before</button>
+            </div>
+
+            <div class="actions">
+                <button id="closeModal" class="cancel-btn">Cancel</button>
+                <button id="saveAssignmentBtn" class="save-btn">Save Assignment</button>
+            </div>
+
+        </div>
+    </div>
+    
+    <!-- 2. ASSIGNMENT SAVED CONFIRMATION MODAL -->
+    <div class="modal-overlay" id="saveConfirmationModal">
+        <div class="confirmation-modal-content">
+            
+            <!-- Close Button Added Here -->
+            <button id="closeConfirmationBtn" class="modal-close-btn">&times;</button>
+
+            <h2>Assignment Saved</h2>
+            <p>Assignment Saved added to your schedule. Your timetable and reminders have been updated for this Assignment.</p>
+
+            <div class="confirmation-actions">
+                <button id="addAnotherAssignmentBtn" class="add-new-btn">+ Add Assignment</button>
+                <button id="viewAssignmentBtn" class="view-edit-btn">View Assignment & Edit</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Theme Toggle Script -->
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+
+        if (localStorage.getItem('theme') === 'light') {
+            document.body.classList.add('light-theme');
+            themeIcon.src = 'moon.png';
+        } else {
+            themeIcon.src = 'sun.png';
+        }
+
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('light-theme');
+            if (document.body.classList.contains('light-theme')) {
+                localStorage.setItem('theme', 'light');
+                themeIcon.src = 'moon.png';
+            } else {
+                localStorage.setItem('theme', 'dark');
+                themeIcon.src = 'sun.png';
+            }
+        });
+    </script>
+
+    <!-- Modal Logic Script -->
+    <script>
+        const addBtn = document.getElementById("openAddAssignment");
+        const addModal = document.getElementById("assignmentModal");
+        const closeAddModalBtn = document.getElementById("closeModal");
+        const saveBtn = document.getElementById("saveAssignmentBtn");
+
+        const confirmationModal = document.getElementById("saveConfirmationModal");
+        const closeConfirmationBtn = document.getElementById("closeConfirmationBtn"); // Get the new close button        
+        const addAnotherBtn = document.getElementById("addAnotherAssignmentBtn");
+        const viewAssignmentBtn = document.getElementById("viewAssignmentBtn");
+
+
+        // --- Add/Edit Modal (assignmentModal) ---
+        addBtn.addEventListener("click", () => {
+            addModal.style.display = "flex";
+        });
+
+        closeAddModalBtn.addEventListener("click", () => {
+            addModal.style.display = "none";
+        });
+
+        // Close when clicking outside the modal box
+        addModal.addEventListener("click", (e) => {
+            if (e.target === addModal) {
+                addModal.style.display = "none";
+            }
+        });
+        
+        // --- Save Confirmation Logic ---
+        saveBtn.addEventListener("click", () => {
+            // 1. Close the Add/Edit Modal
+            addModal.style.display = "none";
+            
+            // 2. Open the Confirmation Modal
+            confirmationModal.style.display = "flex";
+        });
+
+        // --- Confirmation Modal Actions ---
+
+        // 0. Close Confirmation Modal using the X button
+        closeConfirmationBtn.addEventListener("click", () => {
+            confirmationModal.style.display = "none";
+        });
+
+        // 1. Close confirmation and open Add/Edit Modal again
+        addAnotherBtn.addEventListener("click", () => {
+             confirmationModal.style.display = "none";
+             addModal.style.display = "flex";
+        });
+        
+        // 2. Close confirmation (View/Edit action placeholder)
+        viewAssignmentBtn.addEventListener("click", () => {
+             confirmationModal.style.display = "none";
+             // In a real app, this would navigate to or load the assignment details
+        });
+
+        // Close confirmation modal if clicking outside
+        confirmationModal.addEventListener("click", (e) => {
+            if (e.target === confirmationModal) {
+                confirmationModal.style.display = "none";
+            }
+        });
+
+    </script>
+ 
+</body>
+</html>
