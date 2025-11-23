@@ -75,18 +75,18 @@
         .card { background:var(--card); padding:28px; border-radius:18px; border:1px solid var(--border); }
 
         /* Classes Section */
-        .classes-header-row {
+        .assignment-header-row {
             display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;
         }
-        .classes-header-row h3 { font-size:20px; font-weight:600; }
-        .add-class-btn {
+        .assignment-header-row h3 { font-size:20px; font-weight:600; }
+        .add-assignment-btn {
             background:var(--card); border:1px solid var(--border); color:var(--text);
             padding:10px 24px; border-radius:30px; font-size:14px; cursor:pointer;
             transition:all .3s;
         }
-        .add-class-btn:hover { background:var(--accent); color:#000; }
+        .add-assignment-btn:hover { background:var(--accent); color:#000; }
 
-        .classes-subtitle {
+        .assignment-subtitle {
             color:var(--text-dim); font-size:14px; margin-bottom:20px;
         }
 
@@ -104,7 +104,21 @@
         .class-info h4 { margin:0; font-size:16px; font-weight:600; }
         .class-info p { margin:4px 0 0; font-size:13px; color:var(--text-dim); }
 
-        .class-time { text-align:right; font-weight:600; font-size:15px; }
+        .due-time { text-align:center; font-weight:600; font-size:15px; }
+        .priority-level {
+            background-color: #a61d1d56;      
+            padding: 6px 16px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 6px;
+        }
+
+        .priority-level p {
+            color: #F43434;                
+            font-size: 15px;
+            font-weight: 600;
+            margin: 0;
+        }
         .notification-dot {
             position:absolute; top:12px; right:12px;
             background:#ff0000; color:white; font-weight:bold;
@@ -144,8 +158,8 @@
         </div>
         <div class="nav-menu">
             <a href="Home.html"><img src="home.png" alt=""> Home</a>
-            <a href="Classes.html" class="active"><img src="class.png" alt=""> Classes</a>
-            <a href="Assignment.html"><img src="assignment.png" alt=""> Assignment</a>
+            <a href="Classes.html"><img src="class.png" alt=""> Classes</a>
+            <a href="Assignemnt.html" class="active"><img src="assignment.png" alt=""> Assignment</a>
             <a href="#"><img src="reminder.png" alt=""> Reminder</a>
             <a href="#"><img src="wallet.png" alt=""> Wallet</a>
             <a href="#"><img src="streak.png" alt=""> Habit</a>
@@ -163,32 +177,37 @@
             <!-- Header -->
             <div class="header">
                 <div class="greeting">
-                    <h2><strong style="color: var(--border); text-shadow: var();">Your</strong> Classes</h2>
-                    <p>Organize lectures, labs, and study blocks</p>
+                    <h2><strong style="color: var(--border); text-shadow: var();">Your</strong> Assignemnt</h2>
+                    <p>Stay on top of due dates and priorities</p>
                 </div>
                 <button class="theme-toggle" id="themeToggle">
                     <img src="sun.png" alt="Toggle Theme" id="themeIcon">
                 </button>
             </div>
 
-            <!-- Classes Card -->
+            <!-- Assignemnt Card -->
             <div class="card">
-                <div class="classes-header-row">
-                    <h3>Classes</h3>
-                    <button class="add-class-btn">+ Add Class</button>
+                <div class="assignment-header-row">
+                    <h3>Assignemnt</h3>
+                    <button class="add-assignment-btn">+ Add Assignment</button>
                 </div>
-                <div class="classes-subtitle">See all your enrolled classes and Schedules</div>
+                <div class="assignment-subtitle">fill in the basics now, you can adjust it later.</div>
 
                 <!-- Single Class -->
                 <div class="class-item">
                     <div class="class-info">
                         <img src="book.png" alt="Book">
                         <div>
-                            <h4>CS 201, Data Structures</h4>
-                            <p>Mon & Wed 9:00 AM - 10:15 AM, BSIT Department CL 2</p>
+                            <h4>CS 201, Linked lists</h4>
+                            <p>CS 201, Data Structures, 1200- 1500 words, online submission</p>
                         </div>
                     </div>
-                    <div class="class-time">Today 9:00 AM</div>
+                    <div class="due-time">
+                        <h3>Due today, 11:59</h3>
+                        <div class="priority-level">
+                            <p>High Priority</p>
+                        </div>
+                    </div>
                     <button class="delete-btn">&times;</button>
                 </div>
             </div>
