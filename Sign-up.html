@@ -5,13 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StudyTrack Sign Up</title>
 
-    <!-- Link ONLY to the Sign Up specific styles -->
     <link rel="stylesheet" href="sign-up-styles.css">
 
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
-    <!-- Inter Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -20,18 +17,14 @@
 
 <div class="login-container">
 
-    <!-- LEFT PANEL (Image side: 40% with gradient) -->
     <div class="panel signup-image-panel panel-gradient-bg">
         <div class="phone-wrapper">
             <img src="Mock2.png" alt="App Mockup">
         </div>
     </div>
-    
 
-    <!-- RIGHT PANEL (Form side: 60%) -->
     <div class="panel signup-form-panel">
 
-        <!-- BACK BUTTON -->
         <a href="landingpage.html" class="back-btn"><i class="fa-solid fa-circle-xmark"></i> </a>
 
         <div class="auth-wrapper">
@@ -45,27 +38,40 @@
             <p class="subtitle">Start organizing your classes and assignments</p>
 
             <form action="process_signup.php" method="POST" id="signupForm">
-            <div class="input-row">
-                <div class="input-group">
-                    <input type="text" id="signup-first-name" placeholder="First Name" name="first_name" required>
+                <div class="input-row">
+                    <div class="input-group">
+                        <input type="text" id="signup-first-name" placeholder="First Name" name="first_name" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="signup-last-name" placeholder="Last Name" name="last_name" required>
+                    </div>
                 </div>
+
                 <div class="input-group">
-                    <input type="text" id="signup-last-name" placeholder="Last Name" name="last_name" required>
+                    <input type="email" id="signup-email" placeholder="Email" name="email" required>
                 </div>
-            </div>
 
-            <div class="input-group">
-                <input type="email" id="signup-email" placeholder="Email" name="email" required>
-            </div>
+                <div class="input-group password-group">
+                    <input type="password" id="signup-password" placeholder="Password" name="password" required>
+                    <i class="fa-solid fa-eye-slash toggle-password" data-target="signup-password"></i>
+                </div>
+                
+                <div class="input-group password-group">
+                    <input type="password" id="signup-confirm-password" placeholder="Confirm Password" name="confirm_password" required>
+                    <i class="fa-solid fa-eye-slash toggle-password" data-target="signup-confirm-password"></i>
+                </div>
 
-            <div class="input-group password-group">
-                <input type="password" id="signup-password" placeholder="Password" name="password" required>
-            </div>
-            
-            <div class="input-group password-group">
-                <input type="password" id="signup-confirm-password" placeholder="Confirm Password" name="confirm_password" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Create Account</button>
+                <div id="password-policy-feedback" style="display: none;"> 
+                    <p id="feedback-message">Password Requirements:</p>
+                    <ul id="password-rules">
+                        <li data-rule="length"><i class="fa-solid fa-xmark" style="color: red;"></i> At least 8 characters</li>
+                        <li data-rule="capital"><i class="fa-solid fa-xmark" style="color: red;"></i> An uppercase letter</li>
+                        <li data-rule="number"><i class="fa-solid fa-xmark" style="color: red;"></i> A number</li>
+                        <li data-rule="special"><i class="fa-solid fa-xmark" style="color: red;"></i> A special character</li>
+                    </ul>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="create-account-btn" disabled>Create Account</button>
                 <button type="button" class="btn btn-secondary">Continue with School ID</button>
             </form>
 
