@@ -12,6 +12,8 @@
         --card: #1b1b1b;
         --text: #ffffff;
         --text-dim: #b5b5b5;
+        --day-active-bg: #f3c229;
+        --day-active-text: #000000;
         --accent: #f3c229;
         --border: #333333;
         --sidebar-bg: #1b1b1b;
@@ -190,7 +192,7 @@
             display:flex; gap:10px; overflow-x:auto; padding-bottom:8px; margin-bottom:20px;
         }
         .day {
-            padding:10px 18px; background:var(--day-bg); color:var(--text);
+            padding:10px 18px; background:var(--border); color:var(--text);
             border-radius:12px; border:none; font-size:14px; white-space:nowrap; cursor:pointer;
         }
         .day.active { background:var(--day-active-bg); color:var(--day-active-text); font-weight:bold; }
