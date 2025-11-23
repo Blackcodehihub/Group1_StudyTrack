@@ -206,7 +206,7 @@
     position: relative;
     border: 1px solid var(--border);
     box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-    max-height: 90vh;
+    max-height: 92vh;
     overflow-y: hidden;
 }
 
@@ -274,8 +274,10 @@
 
 /* Time picker clock icon color follows theme */
 input[type="time"]::-webkit-calendar-picker-indicator {
-    filter: brightness(0) invert(1); /* White in dark mode */
+    filter: brightness(0) invert(1); 
     cursor: pointer;
+    position: relative; 
+    right: -15px;
 }
 
 /* When light theme is active → make clock icon black */
@@ -285,6 +287,24 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 
 /* Optional: bigger & nicer click area */
 input[type="time"]::-webkit-calendar-picker-indicator {
+    margin-right: -8px;
+}
+
+/* Time picker clock icon color follows theme */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: brightness(0) invert(1); /* White in dark mode */
+    cursor: pointer;
+    position: relative; /* helps in Chrome/Edge */
+    right: -15px;
+}
+
+/* When light theme is active → make clock icon black */
+.light-theme input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: none;
+}
+
+/* Optional: bigger & nicer click area */
+input[type="date"]::-webkit-calendar-picker-indicator {
     margin-right: -8px;
 }
 
@@ -475,6 +495,7 @@ padding-right: 48px !important;        /* gives space for the arrow */
     align-items: center;
     justify-content: center;
     gap: 8px;
+   
 }
 
 .btn-secondary {
@@ -554,6 +575,108 @@ padding-right: 48px !important;        /* gives space for the arrow */
         font-size: 14px;
     }
 }
+
+.priority-label {
+    display: inline-block;
+    margin-top: 6px;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 12px;
+}
+
+.priority-label.high {
+    background: #ff4d4f;
+    color: white;
+}
+
+.priority-label.medium {
+    background: #f3c229;
+    color: #000;
+}
+
+.priority-label.low {
+    background: #4caf50;
+    color: white;
+}
+
+/* Input icon wrapper */
+.input-icon-wrapper {
+    position: relative;
+}
+.input-icon-wrapper input {
+    width: 100%;
+    padding-right: 40px !important;
+}
+.input-icon {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 22px;
+    opacity: 0.6;
+}
+
+
+
+/* Notes box */
+.notes-box {
+    width: 100%;
+    height: 100px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text);
+    padding: 14px;
+    font-size: 15px;
+}
+
+/* Priority buttons */
+.priority-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.priority-btn {
+    padding: 10px 22px;
+    border-radius: 22px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.priority-btn.active[data-priority="low"] {
+    background: #4caf50;
+    color: white;
+}
+.priority-btn.active[data-priority="medium"] {
+    background: #f3c229;
+    color: #000;
+}
+.priority-btn.active[data-priority="high"] {
+    background: #ff4d4f;
+    color: #fff;
+}
+.reminder-row select {
+    flex: 1;
+    width: 510px;
+    margin-bottom: 0; 
+    padding-right: 48px !important;
+    
+    background-repeat: no-repeat !important;   /* <-- FIX */
+    background-position: right 16px center !important;
+    background-size: 18px !important;
+
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+.light-theme .reminder-row select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23000000' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+}
 </style>
 </head>
 <body>
@@ -596,10 +719,10 @@ padding-right: 48px !important;        /* gives space for the arrow */
             <!-- Classes Card -->
             <div class="card">
                 <div class="classes-header-row">
-                    <h3>Classes</h3>
-                    <button class="add-class-btn" id="openModalBtn">+ Add Class</button>
+                    <h3>Reminders</h3>
+                    <button class="add-class-btn" id="openModalBtn">+ Add Reminder</button>
                 </div>
-                <div class="classes-subtitle">See all your enrolled classes and Schedules</div>
+                <div class="classes-subtitle">Manage personal alerts and academic notification</div>
 
                 <div class="class-item">
                     <div class="class-info">
@@ -609,7 +732,9 @@ padding-right: 48px !important;        /* gives space for the arrow */
                             <p>Mon & Wed 9:00 AM - 10:15 AM, BSIT Department CL 2</p>
                         </div>
                     </div>
-                    <div class="class-time">Today 9:00 AM</div>
+                    <div class="class-time">DueToday <br> 11:59 PM <br>
+                        <span class="priority-label high">High Priority</span>
+                    </div>
                     <button class="delete-btn">×</button>
                 </div>
             </div>
@@ -617,58 +742,72 @@ padding-right: 48px !important;        /* gives space for the arrow */
         </div>
     </div>
 
-    <!-- Add Class Modal (Fully Responsive) -->
+ <!-- Add Reminder Modal -->
 <div class="modal-overlay" id="addClassModal">
     <div class="modal">
+
+        <!-- Header -->
         <div class="modal-header">
-            <h3>Add Class</h3>
+            <h3>Add Reminder</h3>
             <button class="close-modal" id="closeModalBtn">X</button>
         </div>
 
-        <label>Subject name</label>
+        <!-- Title -->
+        <label>Title</label>
+        <input type="text" placeholder="Code Draft for programming">
+
+        <!-- Class -->
+        <label>Class</label>
         <input type="text" placeholder="CS 201, Data Structures">
 
-        <label>Instructor</label>
-        <input type="text" placeholder="Prof. Jane">
-
-        <label>Location</label>
-        <input type="text" placeholder="BSIT Department CL 2">
-
+        <!-- Due Date + Time -->
         <div class="time-row">
             <div>
-                <label>Start Time</label>
-                <input type="time" value="09:00" required>
+                <label>Due Date</label>
+                <div class="input-icon-wrapper">
+                    <input type="date" value="2025-10-24">
+                </div>
             </div>
+
             <div>
-                <label>End Time</label>
-                <input type="time" value="10:15" required>
+                <label>Time</label>
+                <div class="input-icon-wrapper">
+                    <input type="time" value="10:00">
+                </div>
             </div>
         </div>
 
-        <label>Repeat</label>
-        <div class="repeat-days">
-            <button type="button" class="day-btn">Mon</button>
-            <button type="button" class="day-btn">Tue</button>
-            <button type="button" class="day-btn">Wed</button>
-            <button type="button" class="day-btn">Thu</button>
-            <button type="button" class="day-btn">Fri</button>
+<!-- Reminder -->
+<label>Remind me</label>
+<div class="reminder-row">
+    <select>
+        <option>15 mins before</option>
+        <option>30 mins before</option>
+        <option>1 hour before</option>
+        <option>None</option>
+    </select>
+</div>
+
+        <!-- Priority -->
+        <label>Priority</label>
+        <div class="priority-row">
+            <button class="priority-btn" data-priority="low">Low</button>
+            <button class="priority-btn" data-priority="medium">Medium</button>
+            <button class="priority-btn" data-priority="high">High</button>
         </div>
 
-        <div class="reminder-row">
-            <div>
-                <label>Reminder Time</label>
-                <select>
-                    <option>15 minutes before</option>
-                    <option>30 minutes before</option>
-                    <option>1 hour before</option>
-                    <option>None</option>
-                </select>
-            </div>
-        </div>
+        <!-- Notes -->
+        <label>Notes</label>
+        <textarea class="notes-box" placeholder=""></textarea>
 
+        <!-- Buttons -->
         <div class="modal-actions">
-            <button class="btn-cancel" id="cancelBtn">Cancel</button>
-            <button class="btn-save">Save Class</button>
+            <button class="btn-cancel" id="cancelBtn">
+                Cancel
+            </button>
+            <button class="btn-save">
+                Save Assignment
+            </button>
         </div>
     </div>
 </div>
@@ -686,23 +825,19 @@ padding-right: 48px !important;        /* gives space for the arrow */
                 </svg>
             </div>
             
-            <h3>Class Saved</h3>
+            <h3>Reminder Saved  </h3>
             <p>
-                Class Saved added to your schedule<br>
-                Your timetable and reminders have been updated for this class
+                Reminder Saved added to your schedule<br>
+                Your timetable and reminders have been updated for this reminder
             </p>
 
             <!-- Action Buttons - Stack vertically on small screens -->
             <div class="success-actions">
                 <button class="btn-secondary" id="addAnotherClassBtn">
-                    + Add Class
+                    Add Reminder
                 </button>
                 <button class="btn-primary" id="viewClassBtn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
-  <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
-  <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
-</svg>
-                    View Class & Edit
+                    View Reminders
                 </button>
             </div>
         </div>
@@ -803,6 +938,13 @@ document.getElementById('viewClassBtn').addEventListener('click', () => {
     document.getElementById('successModal').style.display = 'none';
     document.body.style.overflow = 'auto';
     // Future: scroll to newly added class or open edit modal
+});
+
+document.querySelectorAll('.priority-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.priority-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    });
 });
     </script>
 </body>
