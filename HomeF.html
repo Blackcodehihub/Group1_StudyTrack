@@ -133,16 +133,22 @@
             transition:all .3s; }
 
  @media (max-width: 600px) {
-    .theme-toggle img {
-        max-width: 46px;
-        max-height: 30px;
+    .theme-toggle {
+         position: absolute;
+        top: 0;
+        right: 0;
+        transform: none;
+        margin: 0;
     }
 }
 
 @media (max-width: 420px) {
-    .theme-toggle img {
-        max-width: 38px;
-        max-height: 30px;
+    .theme-toggle {
+         position: absolute;
+        top: 0;
+        right: 0;
+        transform: none;
+        margin: 0;
     }
 }
 
@@ -309,7 +315,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;                   /* space between circle and text */
+    gap: 12px;                   
 }
 
 .circle-progress {
@@ -329,7 +335,7 @@
     }
 
     .circle-text {
-        font-size: 6vw !important;
+        font-size: 30px !important;
     }
 }
 
@@ -341,7 +347,7 @@
     }
 
     .circle-text {
-        font-size: 7vw !important;
+        font-size: 40px !important;
     }
 }
 
@@ -353,7 +359,7 @@
     }
 
     .circle-text {
-         font-size: clamp(12px, 8vw, 24px) !important;
+        font-size: 30px !important;
     }
 }
 
@@ -387,7 +393,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 2vw !important;
+    font-size: 32px !important;
     font-weight: bold;
     color: var(--text);
 }
@@ -692,7 +698,7 @@
             <a href="Assignment.html"><img src="assignment.png" alt=""> Assignment</a>
             <a href="Reminder.html"><img src="reminder.png" alt=""> Reminder</a>
             <a href="#"><img src="wallet.png" alt=""> Wallet</a>
-            <a href="#"><img src="streak.png" alt=""> Habit</a>
+            <a href="Habits.html"><img src="streak.png" alt=""> Habit</a>
             </div>
             <div class="bot-nav">
                 <a href="#"><img src="settings.png" alt=""> Settings</a>

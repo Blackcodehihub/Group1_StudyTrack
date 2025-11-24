@@ -143,7 +143,7 @@
     .class-item {
         background:var(--card); border:1px solid var(--border); border-radius:16px;
         padding:18px; display:flex; align-items:center; justify-content:space-between;
-        position:relative; margin-top:20px;
+        position:relative; margin-top:20px; 
     }
     .class-info { display:flex; align-items:center; gap:16px; }
     .class-info img { width:42px; height:42px; filter:invert(1); }
@@ -153,17 +153,50 @@
     .class-time { text-align:right; font-weight:600; font-size:15px; }
 
     .delete-btn {
-        position:absolute; top:-5px; right:-2px;
+        position:absolute; top:-15px; right:-2px;
         background:#ff4d4f; color:white; border:none; border-radius:50%;
-        width:24px; height:24px; cursor:pointer; font-size:16px;
+        width:30px; height:30px; cursor:pointer; font-size:16px;
         display:flex; align-items:center; justify-content:center;
         transition:background .3s;
     }
     .delete-btn:hover { background:#ff1f1f; }
 
+.edit-btn {
+    position: absolute;
+    top: -15px;
+    right: 35px;
+    background: #007efd;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.25s;
+    color: white;
+}
+
+.edit-btn:hover {
+    background: #0057ad;
+}
+
+.edit-btn svg {
+    width: 15px;
+    height: 15px;
+}
+
     /* ==================== RESPONSIVE ==================== */
     @media (max-width: 900px) {
         .hamburger { display:block; }
+        .theme-toggle {
+         position: absolute;
+        top: 0;
+        right: 0;
+        transform: none;
+        margin: 0;
+    }
         .sidebar {
             position:fixed; height:100%; left:-260px; top:0; margin-top:0;
             border-radius:0; transition:left .3s ease; z-index:1000;
@@ -177,12 +210,26 @@
 
     @media (max-width: 768px) {
         .classes-header-row { flex-direction:column; align-items:flex-start; gap:10px; }
+        .theme-toggle {
+         position: absolute;
+        top: 0;
+        right: 0;
+        transform: none;
+        margin: 0;
+    }
         .class-item { flex-direction:column; align-items:flex-start; gap:10px; }
         .class-time { text-align:left; }
     }
 
     @media (max-width: 480px) {
         .header { flex-direction:column; align-items:flex-start; gap:10px; }
+        .theme-toggle {
+         position: absolute;
+        top: 0;
+        right: 0;
+        transform: none;
+        margin: 0;
+    }
         .greeting h2 { font-size:clamp(20px,5vw,26px); }
         .add-class-btn { padding:8px 16px; font-size:13px; }
         .card { padding:20px; }
@@ -698,7 +745,7 @@ padding-right: 48px !important;        /* gives space for the arrow */
             <a href="Assignment.html"><img src="assignment.png" alt=""> Assignment</a>
             <a href="Reminder.html" class="active"><img src="reminder.png" alt=""> Reminder</a>
             <a href="#"><img src="wallet.png" alt=""> Wallet</a>
-            <a href="#"><img src="streak.png" alt=""> Habit</a>
+            <a href="Habits.html"><img src="streak.png" alt=""> Habit</a>
             </div>
             <div class="bot-nav">
                 <a href="#"><img src="settings.png" alt=""> Settings</a>
@@ -742,6 +789,13 @@ padding-right: 48px !important;        /* gives space for the arrow */
                     <div class="class-time">DueToday <br> 11:59 PM <br>
                         <span class="priority-label high">High Priority</span>
                     </div>
+                    <button class="edit-btn" title="Edit Reminder">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 20h9"></path>
+                            <path d="M16.5 3.5l4 4L7 21l-4 1 1-4L16.5 3.5z"></path>
+                        </svg>
+                    </button>
                     <button class="delete-btn">×</button>
                 </div>
             </div>
