@@ -173,7 +173,8 @@
         right: 0;
         margin-right: 10px;
     }
-    .week-days-column .day {
+   
+      .week-days-column .day {
     max-width: 30px;         /* adjust if needed */
     flex-shrink: 0;
 }
@@ -189,10 +190,7 @@
     }
 
     @media (max-width: 768px) {
-        .week-days-column .day {
-    max-width: 20px;         /* adjust if needed */
-    flex-shrink: 0;
-}
+
         .classes-header-row { flex-direction:column; align-items:flex-start; gap:10px; }
         .theme-toggle {
          position: absolute;
@@ -218,10 +216,7 @@
         .add-class-btn { padding:8px 16px; font-size:13px; }
         .card { padding:20px; }
     }
-    .week-days-column .day {
-    max-width: 30px;         /* adjust if needed */
-    flex-shrink: 0;
-}
+  
     .priority-label{
         background: #28a745;
         border-radius: 50%;
@@ -747,6 +742,8 @@ padding-right: 48px !important;        /* gives space for the arrow */
 .completion { font-size: 40px; font-weight: 700; }
 
 .week-days { display: flex; gap: 12px; }
+    
+
 .day {
     width: 40px;
     height: 40px;
