@@ -126,21 +126,40 @@
     .setting-item:last-child { border-bottom:none; }
     .setting-label { font-size:15px; color:var(--text); }
     .setting-desc { font-size:13px; color:var(--text-dim); margin-top:4px; }
-    .toggle-switch {
-        position:relative;
-        width:52px;
-        height:28px;
-        background:#333;
-        border-radius:50px;
-        cursor:pointer;
-        transition:0.3s;
-    }
-    .toggle-switch::after {
-        content:''; position:absolute; width:24px; height:24px; background:var(--accent);
-        border-radius:50%; top:2px; left:2px; transition:0.3s;
-    }
-    .toggle-switch.active { background:var(--accent); }
-    .toggle-switch.active::after { transform:translateX(24px); background: white; }
+    /* Responsive toggle base */
+.toggle-switch {
+    width: clamp(36px, 5vw, 50px);
+    height: clamp(20px, 3vw, 28px);
+    background-color: #ccc;
+    border-radius: 50px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+/* Responsive toggle circle */
+.toggle-switch::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 4px;
+    transform: translateY(-50%);
+    width: clamp(16px, 2.4vw, 24px);
+    height: clamp(16px, 2.4vw, 24px);
+    background-color: #fff;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+}
+
+/* Active (switched on) */
+.toggle-switch.active {
+    background-color: var(--accent);
+}
+
+.toggle-switch.active::after {
+    transform: translate(calc(clamp(36px, 5vw, 50px) - clamp(16px, 2.4vw, 24px) - 8px), -50%);
+}
+
 
     /* ==================== PROFILE CARD ==================== */
     .profile-card {
@@ -247,9 +266,12 @@
     @media (max-width: 768px) {
         .profile-grid { grid-template-columns: 1fr; text-align:center; }
         .avatar-full-height { grid-row:auto; margin-bottom:20px; }
-        .name-email-row, .password-row { grid-template-columns: 1fr; gap:16px; }
+        .name-email-row, .password-row { grid-template-columns: 1fr; gap:16px; margin-left: -70px; }
+        .form-group label{  display: block;
+        text-align: left; padding: 10px; }
         .password-row { flex-direction: column; align-items: stretch; }
         .change-pw-btn { align-self: center; }
+      
     }
     @media (max-width: 900px) {
         .hamburger { display:block; }
@@ -257,6 +279,7 @@
         .sidebar.active { left:0; }
         .main-content { margin-left:0 !important; width:100% !important; padding:20px; }
         .main-content.shift { transform:translateX(260px); }
+        .camera-icon {margin-right: 50px;}
     }
 
     .btn-delete{
