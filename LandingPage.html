@@ -3,7 +3,8 @@
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>Page Title</title>
+    <title>Study Track</title>
+    <link rel="icon" href="fav logo.png" type="image/png">
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <style>
         :root {
@@ -102,7 +103,7 @@ img {
     box-shadow: 4px 4px 8px #151212;
     left: 50%;            
     transform: translateX(-50%);    
-     height: 70px;
+    height: 50px;
     width: 90%;      
     z-index: 999;     
     box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
@@ -110,9 +111,9 @@ img {
 
   .logo {
     position: relative;
-    width: 130px;
-    height: 20px;
-    margin-top: -43.5px;
+    margin-top: 15px;
+    width: 100px;
+    height: 70px;
     object-fit: cover;
   }
   .logo-images {
@@ -138,27 +139,36 @@ img {
 
 
   .main-nav a {
-   font-size: 20px;
+   font-size: 18px;
     font-weight: 400;
     text-decoration: none;
   }
 
+  .main-nav a:hover{
+    color: #FFB919;
+  }
+  .main-nav a.active {
+  color: #FFB919;
+  font-weight: 600;
+}
   .btn-signup {
     background-color: var(--color-primary-dark);
-    color: var(--color-white);
     border-radius: 36px;
-    padding: 10px 20px;     /* smaller padding to match link height */
-    font-size: 20px;        /* slightly smaller text to match nav height */
-    display: inline-flex;    /* inline so it doesn’t break row */
+    padding: 8px 12px;     
+    font-size: 16   px;        
+    display: inline-flex;   
     align-items: center;
     gap: 10px;
-    margin-left: 370px;
-    margin-right: -15px;
+    margin-left: 180px;
+    margin-right: -20px;
+    color: #e0e0e0  !important;
   }
 
-  .btn-signup img {
-    width: 31px;
+  .btn-signup:hover{
+    background: #FFB919;
+    color: #000 !important;     
   }
+
 
   .hero-content {
     margin-top: 238px;
@@ -174,7 +184,8 @@ img {
   }
 
   .hero-text h1 {
-    font-size: 70px;
+    font-size: 60px;
+    
     line-height: 1.2;
     margin-bottom: 71px;
   }
@@ -189,28 +200,75 @@ img {
     display: inline-block;
   }
 
-  .hero-images {
-    display: flex;
-    gap: 24px;
-    align-items: flex-start;
-    flex-basis: 55%;
-    margin-top: -12 0px;
+  .btn-get-started:hover{
+    background-color: #FFB919;
   }
 
-  .hero-images img {
-    border-radius: 25px;
-    height: 606px;
-    object-fit: cover;
-  }
-  .hero-images img:nth-child(1) {
-    width: 330px;
-  }
-  .hero-images img:nth-child(2) {
-    width: 185px;
-  }
-  .hero-images img:nth-child(3) {
-    width: 185px;
-  }
+  /* HERO IMAGES HOVER ANIMATION */
+.hero-images {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  flex-basis: 55%;
+  margin-right: 70px;
+  margin-top: -120px;
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hero-images img {
+  border-radius: 25px;
+  height: 550px;
+  object-fit: cover;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* HOVER ANIMATION — ONLY WIDTH, WORKS PERFECTLY */
+.hero-images:hover img {
+  width: 185px !important;
+  opacity: 0.85 !important;
+  z-index: 1;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hero-images img:hover {
+  width: 330px !important;
+  opacity: 1 !important;
+  z-index: 10 !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.hero-images img:nth-child(1) {
+  width: 330px;
+  z-index: 3;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hero-images img:nth-child(2),
+.hero-images img:nth-child(3) {
+  width: 185px;
+  opacity: 0.9;
+  z-index: 2;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+
+/* When hovering pic2 or pic3 → shrink pic1 */
+.hero-images img:nth-child(2):hover ~ img:nth-child(1),
+.hero-images img:nth-child(3):hover ~ img:nth-child(1) {
+  width: 185px !important;
+  opacity: 0.85 !important;
+}
+
+/* Optional: when hovering pic1 → shrink the others */
+.hero-images img:nth-child(1):hover ~ img:nth-child(2),
+.hero-images img:nth-child(1):hover ~ img:nth-child(3) {
+  width: 185px !important;
+}
+
 
   @media (max-width: 1440px) {
     .hero-content {
@@ -255,11 +313,12 @@ img {
 
   .features-section {
     text-align: center;
-    padding-top: 130px;
+    padding-top: 100px;
     padding-bottom: 200px;
   }
   .section-title {
-    font-size: 70px;
+    font-size: 60px;
+    font-weight: 800;
     line-height: 1.2;
     margin-bottom: 120px;
   }
@@ -296,7 +355,66 @@ img {
   margin-bottom: 50px;
   text-align: center;
 }
+/* ========================
+   FEATURES SECTION ANIMATION
+   ======================== */
 
+
+
+/* 1. Slide up only when section enters viewport */
+.feature-item, .review-card {
+  opacity: 0;
+  transform: translateY(120px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.feature-item.visible, .review-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+
+/* Stagger the animation */
+.feature-item.visible:nth-child(1) { transition-delay: 0.2s; }
+.feature-item.visible:nth-child(2) { transition-delay: 0.4s; }
+.feature-item.visible:nth-child(3) { transition-delay: 0.6s; }
+
+.review-card.visible:nth-child(1) { transition-delay: 0.2s; }
+.review-card.visible:nth-child(2) { transition-delay: 0.4s; }
+.review-card.visible:nth-child(3) { transition-delay: 0.6s; }
+.review-card.visible:nth-child(3) { transition-delay: 0.8s; }
+
+@keyframes slideUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 2. Hide all labels by default */
+.feature-label {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+/* 3. Show ALL labels when hovering ANY card */
+.feature-image-wrapper:hover .feature-label {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* Optional: Slightly lift & brighten the hovered card */
+.feature-item:hover {
+  transform: translateY(-12px);
+  transition: transform 0.4s ease;
+}
+
+.feature-item:hover img {
+  opacity: 0.8;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
 .feature-description {
   position: absolute;
   bottom: 40px;
@@ -338,14 +456,14 @@ img {
    ================================ */
 
 #reviews {
-  padding: 80px 0;
+  padding: 120px 0;
   background: #fff;
 }
 
 #reviews .reviews-title {
   text-align: center;
-  font-size: 3rem;
-  font-weight: 700;
+  font-size: 60px;
+  font-weight: 800;
   margin-bottom: 60px;
 }
 
@@ -454,8 +572,8 @@ img {
   .site-footer {
     background-color: var(--color-secondary-dark);
     color: var(--color-white);
-    padding-top: 102px;
-    padding-bottom: 102px;
+    padding-top: 50px;
+    padding-bottom:50px;
   }
   .footer-container {
     display: grid;
@@ -506,8 +624,8 @@ img {
     background: #ffffff;
     border-radius: 50%;
     position: relative;
-    width: 50px;
-    height: 50px;
+    width: 30px;
+    height: 30px;
   }
 
   .social-icon .social-bg {
@@ -521,6 +639,7 @@ img {
     position: absolute;
     top: 50%;
     left: 50%;
+    height: 18px;
     transform: translate(-50%, -50%);
     object-fit: cover   ;
   }
@@ -533,7 +652,7 @@ img {
     margin-bottom: 10px;
   }
   .footer-nav a {
-    font-size: 24px;
+    font-size: 16px;
     font-weight: 400;
   }
 
@@ -568,45 +687,44 @@ img {
 #why-choose .why-choose-container {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
   margin-bottom: 40px;
-  margin-top: -50px;
-  gap: 20px;
+  padding-top: 80px;
 }
 
 #why-choose .why-choose-left h2 {
   font-size:60px;
   font-weight: 900;
   margin: 0;
+  line-height: 1.0;
 }
 
 #why-choose .why-choose-right p {
-  font-size: 30px;
+  font-size: 28px;
   margin: 0;
-  font-weight: 700;
+  font-weight: 500;
   max-width: 380px;
-  line-height: 1.6;
+  line-height: 1.0;
 }
 
 /* BIG IMAGE */
 #why-choose .why-choose-image {
-  width: 60%;
-  margin-top: 30px;
-  max-height: 300px;
-  margin-left: 550px;
-  height: 50%;
+  width: 50%;
+  margin-top: -50px;
+  max-height: 350px;
+  margin-left: 750px;
+  height: 69%;
 }
 
 #why-choose .why-choose-image img {
-  width: 100%;
-  height: 600px;
+  width: 80%;
+  height: 500px;
   border-radius: 12px;
   object-fit: cover;
 }
 
 /* FEATURES (1,2,3 list) */
 #why-choose .why-choose-features {
-  margin-top: -280px;
+  margin-top: -300px;
   display: flex;
   flex-direction: column;
   gap: 80px;
@@ -632,7 +750,7 @@ img {
 }
 
 #why-choose .feature-text h4 {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   font-weight: 700;
   margin: 0 0 4px 0;
 }
@@ -647,19 +765,32 @@ img {
 #why-choose .users-badge {
   background: #111;
   padding: 20px 50px;
-  margin-top: 120px;
-  margin-left: 650px;
+  margin-top: 20px;
+  margin-left: 850px;
   display: inline-block;
   border-radius: 6px;
 }
 
+/* Hide the badge initially */
+.users-badge {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 1s ease, transform 1s ease;
+}
+
+/* When this class is added → animate in */
+.users-badge.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 #why-choose .users-badge span {
   color: #fff;
-  font-size: 70px;
+  font-size: 34px;
   font-weight: 200;
-  border-left: 2px solid #ffffff;
-  padding-right: 100px;
-  padding-left: 50px;
+  border-left: 4px solid #ffffff;
+  padding-right: 20px;
+  padding-left: 20px;
 }
 
 
@@ -696,18 +827,18 @@ img {
   <div class="container">
     <header class="hero-header">
       <a href="#" class="logo">
-           <img src="logo.png" alt="StudyTrack">
+           <img src="logo2.png" alt="StudyTrack">
       </a>
       <nav class="main-nav">
         <ul>
-          <li><a href="#hero">Home</a></li>
+          <li><a href="#hero" class="active">Home</a></li>
           <li><a href="#features">Features</a></li>
+          <li><a href="#why-choose">Why Choose</a></li>
+          <li><a href="#reviews">Reviews</a></li>
           <li><a href="#about">About us</a></li>
           <li><a href="#" class="btn-signup">
-        <span>Sign up</span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
-  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
-</svg>
+        <span>Sign up →</span>
+            
       </a></li>
         </ul>
       </nav>
@@ -797,7 +928,7 @@ img {
 
   <!-- Users Badge -->
   <div class="users-badge">
-    <span>900K+ <strong style="font-size: 45px; font-weight: normal;">Users</strong></span>
+    <span>900K+ <strong style="font-size: 28px; font-weight: normal;">Users</strong></span>
   </div>
 </section>
 
@@ -872,7 +1003,7 @@ img {
   <div class="container">
     <div class="about-content">
       <p>
-        <strong style="font-size: 40px;">About Us</strong><br><br>
+        <strong style="font-size: 60px;font-weight: 800;">About Us</strong><br><br>
         At <strong>StudyTrack</strong>, we believe that managing your studies and finances shouldn’t be stressful. Our mission is to empower students to stay organized, achieve their goals, and make smarter financial decisions—all in one intuitive app.<br>
         With features like study planners, exam reminders, expense tracking, and personalized insights, we help students take control of their time and money. We’re dedicated to creating a simple, powerful, and beautiful tool that makes student life easier and more productive.<br>
         <strong>Our Vision:</strong> To be the go-to platform for students who want to study smarter, spend wiser, and live stress-free.
@@ -929,5 +1060,113 @@ img {
     </div>
   </div>
 </footer>
+
+<script>
+
+ // Re-animate "900K+ Users" badge EVERY time the section enters viewport
+const usersBadge = document.querySelector('.users-badge');
+
+const badgeObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      // Remove class first (reset animation)
+      usersBadge.classList.remove('visible');
+      
+      // Force reflow so animation restarts
+      void usersBadge.offsetWidth;
+      
+      // Trigger animation after short delay
+      setTimeout(() => {
+        usersBadge.classList.add('visible');
+      }, 800); // you can change this delay (800ms = 0.8s)
+    }
+  });
+}, { 
+  threshold: 0.6,
+  rootMargin: '0px 0px -10% 0px' // triggers a bit earlier when scrolling down
+});
+
+// Observe the section (so it works even when badge is off-screen initially)
+badgeObserver.observe(document.querySelector('#why-choose'));
+
+
+    // Select all nav links
+    const navLinks = document.querySelectorAll('.main-nav a[href^="#"]');
+
+    // Add click active state
+    navLinks.forEach(link => {
+        link.addEventListener('click', function () {
+        navLinks.forEach(l => l.classList.remove('active'));
+        this.classList.add('active');
+        });
+    });
+
+        // Highlight while scrolling
+        const sections = document.querySelectorAll('section[id]');
+
+        window.addEventListener('scroll', () => {
+            let scrollY = window.pageYOffset;
+
+            sections.forEach(sec => {
+            const top = sec.offsetTop - 200;
+            const height = sec.offsetHeight;
+            const id = sec.getAttribute('id');
+
+            if (scrollY >= top && scrollY <= top + height) {
+                navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${id}`) {
+                    link.classList.add('active');
+                }
+                });
+            }
+            });
+        });
+
+            // Scroll-triggered slide-up animation for Features section
+        const featureItems = document.querySelectorAll('.feature-item');
+
+        const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+      // Remove class first (reset animation)
+      entry.target.classList.remove('visible');
+      
+      // Force reflow so animation restarts
+      void entry.target.offsetWidth;
+      
+      // Trigger animation after short delay
+      setTimeout(() => {
+        entry.target.classList.add('visible');
+      }, 600); 
+    }
+        });
+        }, { threshold: 0.3 }); // Trigger when 30% of section is visible
+
+        featureItems.forEach(item => observer.observe(item));
+
+const reviewCards = document.querySelectorAll('#reviews .review-card');
+
+  const reviewObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        // Reset animation (so it plays again when scrolling back up)
+        entry.target.classList.remove('visible');
+
+        // Force reflow
+        void entry.target.offsetWidth;
+
+        setTimeout(() => {
+        entry.target.classList.add('visible');
+      }, 600); 
+    }
+    });
+  }, {
+    threshold: 0.3,          
+  });
+
+  // Observe every review card
+  reviewCards.forEach(card => reviewObserver.observe(card));
+    </script>
 </body>
 </html>
