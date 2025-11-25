@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyTrack - Wallet</title>
+    <link rel="icon" href="fav logo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        :root {
+            --bg: #121212;
+            --card: #1b1b1b;
+            --text: #ffffff;
+            --text-dim: #b5b5b5;
+            --accent: #f3c229; /* Yellow/Gold */
+            --border: #333333;
+            --sidebar-bg: #1b1b1b;
+            --income-green: #28a745;
+            --expense-red: #dc3545;
+            --modal-bg: #1c1c1c; 
+        }
+        .light-theme {
+            --bg: #ffffff;
+            --card: #f5f5f5;
+            --text: #000000;
+            --text-dim: #555555;
+            --border: #cccccc;
+            --sidebar-bg: #f0f0f0;
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
+        body { 
+            background:var(--bg); 
+            color:var(--text); 
+            min-height:100vh; 
+            display:flex; 
+            transition:all .3s;
+            overflow: auto;
+        }
+
+        /* ==================== SIDEBAR (CONSISTENCY MATCH) ==================== */
+        .sidebar {
+            width:235px;
+            background:var(--sidebar-bg);
+            padding:30px 20px;
+            border-right:1px solid var(--border);
+            position:fixed;
+            height:93%;
+            z-index:10;
+            overflow-y: none;
+            margin-top:27px;
+            border-top-right-radius:45px;
+            border-bottom-right-radius:45px;
+            transition:left .3s ease;
+            justify-content: space-between;
+        }
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 85%;
+        }
+        .logo img { height: 95px; display:block; margin-top: -2px; }
+        .nav-menu a {
+            display:flex; align-items:center; gap:15px; padding:12px 18px;
+            border-top-left-radius:14px; border-bottom-left-radius:14px;
+            color:var(--text-dim); text-decoration:none; font-size:15px; transition:all .3s;
+        }
+        .nav-menu {
+            margin-top: 12px;
+        }
+        .nav-menu a:hover, .nav-menu a.active { background:var(--bg); color:var(--text); width: 240px;}
+        .nav-menu a.active { color:var(--text);}
+        .nav-menu img { width:22px; height:22px; opacity:0.7; }
+        .nav-menu a:hover img, .nav-menu a.active img { opacity:1; }
+
+        /* Inactive links = white icons (dark theme) */
+        .nav-menu a:not(.active) img {
+            filter: brightness(0) invert(1);
+        }
+
+        /* Inactive links = black icons (light theme) */
+        .light-theme .nav-menu a:not(.active) img {
+            filter: none;
+        }
+
+        /* Active link – your existing look */
+        .nav-menu a.active img {
+            filter: brightness(0) invert(1);
+        }
+
+        .light-theme .nav-menu a.active img {
+            filter: invert(0);
+        }
+
+        /* ==================== MAIN CONTENT ==================== */
+        .main-content {
+            margin-left:260px;
+            padding:30px;
+            width:calc(100% - 260px);
+            transition:all .3s;
+        }
+        .container { max-width:1350px; margin:0 auto; }
+
+        /* ==================== HEADER ==================== */
+        .header {
+            display:flex; align-items:center; gap:15px; margin-bottom:30px; position:relative;
+        }
+        .greeting h2 { font-size:28px; font-weight:700; color:var(--accent); margin-bottom:4px; }
+        .greeting p { color:var(--text-dim); font-size:15px; }
+
+        /* ==================== THEME TOGGLE ==================== */
+        .theme-toggle {
+            margin-left:auto; background:var(--card); padding:12px; border-radius:50%;
+            cursor:pointer; width:50px; height:50px; display:flex; align-items:center; justify-content:center;
+        }
+        .theme-toggle img { width:42px; height:28px; }
+
+        /* Hamburger (for mobile, consistent with guide) */
+        .hamburger {
+            display:none; font-size:28px; background:var(--card); color:var(--text);
+            border:1px solid var(--border); padding:8px 12px; border-radius:10px; cursor:pointer;
+        }
+
+        /* ==================== WALLET SPECIFIC STYLES ==================== */
+        .card { 
+            background:var(--card); 
+            padding:28px; 
+            border-radius:18px; 
+            border:1px solid var(--border); 
+        }
+
+        /* 1. Total Balance Card */
+        .balance-card {
+            background: linear-gradient(135deg, rgba(243, 194, 41, 0.7), rgba(30, 30, 30, 0.9));
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            position: relative;
+            text-align: center;
+            border: none; /* Override general card border */
+        }
+        .balance-card .title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+            opacity: 0.8;
+            margin-bottom: 15px;
+        }
+        .balance-card .amount {
+            font-size: 60px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 25px;
+            letter-spacing: -1px;
+        }
+        .balance-card .amount span {
+            font-size: 0.5em;
+            margin-right: 5px;
+            opacity: 0.9;
+        }
+        .balance-card button {
+            background: var(--card);
+            border: none;
+            color: var(--text);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .balance-card button:hover {
+            background: #2a2a2a;
+        }
+
+        /* 2. Income/Expense Summary & Recent Transactions Grid */
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        /* Summary Cards */
+        .summary-card .header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .summary-card .header i {
+            font-size: 20px;
+        }
+        .summary-card .header h4 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        .summary-card .income-icon { color: var(--income-green); }
+        .summary-card .expense-icon { color: var(--expense-red); }
+
+        .summary-card .value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-top: 10px;
+        }
+        .summary-card.income-summary {
+            border-top: 3px solid var(--income-green);
+        }
+        .summary-card.expense-summary {
+            border-top: 3px solid var(--expense-red);
+        }
+
+        /* Recent Transactions List */
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .transaction-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .transaction-details {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .transaction-details i {
+            font-size: 20px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #2a2a2a;
+        }
+        .transaction-details .text h4 {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .transaction-details .text p {
+            font-size: 12px;
+            color: var(--text-dim);
+            margin-top: 2px;
+        }
+
+        .transaction-amount {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        .amount-income {
+            color: var(--income-green);
+        }
+        .amount-expense {
+            color: var(--expense-red);
+        }
+        .amount-income i, .amount-expense i {
+            font-size: 10px;
+            margin-right: 5px;
+            opacity: 0.8;
+        }
+        .light-theme .amount-income, .light-theme .amount-expense {
+            color: var(--text); /* Keep amount colors visible in light theme */
+        }
+
+        /* ==================== ADD RECORD MODAL STYLES ==================== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0,0,0,0.55);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+        }
+
+        .record-modal {
+            background: var(--modal-bg);
+            width: 480px;
+            padding: 25px;
+            border-radius: 20px;
+            color: white;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-close-btn {
+            position:absolute; top:-5px; right:-2px;
+            background:#ff4d4f; color:white; border:none; border-radius:50%;
+            width:30px; height:30px; cursor:pointer; font-size:16px;
+            display:flex; align-items:center; justify-content:center;
+            transition:background .3s;
+        }
+        .modal-close-btn:hover { background:#ff1f1f; }        
+
+        /* Type Selector (Expense/Income Tabs) */
+        .type-selector {
+            display: flex;
+            background: #2a2a2a;
+            border-radius: 12px;
+            padding: 5px;
+            margin-bottom: 25px;
+        }
+        .type-selector button {
+            flex: 1;
+            padding: 12px 10px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+            background: transparent;
+            color: var(--text);
+            opacity: 0.8;
+        }
+        .type-selector button.active {
+            background: var(--accent);
+            color: #000;
+            opacity: 1;
+        }
+        
+        /* Amount Input Area */
+        .amount-input-area {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .amount-input-area p {
+            font-size: 14px;
+            color: var(--text-dim);
+            margin-bottom: 5px;
+        }
+        .amount-display {
+            font-size: 48px;
+            font-weight: 800;
+        }
+        .amount-display input {
+            background: none;
+            border: none;
+            width: 150px;
+            text-align: center;
+            color: inherit;
+            font-size: inherit;
+            font-weight: inherit;
+            padding: 0;
+            margin-left: 5px;
+            /* Ensures input fields don't inherit global input styles */
+            height: auto; 
+            border-radius: 0;
+            outline: none;
+        }
+        .amount-display input:focus {
+            outline: none;
+        }
+
+        /* Category Grid */
+        .category-grid {
+            margin-top: 10px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        /* Adjusted for the Income categories screenshot which uses a max of 6 columns */
+        @media (min-width: 400px) and (max-width: 550px) {
+            .record-modal {
+                width: 90%;
+            }
+            .category-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        @media (min-width: 551px) {
+            .category-grid.income-grid {
+                grid-template-columns: repeat(6, 1fr); /* 6 columns for income */
+            }
+            .category-grid:not(.income-grid) {
+                grid-template-columns: repeat(4, 1fr); /* 4 columns for expense */
+            }
+        }
+
+        .category-item {
+            text-align: center;
+            cursor: pointer;
+            padding: 10px 5px;
+            border-radius: 10px;
+            transition: background 0.2s;
+        }
+        .category-item:hover {
+            background: #2a2a2a;
+        }
+        .category-item i {
+            font-size: 24px;
+            color: var(--text);
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #2a2a2a;
+            margin: 0 auto 8px;
+        }
+        .category-item p {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-dim);
+            margin: 0;
+        }
+        .category-item.active i {
+            background: var(--accent);
+            color: #000;
+        }
+        .category-item.active p {
+            color: var(--text);
+        }
+
+        /* Modal Footer Actions */
+        .modal-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        .modal-actions button {
+            flex: 1;
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .modal-actions .cancel-btn {
+            background: #3a3a3a;
+            color: var(--text);
+        }
+        .modal-actions .add-record-btn {
+            background: var(--accent);
+            color: #000;
+        }         
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 900px) {
+            .hamburger { display:block; }
+            .theme-toggle { margin-left: auto; }
+            .sidebar {
+                position:fixed; height:100%; left:-235px; top:0; margin-top:0;
+                border-radius:0; transition:left .3s ease; z-index:1000;
+            }
+            .sidebar.active { left:0; }
+            .main-content {
+                margin-left:0 !important; width:100% !important; padding:20px;
+            }
+            .main-content.shift { transform:translateX(235px); }
+            
+            .grid-layout {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 550px) {
+            .header { flex-direction:column; align-items:flex-start; gap:10px; }
+            .theme-toggle { margin-left: 0; }
+            .greeting h2 { font-size:clamp(24px, 5vw, 28px); }
+
+            .balance-card { padding: 30px 20px; }
+            .balance-card .amount { font-size: 50px; }
+            .transaction-item { padding: 12px 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar"> 
+        <div class="logo">
+            <img src="logo.png" alt="StudyTrack">
+        </div>
+        <div class="nav-menu">
+            <div class="top-nav">
+                <a href="HomeF.html"><img src="home.png" alt=""> Home</a>
+                <a href="Classes.html"><img src="class.png" alt=""> Classes</a>
+                <a href="Assignment.html"><img src="assignment.png" alt=""> Assignment</a>
+                <a href="Reminder.html"><img src="reminder.png" alt=""> Reminder</a>
+                <a href="Wallet.html" class="active"><img src="wallet.png" alt=""> Wallet</a>
+                <a href="Habits.html"><img src="streak.png" alt=""> Habit</a>
+            </div>
+            <div class="bot-nav">
+                <a href="Settings.html"><img src="settings.png" alt=""> Settings</a>
+                <a href="#"><img src="logout.png" alt=""> Log out</a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+
+            <!-- Header -->
+            <div class="header">
+                <button class="hamburger" id="hamburgerBtn">☰</button>
+                <div class="greeting">
+                    <h2><strong style="color: var(--border);">Your</strong> Wallet</h2>
+                    <p>Overview of your finances</p>
+                </div>
+                <!-- Sun Icon -->
+                <button class="theme-toggle" id="themeToggle">
+                     <img src="sun.png" alt="Toggle Theme" id="themeIcon">
+                </button>
+            </div>
+
+            <!-- Total Balance Card -->
+            <div class="balance-card">
+                <div class="title">TOTAL BALANCE</div>
+                <div class="amount">
+                    <span>₱</span> 400
+                </div>
+                <button id="openRecordModalBtn">+Add Record</button>
+            </div>
+
+            <!-- Summary Cards and Recent Transactions (Grid Layout) -->
+            <div class="grid-layout">
+                
+                <!-- LEFT COLUMN -->
+                <div>
+                    <!-- Income Summary Card -->
+                    <div class="card summary-card income-summary" style="margin-bottom: 30px;">
+                        <div class="header">
+                            <i class="fa-solid fa-arrow-up income-icon"></i>
+                            <h4>Income (This Month)</h4>
+                        </div>
+                        <div class="value amount-income">₱ 500</div>
+                    </div>
+
+                    <!-- Recent Income List -->
+                    <div class="card">
+                        <h4 style="margin-bottom: 20px; font-weight: 600;">Recent Income</h4>
+                        <div class="transaction-item">
+                            <div class="transaction-details">
+                                <i class="fa-solid fa-briefcase"></i>
+                                <div class="text">
+                                    <h4>Salary</h4>
+                                    <p>September 8, 2025</p>
+                                </div>
+                            </div>
+                            <div class="transaction-amount amount-income">
+                                <i class="fa-solid fa-plus"></i>₱ 500
+                            </div>
+                        </div>
+                        <!-- Add more income items here if needed -->
+                    </div>
+                </div>
+
+                <!-- RIGHT COLUMN -->
+                <div>
+                    <!-- Expense Summary Card -->
+                    <div class="card summary-card expense-summary" style="margin-bottom: 30px;">
+                        <div class="header">
+                            <i class="fa-solid fa-arrow-down expense-icon"></i>
+                            <h4>Expense (This Month)</h4>
+                        </div>
+                        <div class="value amount-expense">₱ 100</div>
+                    </div>
+
+                    <!-- Recent Expense List -->
+                    <div class="card">
+                        <h4 style="margin-bottom: 20px; font-weight: 600;">Recent Expense</h4>
+                        <div class="transaction-item">
+                            <div class="transaction-details">
+                                <i class="fa-solid fa-burger"></i>
+                                <div class="text">
+                                    <h4>Food</h4>
+                                    <p>September 8, 2025</p>
+                                </div>
+                            </div>
+                            <div class="transaction-amount amount-expense">
+                                <i class="fa-solid fa-minus"></i>₱ 100
+                            </div>
+                        </div>
+                         <!-- Add more expense items here if needed -->
+                    </div>
+                </div>
+
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- NEW HTML: ADD RECORD MODAL -->
+    <div class="modal-overlay" id="addRecordModal">
+        <div class="record-modal">
+            
+            <button class="modal-close-btn" id="closeRecordModalBtn">&times;</button>
+            
+            <!-- Type Selector Tabs -->
+            <div class="type-selector">
+                <button class="active" id="typeExpenseBtn">Expense</button>
+                <button id="typeIncomeBtn">Income</button>
+            </div>
+            
+            <!-- Amount Input -->
+            <div class="amount-input-area">
+                <p>ENTER AMOUNT</p>
+                <div class="amount-display">
+                    <span>₱</span>
+                    <input type="number" id="recordAmountInput" value="100" min="0" step="10">
+                </div>
+            </div>
+
+            <!-- Category Grid -->
+            <p style="font-size: 14px; color: var(--text-dim); margin-bottom: 10px;">Category</p>
+            <div class="category-grid" id="categoryGrid">
+                <!-- Categories rendered dynamically by JavaScript -->
+            </div>
+
+            <!-- Modal Footer Buttons -->
+            <div class="modal-actions">
+                <button class="cancel-btn" id="modalCancelBtn">Cancel</button>
+                <button class="add-record-btn">Add record</button>
+            </div>
+
+        </div>
+    </div> 
+
+
+    <!-- Scripts -->
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+
+        if (localStorage.getItem('theme') === 'light') {
+            document.body.classList.add('light-theme');
+            themeIcon.src = 'moon.png';
+        } else {
+            themeIcon.src = 'sun.png';
+        }
+
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('light-theme');
+            if (document.body.classList.contains('light-theme')) {
+                localStorage.setItem('theme', 'light');
+                themeIcon.src = 'moon.png';
+            } else {
+                localStorage.setItem('theme', 'dark');
+                themeIcon.src = 'sun.png';
+            }
+        });
+
+        // Hamburger Menu (Mobile Sidebar Toggle)
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.querySelector('.main-content');
+
+        hamburgerBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            sidebar.classList.toggle('active');
+            mainContent.classList.toggle('shift');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (sidebar.classList.contains('active') && 
+                !sidebar.contains(e.target) && 
+                !hamburgerBtn.contains(e.target)) {
+                sidebar.classList.remove('active');
+                mainContent.classList.remove('shift');
+            }
+        });
+
+        // ==================== NEW JAVASCRIPT FOR MODAL CONTROL ====================
+        
+        const openRecordModalBtn = document.getElementById('openRecordModalBtn');
+        const addRecordModal = document.getElementById('addRecordModal');
+        const closeRecordModalBtn = document.getElementById('closeRecordModalBtn');
+        const modalCancelBtn = document.getElementById('modalCancelBtn');
+        
+        const typeExpenseBtn = document.getElementById('typeExpenseBtn');
+        const typeIncomeBtn = document.getElementById('typeIncomeBtn');
+        const categoryGrid = document.getElementById('categoryGrid');
+        const recordAmountInput = document.getElementById('recordAmountInput');
+
+        // --- Category Data Definitions ---
+        const expenseCategories = [
+            { name: "Food", icon: "fa-utensils" },
+            { name: "Transport", icon: "fa-truck" },
+            { name: "Shopping", icon: "fa-bag-shopping" },
+            { name: "Grocery", icon: "fa-cart-shopping" },
+            { name: "Rentals", icon: "fa-house" },
+            { name: "Bills", icon: "fa-receipt" },
+            { name: "Education", icon: "fa-graduation-cap" },
+            { name: "Medical", icon: "fa-suitcase-medical" },
+            { name: "Investment", icon: "fa-coins" },
+            { name: "Others", icon: "fa-ellipsis" }
+        ];
+
+        const incomeCategories = [
+            { name: "Salary", icon: "fa-person-digging" },
+            { name: "Investment", icon: "fa-chart-line" },
+            { name: "Business", icon: "fa-briefcase" },
+            { name: "Interest", icon: "fa-wallet" },
+            { name: "Extra Income", icon: "fa-hand-holding-dollar" },
+            { name: "Other", icon: "fa-ellipsis" }
+        ];
+
+        // --- Core Functions ---
+
+        function handleCategoryClick(event) {
+            // Remove active class from all items
+            const currentItems = categoryGrid.querySelectorAll('.category-item');
+            currentItems.forEach(i => i.classList.remove('active'));
+            
+            // Add active class to the clicked item (or its parent if icon/text was clicked)
+            let clickedItem = event.target.closest('.category-item');
+            if (clickedItem) {
+                clickedItem.classList.add('active');
+            }
+        }
+
+        function renderCategories(type) {
+            categoryGrid.innerHTML = '';
+            
+            let categories;
+            if (type === 'income') {
+                categories = incomeCategories;
+                categoryGrid.classList.add('income-grid');
+            } else {
+                categories = expenseCategories;
+                categoryGrid.classList.remove('income-grid');
+            }
+
+            categories.forEach((cat, index) => {
+                const item = document.createElement('div');
+                item.classList.add('category-item');
+                // Set the first item as active by default
+                if (index === 0) {
+                    item.classList.add('active');
+                }
+
+                item.innerHTML = `
+                    <i class="fa-solid ${cat.icon}"></i>
+                    <p>${cat.name}</p>
+                `;
+                item.addEventListener('click', handleCategoryClick);
+                categoryGrid.appendChild(item);
+            });
+        }
+
+        function openRecordModal() {
+            addRecordModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            
+            // Default to rendering Expense categories on open
+            renderCategories('expense');
+            typeExpenseBtn.classList.add('active');
+            typeIncomeBtn.classList.remove('active');
+        }
+        
+        function closeRecordModal() {
+            addRecordModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // --- Event Listeners ---
+        
+        openRecordModalBtn.addEventListener('click', openRecordModal);
+        closeRecordModalBtn.addEventListener('click', closeRecordModal);
+        modalCancelBtn.addEventListener('click', closeRecordModal);
+        
+        addRecordModal.addEventListener('click', (e) => {
+            if (e.target === addRecordModal) {
+                closeRecordModal();
+            }
+        });
+
+        // Type Switch Logic (Expense/Income)
+        typeExpenseBtn.addEventListener('click', () => {
+            typeExpenseBtn.classList.add('active');
+            typeIncomeBtn.classList.remove('active');
+            renderCategories('expense');
+        });
+
+        typeIncomeBtn.addEventListener('click', () => {
+            typeIncomeBtn.classList.add('active');
+            typeExpenseBtn.classList.remove('active');
+            renderCategories('income');
+        });
+        
+        // Initialize the modal state (important for the first open)
+        // Note: openRecordModal handles the initial renderCategories('expense')
+
+    </script>
+</body>
+</html>
