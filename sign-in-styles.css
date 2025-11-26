@@ -72,7 +72,7 @@ h1 {
 }
 
 label {
-    display: block;
+    display: block; 
     margin-bottom: 10px;
     font-size: 1.2em;
     color: #fff;
@@ -93,6 +93,52 @@ input::placeholder {
     color: #bfbfbf;
 }
 
+/* FLOATING LABEL */
+.float-group {
+    position: relative;
+    margin-bottom: 22px;
+}
+
+/* --- UPDATED INPUT SIZE --- */
+.float-group input {
+    width: 100%;
+    height: 65px; /* Bigger box */
+    padding: 22px 22px 0 22px; 
+    background: #2d2d2d;
+    border: none;
+    border-radius: 14px;
+    color: #fff;
+    font-size: 1.15em; /* Slightly larger text */
+}
+
+/* Updated floating label position for bigger input */
+.float-group label {
+    position: absolute;
+    left: 22px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #bfbfbf;
+    font-size: 1.1em;
+    pointer-events: none;
+    transition: 0.22s ease;
+    opacity: 0.9;
+}
+
+/* Float effect when typing or focused */
+.float-group input:focus + label,
+.float-group input:not(:placeholder-shown) + label {
+    top: 12px;   /* Slightly higher than before */
+    transform: translateY(0);
+    font-size: 0.95em;
+    color: white;
+}
+
+/* Placeholder-hidden trick */
+.float-group input::placeholder {
+    opacity: 0;
+}
+
+
 /* PASSWORD EYE ICON */
 .password-group {
     position: relative;
@@ -101,7 +147,7 @@ input::placeholder {
 .password-group i {
     position: absolute;
     right: 18px;
-    top: 70%;
+    top: 50%;
     transform: translateY(-50%);
     color: #ccc;
     cursor: pointer;

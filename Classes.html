@@ -560,7 +560,7 @@ padding-right: 48px !important;        /* gives space for the arrow */
 
     <aside class="sidebar" id="sidebar">        
         <div class="logo">
-            <img src="logo.png" alt="StudyTrack">
+            <a href="HomeF.html"><img src="logo.png" alt="StudyTrack"></a>
         </div>
         <div class="nav-menu">
             <a href="HomeF.html" ><img src="home.png" alt=""> Home</a>
@@ -597,17 +597,8 @@ padding-right: 48px !important;        /* gives space for the arrow */
                 </div>
                 <div class="classes-subtitle">See all your enrolled classes and Schedules</div>
 
-                <div class="class-item">
-                    <div class="class-info">
-                        <img src="book.png" alt="Book">
-                        <div>
-                            <h4>CS 201, Data Structures</h4>
-                            <p>Mon & Wed 9:00 AM - 10:15 AM, BSIT Department CL 2</p>
-                        </div>
+                <div id="classes-list-container">
                     </div>
-                    <div class="class-time">Today 9:00 AM</div>
-                    <button class="delete-btn">×</button>
-                </div>
             </div>
 
         </div>
@@ -675,6 +666,41 @@ padding-right: 48px !important;        /* gives space for the arrow */
         </form>
         </div>
 </div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal-overlay" id="deleteConfirmationModal" style="display: none;">
+    <div class="modal success-modal delete-modal">
+        <button class="close-modal success-close" id="deleteCloseBtn" aria-label="Close">X</button>
+        
+        <div class="success-content">
+            <!-- Warning Icon (Using yellow/accent color for danger confirmation) -->
+            <div class="success-icon" style="background: var(--accent);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+            </div>
+            
+            <h3>Confirm Deletion</h3>
+            <p>
+                Are you sure you want to delete the class: <strong id="class-to-delete-name">[Class Name Placeholder]</strong>?
+                This action cannot be undone.
+            </p>
+
+            <!-- Action Buttons -->
+            <div class="success-actions">
+                <button class="btn-secondary" id="cancelDeleteBtn">
+                    Cancel
+                </button>
+                <!-- Red button for destructive action -->
+                <button class="btn-primary" id="confirmDeleteBtn" style="background: #ff4d4f; border: 1px solid #ff4d4f; color: white;">
+                    Delete Permanently
+                </button>
+            </div>
+        </div>
+    </div>
+</div>  
 
 <div class="modal-overlay" id="successModal" style="display: none;">
     <div class="modal success-modal">
