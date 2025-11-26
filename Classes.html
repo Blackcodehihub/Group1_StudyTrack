@@ -36,7 +36,7 @@
     }
 
     /* ==================== SIDEBAR (IDENTICAL TO HOME) ==================== */
- .sidebar {
+    .sidebar {
         width:235px;
         background:var(--sidebar-bg);
         padding:30px 20px;
@@ -49,14 +49,7 @@
         border-top-right-radius:45px;
         border-bottom-right-radius:45px;
         transition:left .3s ease;
-        justify-content: space-between;
     }
-.nav-menu {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 85%;
-}
     .logo img { height: 95px; display:block; margin-top: -2px;  }
     .nav-menu a {
         display:flex; align-items:center; gap:15px; padding:12px 18px;
@@ -65,7 +58,9 @@
     }
        .nav-menu {
             margin-top: 12px;
-            
+        }
+        .bot-nav {
+            margin-top: 95%;
         }
         .nav-menu a:hover, .nav-menu a.active { background:var(--bg); color:var(--text); width: 240px;}
         .nav-menu a.active { color:var(--text);}
@@ -91,7 +86,6 @@
 .light-theme .nav-menu a.active img {
     filter: invert(0);
 }
-
 
 
 
@@ -154,50 +148,17 @@
     .class-time { text-align:right; font-weight:600; font-size:15px; }
 
     .delete-btn {
-        position:absolute; top:-15px; right:-2px;
+        position:absolute; top:-5px; right:-2px;
         background:#ff4d4f; color:white; border:none; border-radius:50%;
-        width:30px; height:30px; cursor:pointer; font-size:16px;
+        width:24px; height:24px; cursor:pointer; font-size:16px;
         display:flex; align-items:center; justify-content:center;
         transition:background .3s;
     }
     .delete-btn:hover { background:#ff1f1f; }
 
-.edit-btn {
-    position: absolute;
-    top: -15px;
-    right: 35px;
-    background: #007efd;
-    border: none;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: 0.25s;
-    color: white;
-}
-
-.edit-btn:hover {
-    background: #0057ad;
-}
-
-.edit-btn svg {
-    width: 15px;
-    height: 15px;
-}
-
     /* ==================== RESPONSIVE ==================== */
     @media (max-width: 900px) {
         .hamburger { display:block; }
-        .theme-toggle {
-         position: absolute;
-        top: 0;
-        right: 0;
-        transform: none;
-        margin: 0;
-    }
         .sidebar {
             position:fixed; height:100%; left:-260px; top:0; margin-top:0;
             border-radius:0; transition:left .3s ease; z-index:1000;
@@ -211,26 +172,12 @@
 
     @media (max-width: 768px) {
         .classes-header-row { flex-direction:column; align-items:flex-start; gap:10px; }
-        .theme-toggle {
-         position: absolute;
-        top: 0;
-        right: 0;
-        transform: none;
-        margin: 0;
-    }
         .class-item { flex-direction:column; align-items:flex-start; gap:10px; }
         .class-time { text-align:left; }
     }
 
     @media (max-width: 480px) {
         .header { flex-direction:column; align-items:flex-start; gap:10px; }
-        .theme-toggle {
-         position: absolute;
-        top: 0;
-        right: 0;
-        transform: none;
-        margin: 0;
-    }
         .greeting h2 { font-size:clamp(20px,5vw,26px); }
         .add-class-btn { padding:8px 16px; font-size:13px; }
         .card { padding:20px; }
@@ -345,7 +292,7 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
-    margin: 10px 0 22px;
+    margin: 14px 0 22px;
 }
 .day-btn {
     min-width: 50px;
@@ -371,22 +318,17 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     gap: 12px;
     margin-bottom: 10px;
 }
-.reminder-row select { 
+.reminder-row select { flex: 1; width: 510px; margin-bottom: 0; 
+padding-right: 48px !important;        /* gives space for the arrow */
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23b5b5b5' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-    flex: 1;
-    width: 100%;     /* FIXED */
-    max-width: 100%; /* Guarantees it won't overflo w */
-    margin-bottom: 0; 
-    padding-right: 48px !important;
-    background-repeat: no-repeat !important; 
-    background-position: right 16px center !important;
-    background-size: 18px !important;
-    appearance: none;
+    background-repeat: no-repeat;
+    background-position: right 16px center;   /* moves arrow away from edge */
+    background-size: 18px;
+    appearance: none;                        /* removes default arrow */
+    -webkit-appearance: none;
+    -moz-appearance: none;
 }
 
-.light-theme .reminder-row select {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23000000' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-}
 
 .reminder-row select option:hover {
     background: var(--accent) !important;
@@ -425,7 +367,6 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     .modal {
         padding: 24px 20px;
         border-radius: 16px;
-        overflow: auto;
     }
     .time-row {
         grid-template-columns: 1fr;
@@ -441,9 +382,6 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     .reminder-row {
         flex-direction: column;
         align-items: stretch;
-        padding-right: 10x !important;
-       width: 100% !important;
-        
     }
     .reminder-row a {
         text-align: center;
@@ -620,31 +558,27 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 </head>
 <body>
 
-    <!-- Sidebar - Now matches Home perfectly -->
     <aside class="sidebar" id="sidebar">        
         <div class="logo">
-            <a href="HomeF.html"><img src="logo.png" alt="StudyTrack"></a>
+            <img src="logo.png" alt="StudyTrack">
         </div>
         <div class="nav-menu">
-            <div class="top-nav">
             <a href="HomeF.html" ><img src="home.png" alt=""> Home</a>
             <a href="Classes.html" class="active"><img src="class.png" alt=""> Classes</a>
             <a href="Assignment.html"><img src="assignment.png" alt=""> Assignment</a>
-            <a href="Reminder.html" ><img src="reminder.png" alt=""> Reminder</a>
-            <a href="Wallet.html"><img src="wallet.png" alt=""> Wallet</a>
-            <a href="Habits.html"><img src="streak.png" alt=""> Habit</a>
-            </div>
+            <a href="#"><img src="reminder.png" alt=""> Reminder</a>
+            <a href="#"><img src="wallet.png" alt=""> Wallet</a>
+            <a href="#"><img src="streak.png" alt=""> Habit</a>
             <div class="bot-nav">
-                <a href="Settings.html"><img src="settings.png" alt=""> Settings</a>
+                <a href="#"><img src="settings.png" alt=""> Settings</a>
                 <a href="#"><img src="logout.png" alt=""> Log out</a>
             </div>
         </div>
     </aside>
-    <!-- Main Content -->
+
     <div class="main-content">
         <div class="container">
 
-            <!-- Header -->
             <div class="header">
                 <button class="hamburger" id="hamburgerBtn">☰</button>
                 <div class="greeting">
@@ -656,7 +590,6 @@ input[type="time"]::-webkit-calendar-picker-indicator {
                 </button>
             </div>
 
-            <!-- Classes Card -->
             <div class="card">
                 <div class="classes-header-row">
                     <h3>Classes</h3>
@@ -672,14 +605,7 @@ input[type="time"]::-webkit-calendar-picker-indicator {
                             <p>Mon & Wed 9:00 AM - 10:15 AM, BSIT Department CL 2</p>
                         </div>
                     </div>
-                    <div class="class-time">Today <br>9:00 AM</div>
-                    <button class="edit-btn" title="Edit Reminder">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 20h9"></path>
-                            <path d="M16.5 3.5l4 4L7 21l-4 1 1-4L16.5 3.5z"></path>
-                        </svg>
-                    </button>
+                    <div class="class-time">Today 9:00 AM</div>
                     <button class="delete-btn">×</button>
                 </div>
             </div>
@@ -687,70 +613,74 @@ input[type="time"]::-webkit-calendar-picker-indicator {
         </div>
     </div>
 
-    <!-- Add Class Modal (Fully Responsive) -->
-<div class="modal-overlay" id="addClassModal">
+    <div class="modal-overlay" id="addClassModal">
     <div class="modal">
         <div class="modal-header">
             <h3>Add Class</h3>
             <button class="close-modal" id="closeModalBtn">X</button>
         </div>
 
-        <label>Subject name</label>
-        <input type="text" placeholder="CS 201, Data Structures">
+        <form id="add-class-form">
+            <label for="subject_name">Subject name</label>
+            <input type="text" id="subject_name" name="subject_name" placeholder="CS 201, Data Structures" required>
 
-        <label>Instructor</label>
-        <input type="text" placeholder="Prof. Jane">
+            <label for="instructor">Instructor</label>
+            <input type="text" id="instructor" name="instructor" placeholder="Prof. Jane">
 
-        <label>Location</label>
-        <input type="text" placeholder="BSIT Department CL 2">
+            <label for="location">Location</label>
+            <input type="text" id="location" name="location" placeholder="BSIT Department CL 2">
 
-        <div class="time-row">
-            <div>
-                <label>Start Time</label>
-                <input type="time" value="09:00" required>
+            <div class="time-row">
+                <div>
+                    <label for="start_time">Start Time</label>
+                    <input type="time" id="start_time" name="start_time" value="09:00" required>
+                </div>
+                <div>
+                    <label for="end_time">End Time</label>
+                    <input type="time" id="end_time" name="end_time" value="10:15" required>
+                </div>
             </div>
-            <div>
-                <label>End Time</label>
-                <input type="time" value="10:15" required>
+
+            <label>Repeat</label>
+            <div class="repeat-days">
+                <button type="button" class="day-btn" data-day="Mon">Mon</button>
+                <button type="button" class="day-btn" data-day="Tue">Tue</button>
+                <button type="button" class="day-btn" data-day="Wed">Wed</button>
+                <button type="button" class="day-btn" data-day="Thu">Thu</button>
+                <button type="button" class="day-btn" data-day="Fri">Fri</button>
+                <button type="button" class="day-btn" data-day="Sat">Sat</button>
+                <button type="button" class="day-btn" data-day="Sun">Sun</button>
             </div>
-        </div>
 
-        <label style="margin-top: -22px;">Repeat</label>
-        <div class="repeat-days">
-            <button type="button" class="day-btn">Mon</button>
-            <button type="button" class="day-btn">Tue</button>
-            <button type="button" class="day-btn">Wed</button>
-            <button type="button" class="day-btn">Thu</button>
-            <button type="button" class="day-btn">Fri</button>
-        </div>
-
-        <div class="reminder-row">
-            <div>
-                <label>Reminder Time</label>
-                <select>
-                    <option>15 minutes before</option>
-                    <option>30 minutes before</option>
-                    <option>1 hour before</option>
-                    <option>None</option>
-                </select>
+            <div class="reminder-row">
+                <div>
+                    <label for="reminder_time">Reminder Time</label>
+                    <select id="reminder_time" name="reminder_time">
+                        <option value="">None</option>
+                        <option value="5">5 minutes before</option>
+                        <option value="10">10 minutes before</option>
+                        <option value="15">15 minutes before</option>
+                        <option value="30">30 minutes before</option>
+                        <option value="60">1 hour before</option>
+                    </select>
+                </div>
             </div>
-        </div>
+            
+            <div id="form-messages" style="margin-top: 10px; color: red;"></div>
 
-        <div class="modal-actions">
-            <button class="btn-cancel" id="cancelBtn">Cancel</button>
-            <button class="btn-save">
-                 Save Class</button>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" id="cancelBtn">Cancel</button>
+                <button type="submit" class="btn-save" id="save-class-btn" disabled>Save Class</button>
+            </div>
+        </form>
         </div>
-    </div>
 </div>
 
-<!-- Success Modal - Class Saved (100% Responsive) -->
 <div class="modal-overlay" id="successModal" style="display: none;">
     <div class="modal success-modal">
         <button class="close-modal success-close" id="successCloseBtn" aria-label="Close">X</button>
         
         <div class="success-content">
-            <!-- Checkmark Icon -->
             <div class="success-icon">
                 <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M20 6 L9 17 L4 12"></path>
@@ -763,22 +693,25 @@ input[type="time"]::-webkit-calendar-picker-indicator {
                 Your timetable and reminders have been updated for this class
             </p>
 
-            <!-- Action Buttons - Stack vertically on small screens -->
             <div class="success-actions">
                 <button class="btn-secondary" id="addAnotherClassBtn">
-                    Add Class
+                    + Add Class
                 </button>
                 <button class="btn-primary" id="viewClassBtn">
-                    View Classes
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+  <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
+  <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
+</svg>
+                    View Class & Edit
                 </button>
             </div>
         </div>
     </div>
 </div>  
 
-    <!-- Scripts -->
+    <script src="classes.js"></script>
     <script>
-        // Theme Toggle
+        // --- Theme Toggle ---
         const themeToggle = document.getElementById('themeToggle');
         const themeIcon = document.getElementById('themeIcon');
 
@@ -800,7 +733,7 @@ input[type="time"]::-webkit-calendar-picker-indicator {
             }
         });
 
-        // Hamburger Menu
+        // --- Hamburger Menu ---
         const hamburgerBtn = document.getElementById('hamburgerBtn');
         const sidebar = document.getElementById('sidebar');
         const mainContent = document.querySelector('.main-content');
@@ -819,58 +752,6 @@ input[type="time"]::-webkit-calendar-picker-indicator {
                 mainContent.classList.remove('shift');
             }
         });
-
-        // ========== MODAL CONTROL ==========
-const openModalBtn = document.getElementById('openModalBtn');
-const modal = document.getElementById('addClassModal');
-const closeModalBtn = document.getElementById('closeModalBtn');
-const cancelBtn = document.getElementById('cancelBtn');
-
-function openModal() {
-    modal.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-}
-function closeModal() {
-    modal.style.display = 'none';
-    document.body.style.overflow = 'auto';
-}
-
-openModalBtn.addEventListener('click', openModal);
-closeModalBtn.addEventListener('click', closeModal);
-cancelBtn.addEventListener('click', closeModal);
-
-// Close when clicking outside the modal content
-modal.addEventListener('click', (e) => {
-    if (e.target === modal) closeModal();
-});
-
-// Day buttons toggle
-document.querySelectorAll('.day-btn').forEach(btn => {
-    btn.addEventListener('click', () => btn.classList.toggle('active'));
-});
-
-document.querySelector('.btn-save').addEventListener('click', function() {
-    closeModal();
-    document.getElementById('successModal').style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-});
-
-document.getElementById('successCloseBtn').addEventListener('click', () => {
-    document.getElementById('successModal').style.display = 'none';
-    document.body.style.overflow = 'auto';
-});
-
-document.getElementById('addAnotherClassBtn').addEventListener('click', () => {
-    document.getElementById('successModal').style.display = 'none';
-    document.body.style.overflow = 'auto';
-    openModal();
-});
-
-document.getElementById('viewClassBtn').addEventListener('click', () => {
-    document.getElementById('successModal').style.display = 'none';
-    document.body.style.overflow = 'auto';
-    // Future: scroll to newly added class or open edit modal
-});
     </script>
 </body>
 </html>
