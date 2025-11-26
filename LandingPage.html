@@ -81,17 +81,26 @@ img {
 }
 
 
-  .hero-section {
+.hero-section {
     background-color: var(--color-primary-dark);
     color: var(--color-white);
     padding-top: 50px;
-    min-height: 1000px;
-    border-bottom-right-radius: 150px ;
-    border-bottom-left-radius: 150px ;
-  }
+    border-bottom-right-radius: 150px;
+    border-bottom-left-radius: 150px;
+
+   
+    height: 800px;            
+    min-height:800px;        
+    transition: height 0.5s ease;
+    overflow: hidden;
+}
+
+.hero-section.expanded {
+    height: 1000px;  
+}
 
   .hero-header {
-    background-color: var(--color-white);
+    background-color: #ffffffe3;
     color: var(--color-black);
     border-radius: 50px;
     padding: 0px 28px;
@@ -104,9 +113,9 @@ img {
     left: 50%;            
     transform: translateX(-50%);    
     height: 50px;
-    width: 90%;      
+    width: 90%;       
     z-index: 999;     
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.438); 
   }
 
   .logo {
@@ -169,7 +178,59 @@ img {
     color: #000 !important;     
   }
 
+@media (max-width: 1600px) {
+  .hero-header { width: 94%; padding: 0 35px; }
+  .main-nav ul { gap: 50px; }
+}
 
+@media (max-width: 1440px) {
+  .hero-header { 
+    width: 92%; 
+    padding: 0 30px; 
+    height: 50px;
+    margin-top: -170px;
+  }
+ 
+  .main-nav ul { gap: 40px; }
+  .btn-signup { padding: 11px 24px; font-size: 15px; }
+  .hero-text h1 { font-size: 58px; margin-top: 60px;}
+  .hero-images img{margin-top: 60px;}
+  .hero-images {padding-right: 220px;}
+}
+
+@media (max-width: 1280px) {
+  .main-nav ul { gap: 30px; }
+  .main-nav a { font-size: 17px; }
+  .btn-signup { padding: 10px 20px; }
+  .hero-content { margin-top: 200px; }
+  .hero-images {margin-right: 280px;}
+}
+
+@media (max-width: 1100px) {
+  .hero-header {
+    height: 64px;
+    padding: 0 25px;
+    top: 25px;
+  }
+  .logo { height: 45px; }
+  .main-nav ul { gap: 22px; }
+  .main-nav a { font-size: 16px; }
+  .btn-signup { 
+    padding: 9px 18px; 
+    font-size: 14px; 
+  }
+  .hero-text h1 { font-size: 52px; margin-bottom: 50px; }
+  .btn-get-started { padding: 18px 50px; font-size: 24px; }
+}
+
+@media (max-width: 1024px) {
+  .hero-header {
+    height: 62px;
+    padding: 0 20px;
+  }
+  .main-nav ul { gap: 18px; }
+  .hero-content { margin-top: 180px; }
+}
   .hero-content {
     margin-top: 238px;
     display: flex;
@@ -279,6 +340,24 @@ img {
     }
   }
 
+  @media (max-width: 900px) {
+  .hero-header {
+    flex-direction: column;
+    height: auto;
+    padding: 20px;
+  }
+
+  .main-nav ul {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .btn-signup {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
   @media (max-width: 1024px) {
     .hero-header {
       flex-direction: column;
@@ -309,7 +388,24 @@ img {
     }
   }
 
+  @media (max-width: 900px) {
+  .hero-content {
+    flex-direction: column;
+    margin-top: 120px;
+    text-align: center;
+  }
 
+  .hero-images {
+    flex-direction: column;
+    gap: 20px;
+    margin: 0;
+  }
+
+  .hero-images img {
+    width: 100% !important;
+    height: auto;
+  }
+}
 
   .features-section {
     text-align: center;
@@ -797,6 +893,75 @@ img {
 /* ================================
    RESPONSIVE
    ================================ */
+   /* =========================================
+   WHY-CHOOSE RESPONSIVE FIXES
+   ========================================= */
+@media (max-width: 1200px) {
+
+  #why-choose .why-choose-container {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+
+  #why-choose .why-choose-right p {
+    max-width: 100%;
+  }
+
+  /* Image centers */
+  #why-choose .why-choose-image {
+    width: 100%;
+    margin-left: 0;
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  #why-choose .why-choose-image img {
+    width: 100%;
+    height: auto;
+  }
+
+  /* Features move below image */
+  #why-choose .why-choose-features {
+    margin-top: 40px;
+    padding-left: 0;
+    align-items: flex-start;
+  }
+
+  #why-choose .feature-item {
+    gap: 15px;
+  }
+
+  /* User badge centered */
+  .users-badge {
+    margin-left: 0 !important;
+    display: block;
+    text-align: center;
+    padding: 15px 40px;
+  }
+}
+
+@media (max-width: 768px) {
+
+  #why-choose .why-choose-left h2 {
+    font-size: 40px;
+    text-align: center;
+  }
+
+  #why-choose .why-choose-right p {
+    font-size: 20px;
+    text-align: center;
+  }
+
+  #why-choose .feature-item {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  #why-choose .feature-number {
+    margin: 0 auto;
+  }
+}
 
 @media (max-width: 900px) {
   #why-choose .why-choose-container {
@@ -820,15 +985,163 @@ img {
     font-size: 1.5rem;
   }
 }
+
+/* ================================
+   WHY-CHOOSE SLIDE-IN ANIMATION
+   ================================ */
+
+.why-choose-left,
+.why-choose-right {
+  opacity: 0;
+  transition: transform 0.8s ease, opacity 0.8s ease;
+}
+
+/* Start positions */
+.why-choose-left {
+  transform: translateX(-200px);
+}
+
+.why-choose-right {
+  transform: translateX(200px);
+}
+
+/* When visible */
+.why-visible {
+  opacity: 1 !important;
+  transform: translateX(0) !important;
+}
+
+.hamburger {
+    width: 35px;
+    height: 25px;
+    display: none;            
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;      /* centers the bars horizontally */
+    cursor: pointer;
+}
+.hamburger span {
+    width: 100%;
+    height: 4px;
+    background: #000;
+    border-radius: 2px;
+}
+
+@media (max-width: 768px) {
+    .main-nav {
+        display: none;
+    }
+
+    .hamburger {
+        display: flex; /* now visible on mobile */
+    }
+}
+
+@media (max-width: 900px) {
+    .main-nav {
+        display: none;
+    }
+
+    .hamburger {
+        display: flex; /* now visible on mobile */
+    }
+}
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 30px;
+}
+
+#mobileNav {
+    display: none;
+    gap: 20px;
+}
+
+@media (max-width: 768px) {
+    #mobileNav {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        right: 30px;
+
+        background: white;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    #mobileNav.active {
+        display: flex;
+    }
+    
+}
+/* Mobile Sidebar Navigation */
+.side-nav {
+    display: none;             /* hidden by default */
+    flex-direction: column;
+    position: fixed;           /* overlay on top of content */
+    margin-top: 20px;
+    left: 0;                  /* slide from the right */
+    height: 30vh;             /* full height */
+    width: 250px;              /* adjust width as needed */
+    background: #ffffff;       /* or dark theme color */
+    padding: 60px 20px 20px 20px;
+    box-shadow: -4px 0 15px rgba(0,0,0,0.2);
+    border-radius: 20px 0 0 20px; /* rounded left corners */
+    gap: 20px;
+    transition: transform 0.3s ease-in-out;
+    transform: translateX(100%);  /* hidden by default (off screen) */
+    z-index: 1000;
+}
+
+/* Show the sidebar when active */
+.side-nav.active {
+    display: flex;
+    transform: translateX(0);   /* slide in */
+}
+
+/* Sidebar links styling */
+.side-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.side-nav ul li a {
+    text-decoration: none;
+    color: #000; /* adjust to your theme */
+    font-size: 18px;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.side-nav ul li a:hover,
+.side-nav ul li a.active {
+    color: #f3c229;  
+}
+
+
+
+/* Responsive trigger */
+@media (max-width: 768px) {
+    .side-nav {
+        display: flex;  /* enable flex for mobile JS toggle */
+    }
+}
     </style>
 </head>
 <body>
     <section id="hero" class="hero-section">
   <div class="container">
     <header class="hero-header">
+      
       <a href="#" class="logo">
            <img src="logo2.png" alt="StudyTrack">
       </a>
+      
       <nav class="main-nav">
         <ul>
           <li><a href="#hero" class="active">Home</a></li>
@@ -842,7 +1155,24 @@ img {
       </a></li>
         </ul>
       </nav>
-    </header>
+
+        <nav class="side-nav" id="mobileNav">
+        <ul>
+          <li><a href="#hero" class="active">Home</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#why-choose">Why Choose</a></li>
+          <li><a href="#reviews">Reviews</a></li>
+          <li><a href="#about">About us</a></li>
+          <li><a href="#">Sign up</a></li>
+        </ul>
+      </nav>
+      <div class="hamburger" id="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</header>
+
     <div class="hero-content">
       <div class="hero-text">
         <h1>Track Your Studies &amp; Expenses Effortlessly</h1>
@@ -1167,6 +1497,58 @@ const reviewCards = document.querySelectorAll('#reviews .review-card');
 
   // Observe every review card
   reviewCards.forEach(card => reviewObserver.observe(card));
+
+
+  document.addEventListener("DOMContentLoaded", () => {
+  const left = document.querySelector(".why-choose-left");
+  const right = document.querySelector(".why-choose-right");
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+            if (entry.isIntersecting) {
+        // Reset animation (so it plays again when scrolling back up)
+        entry.target.classList.remove('why-visible');
+
+        // Force reflow
+        void entry.target.offsetWidth;
+
+        setTimeout(() => {
+        entry.target.classList.add('why-visible');
+      }, 1000); 
+    }
+    });
+  }, { threshold: 0.3 });
+
+  observer.observe(left);
+  observer.observe(right);
+});
+
+window.addEventListener('scroll', function () {
+    const hero = document.querySelector('.hero-section');
+
+    if (window.scrollY > 50) {
+        hero.classList.add('expanded');
+    } else {
+        hero.classList.remove('expanded');
+    }
+});
+  const hamburger = document.getElementById('hamburger');
+  const mobileNav = document.getElementById('mobileNav');
+
+  hamburger.addEventListener('click', (e) => {
+    e.stopPropagation(); // Prevent click from bubbling
+    mobileNav.classList.toggle('active');
+  });
+
+  // Close mobile nav when clicking outside
+  document.addEventListener('click', (e) => {
+    if (mobileNav.classList.contains('active') && 
+        !mobileNav.contains(e.target) && 
+        !hamburger.contains(e.target)) {
+      mobileNav.classList.remove('active');
+    }
+  });
+
     </script>
 </body>
 </html>
