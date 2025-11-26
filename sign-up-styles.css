@@ -132,6 +132,48 @@ input::placeholder {
     color: #bfbfbf;
 }
 
+/* FLOATING LABEL */
+.float-group {
+    position: relative;
+    margin-bottom: 22px;
+}
+
+.float-group input {
+    width: 100%;
+    height: 52px;
+    padding: 16px 20px 0 20px; /* extra top padding for label */
+    background: #2d2d2d;
+    border: none;
+    border-radius: 12px;
+    color: #fff;
+    font-size: 1em;
+}
+
+.float-group label {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #bfbfbf;
+    pointer-events: none;
+    transition: 0.2s ease;
+    font-size: 1em;
+}
+
+/* When typing or focused */
+.float-group input:focus + label,
+.float-group input:not(:placeholder-shown) + label {
+    top: 12px;
+    font-size: 0.75em;
+    color: white;
+    opacity: 0.9;
+}
+
+/* Remove placeholder text completely */
+.float-group input::placeholder {
+    color: transparent;
+}
+
 /* PASSWORD EYE ICON */
 .password-group {
     position: relative;
