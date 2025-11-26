@@ -322,6 +322,63 @@ input::placeholder {
     object-fit: contain;
 }
 
+/* --- PASSWORD POLICY FEEDBACK STYLES (NEW) --- */
+#password-policy-feedback {
+    margin-top: 10px;
+    /* Removed background/border to blend with dark UI */
+    padding: 10px 0;
+    
+    /* Animation setup: Starts transparent and shrinks */
+    opacity: 0;
+    transform: translateY(-5px);
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+#password-policy-feedback.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+#password-policy-feedback p, 
+#password-policy-feedback li {
+    color: #fff; /* Ensure text is visible against the dark background */
+}
+
+/* Specific styling for the list items */
+#password-rules {
+    list-style: none;
+    padding-left: 0;
+    font-size: 0.9em;
+}
+
+#password-rules li {
+    margin-bottom: 5px;
+}
+
+/* Icon spacing */
+#password-rules li i {
+    width: 15px; /* Fixed width to prevent text shifting */
+    margin-right: 5px;
+    display: inline-block;
+}
+
+/* --- BUTTON DISABLE STATES (NEW) --- */
+.btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    transform: none !important; /* Prevents hover effect */
+    box-shadow: none !important; /* Prevents hover effect */
+}
+
+/* Remove hover effect when disabled */
+.btn-primary:disabled:hover {
+    background: #ffc107; /* Maintain base color */
+}
+
+.btn-secondary:disabled:hover {
+    background: #2d2d2d; /* Maintain base color */
+}
+
 /* Large tablets / small laptops */
 @media (max-width: 1200px) {
     .signup-form-panel {
