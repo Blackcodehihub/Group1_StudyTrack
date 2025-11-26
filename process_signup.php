@@ -1,9 +1,9 @@
 <?php
-// 1. DATABASE CONFIGURATION (Replace with your XAMPP settings)
+// 1. DATABASE CONFIGURATION (No change)
 $host = 'localhost';
 $db   = 'studytrack_db';
 $user = 'root';
-$pass = ''; // Default XAMPP root password is often empty
+$pass = ''; 
 
 $dsn = "mysql:host=$host;dbname=$db;charset=utf8mb4";
 $options = [
@@ -18,9 +18,8 @@ try {
      throw new \PDOException($e->getMessage(), (int)$e->getCode());
 }
 
-// 2. CHECK IF FORM WAS SUBMITTED
+// 2. CHECK IF FORM WAS SUBMITTED (No change)
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-    // Redirect or display an error if accessed directly
     header("Location: Sign-up.html");
     exit();
 }
@@ -29,16 +28,12 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 $first_name = filter_input(INPUT_POST, 'first_name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 $last_name  = filter_input(INPUT_POST, 'last_name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 $email      = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
-$password   = $_POST['password'] ?? ''; // No sanitization for password, validation follows
+$password   = $_POST['password'] ?? ''; 
 
-// School info from hidden or optional fields (defaults to NULL/empty string)
-// You may need to update your HTML to send these fields.
-$university_name = filter_input(INPUT_POST, 'university_name', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? NULL;
-$school_id       = filter_input(INPUT_POST, 'school_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? NULL;
+// REMOVED: $university_name and $school_id retrieval
 
 
-// 4. SERVER-SIDE VALIDATION
-// You MUST repeat validation on the server because client-side JS can be bypassed.
+// 4. SERVER-SIDE VALIDATION (No change to logic, just cleaned up comments)
 $errors = [];
 
 // Basic field checks
@@ -51,12 +46,12 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $errors[] = "Invalid email format.";
 }
 
-// Password Policy Check (Matches the JS criteria)
+// Password Policy Check (No change)
 $password_policy = [
     'length'  => (strlen($password) >= 8),
     'capital' => preg_match('/[A-Z]/', $password),
     'number'  => preg_match('/[0-9]/', $password),
-    'special' => preg_match('/[^a-zA-Z0-9\s]/', $password) // Non-alphanumeric/whitespace
+    'special' => preg_match('/[^a-zA-Z0-9\s]/', $password)
 ];
 
 if (!$password_policy['length'] || !$password_policy['capital'] || !$password_policy['number'] || !$password_policy['special']) {
@@ -64,10 +59,8 @@ if (!$password_policy['length'] || !$password_policy['capital'] || !$password_po
 }
 
 
-// 5. IF VALIDATION FAILS
+// 5. IF VALIDATION FAILS (No change)
 if (!empty($errors)) {
-    // For now, we'll just print the errors. In a real app, you'd redirect back
-    // to the sign-up form and pass the error messages.
     echo "<h2>Validation Errors:</h2>";
     echo "<ul>";
     foreach ($errors as $error) {
@@ -78,45 +71,42 @@ if (!empty($errors)) {
 }
 
 
-// 6. CHECK IF EMAIL ALREADY EXISTS
+// 6. CHECK IF EMAIL ALREADY EXISTS (No change)
 try {
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE email = ?");
     $stmt->execute([$email]);
     if ($stmt->fetchColumn() > 0) {
-        // Handle email already exists error
         echo "Error: The email address is already registered.";
         exit();
     }
 } catch (\PDOException $e) {
-    // Handle database error
     echo "Database error during email check: " . $e->getMessage();
     exit();
 }
 
 
 // 7. HASH PASSWORD & INSERT DATA
-// Hashing the password using bcrypt (recommended)
 $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
 try {
-    $sql = "INSERT INTO users (first_name, last_name, email, password_hash, university_name, school_id)
-            VALUES (?, ?, ?, ?, ?, ?)";
+    // UPDATED SQL: Removed the two placeholders and columns
+    $sql = "INSERT INTO users (first_name, last_name, email, password_hash)
+            VALUES (?, ?, ?, ?)";
             
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
         $first_name,
         $last_name,
         $email,
-        $password_hash,
-        $university_name,
-        $school_id
+        $password_hash
+        // REMOVED: $university_name and $school_id execution values
     ]);
 
-    // Success! Redirect to a welcome page or login page
+    // Success! Redirect to HomeF.html
     header("Location: HomeF.html");
     exit();
 
 } catch (\PDOException $e) {
-    // Handle insertion error (e.g., if the unique email check somehow failed)
     echo "Database Insertion Error: " . $e->getMessage();
 }
+?>
