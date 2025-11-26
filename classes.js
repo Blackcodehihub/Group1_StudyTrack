@@ -13,17 +13,22 @@ document.addEventListener('DOMContentLoaded', function() {
     const endTimeInput = document.getElementById('end_time');
     const dayButtons = document.querySelectorAll('.day-btn');
     
-    // Feedback
+    // Feedback & Repeater
     const formMessages = document.getElementById('form-messages');
-    
-    // Repeater Container
     const classesListContainer = document.getElementById('classes-list-container'); 
 
     // Success Modal Elements
     const successModal = document.getElementById('successModal');
-    const successCloseBtn = document.getElementById('successCloseBtn');
-    const addAnotherClassBtn = document.getElementById('addAnotherClassBtn');
-    const viewClassBtn = document.getElementById('viewClassBtn');
+    
+    // DELETE Modal Selectors
+    const deleteConfirmationModal = document.getElementById('deleteConfirmationModal');
+    const deleteCloseBtn = document.getElementById('deleteCloseBtn');
+    const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+    const classToDeleteName = document.getElementById('class-to-delete-name');
+    
+    // State to track the ID of the class pending deletion
+    let currentClassIdToDelete = null; 
 
 
     // --- Helper Function: Time Formatting (24hr to 12hr AM/PM) ---
@@ -36,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return `${formattedH}:${minute} ${ampm}`;
     }
 
-    // --- RENDERER Function: Creates the HTML for the Repeater (No change in logic) ---
+    // --- RENDERER Function: Creates the HTML for the Repeater ---
     function renderClassItems(classes) {
         if (classes.length === 0) {
             classesListContainer.innerHTML = `
@@ -52,9 +57,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const locationText = cls.location ? `, ${cls.location}` : '';
             const instructorText = cls.instructor ? ` by ${cls.instructor}` : '';
             
+            // Format times for display
             const formattedStartTime = formatTime(cls.start_time);
             const formattedEndTime = formatTime(cls.end_time);
             
+            // Ensure class_id is available for the delete button
             return `
                 <div class="class-item" data-class-id="${cls.class_id}">
                     <div class="class-info">
@@ -65,12 +72,15 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                     </div>
                     <div class="class-time">${formattedStartTime}</div>
-                    <button class="delete-btn" data-class-id="${cls.class_id}">×</button>
+                    <button class="delete-btn" data-class-id="${cls.class_id}" data-subject-name="${cls.subject_name}">×</button>
                 </div>
             `;
         }).join('');
 
         classesListContainer.innerHTML = html;
+        
+        // CRITICAL: Attach listeners *after* rendering the new buttons
+        attachDeleteListeners(); 
     }
 
 
@@ -97,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function() {
     fetchAndRenderClasses();
 
 
-    // --- 3. Modal Open/Close Logic (No change) ---
+    // --- 2. Modal Open/Close Logic ---
 
     function openModal(modalToOpen) {
         modalToOpen.style.display = 'flex';
@@ -140,18 +150,20 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
 
-    // Success Modal Handlers (No change)
-    successCloseBtn.addEventListener('click', () => closeModal(successModal));
+    // Success Modal Handlers
+    document.querySelectorAll('.success-modal .close-modal').forEach(btn => {
+        btn.addEventListener('click', () => {
+            closeModal(successModal);
+            closeModal(deleteConfirmationModal); // Ensure both can be closed by the X
+        });
+    });
+
     addAnotherClassBtn.addEventListener('click', function() {
         closeModal(successModal);
         openModal(addClassModal);
     });
-    viewClassBtn.addEventListener('click', () => {
-        closeModal(successModal);
-    });
 
-
-    // --- 4. Client-side Validation and Button Enabling (CRITICAL UPDATE) ---
+    // --- 3. Client-side Validation and Button Enabling ---
 
     function checkFormValidity() {
         let isValid = true;
@@ -168,23 +180,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // 3. Time comparison check
         if (isValid && startTimeInput.value && endTimeInput.value) {
-            // Compare time strings (HH:MM format). Must be strictly greater.
             if (startTimeInput.value >= endTimeInput.value) {
                 isValid = false;
             }
         }
         
-        // 4. Update the button status
         saveClassBtn.disabled = !isValid;
         return isValid;
     }
 
-    // --- 5. Repeat Days Toggle Logic (UPDATED) ---
+    // --- 4. Repeat Days Toggle Logic ---
     let selectedDays = new Set(); 
 
     dayButtons.forEach(button => {
         button.addEventListener('click', function(e) {
-            e.preventDefault(); // <--- PREVENT DEFAULT FORM SUBMISSION/RELOAD
+            e.preventDefault(); 
             
             const day = this.getAttribute('data-day');
             if (selectedDays.has(day)) {
@@ -198,29 +208,26 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Attach listeners for live validation on form inputs
+    // Attach listeners for live validation
     subjectNameInput.addEventListener('input', checkFormValidity);
     startTimeInput.addEventListener('input', checkFormValidity);
     endTimeInput.addEventListener('input', checkFormValidity);
 
 
-    // --- 6. Form Submission Handling (AJAX) ---
+    // --- 5. Add Class Form Submission (AJAX) ---
     addClassForm.addEventListener('submit', function(event) {
         event.preventDefault();
 
-        // Final check before sending data
         if (!checkFormValidity()) {
             formMessages.textContent = 'Please fill in required fields and ensure End Time is after Start Time.';
             formMessages.style.color = 'red';
             return;
         }
-        // If validation passed, clear messages
+
         formMessages.textContent = ''; 
 
-        // Collect all form data
         const formData = new FormData(addClassForm);
         
-        // Add selected repeat days array
         selectedDays.forEach(day => {
             formData.append('repeat_days[]', day); 
         });
@@ -236,7 +243,6 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => {
             return response.json().then(data => {
                 if (!response.ok) {
-                    // This catches HTTP 400 (Client error) or 500 (Server error)
                     throw new Error(data.message || 'Server error occurred.');
                 }
                 return data;
@@ -247,11 +253,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 // SUCCESS: Close main modal, show success modal, AND REFRESH LIST
                 closeModal(addClassModal);
                 openModal(successModal);
-                
                 fetchAndRenderClasses(); 
-
             } else {
-                // This path should ideally be covered by the throw above, but is a safe fallback
                 formMessages.textContent = data.message || 'Failed to add class.';
                 if (data.errors) {
                     formMessages.innerHTML += '<ul style="margin-left: 20px; text-align: left;">' + data.errors.map(err => `<li>${err}</li>`).join('') + '</ul>';
@@ -261,12 +264,66 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => {
             console.error('Fetch error:', error);
-            // Display error from PHP (e.g., "User not logged in" or "Database connection failed")
             formMessages.textContent = `Error: ${error.message}`;
             formMessages.style.color = 'red';
         });
     });
     
-    // Initial check when script loads
-    checkFormValidity();
+    // --- 6. DELETE WORKFLOW LISTENERS (NEW) ---
+
+    function attachDeleteListeners() {
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const id = this.getAttribute('data-class-id');
+                const name = this.getAttribute('data-subject-name');
+                
+                // Store the ID in the global state
+                currentClassIdToDelete = id;
+
+                // Update the modal text
+                classToDeleteName.textContent = name;
+
+                // Show the confirmation modal
+                openModal(deleteConfirmationModal);
+            });
+        });
+    }
+
+    // AJAX Delete Execution
+    confirmDeleteBtn.addEventListener('click', function() {
+        if (!currentClassIdToDelete) return; 
+
+        const formData = new FormData();
+        formData.append('class_id', currentClassIdToDelete);
+        
+        confirmDeleteBtn.disabled = true;
+        confirmDeleteBtn.textContent = 'Deleting...';
+
+        fetch('delete_class.php', {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Successful deletion: Close modal and refresh list
+                closeModal(deleteConfirmationModal);
+                fetchAndRenderClasses(); 
+            } else {
+                // Display error (e.g., "Class not found or access denied")
+                alert('Deletion Failed: ' + data.message);
+                closeModal(deleteConfirmationModal);
+            }
+        })
+        .catch(error => {
+            console.error('Deletion error:', error);
+            alert('An unexpected network error occurred.');
+        })
+        .finally(() => {
+            // Reset button and state
+            confirmDeleteBtn.disabled = false;
+            confirmDeleteBtn.textContent = 'Delete Permanently';
+            currentClassIdToDelete = null;
+        });
+    });
 });
