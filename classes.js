@@ -17,6 +17,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Success Modal Elements
     const successModal = document.getElementById('successModal');
+    const addAnotherClassBtn = document.getElementById('addAnotherClassBtn');
+    const viewClassBtn = document.getElementById('viewClassBtn'); // CRITICAL: Added selector
     
     // DELETE Modal Selectors
     const deleteConfirmationModal = document.getElementById('deleteConfirmationModal');
@@ -157,6 +159,15 @@ document.addEventListener('DOMContentLoaded', function() {
         closeModal(successModal);
         openModal(addClassModal);
     });
+    
+    // FIX: Add click listener for 'View Class & Edit' button
+    if (viewClassBtn) {
+        viewClassBtn.addEventListener('click', function() {
+            closeModal(successModal);
+            // Optionally, you might scroll to the newly added class here
+            // For now, it just closes the success modal and returns to the list view.
+        });
+    }
 
     // --- 3. Client-side Validation ---
 
@@ -202,7 +213,7 @@ document.addEventListener('DOMContentLoaded', function() {
     endTimeInput.addEventListener('input', checkFormValidity);
 
 
-    // --- 5. Add Class Form Submission (AJAX) (No change) ---
+    // --- 5. Add Class Form Submission (AJAX) (No change in submission logic) ---
     addClassForm.addEventListener('submit', function(event) {
         event.preventDefault();
 

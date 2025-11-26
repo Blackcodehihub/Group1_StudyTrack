@@ -48,8 +48,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 loginMessages.textContent = 'Login successful! Redirecting...';
                 loginMessages.style.color = 'lime'; 
                 
-                // --- SUCCESS: Redirect to the Classes Page ---
-                window.location.href = 'Classes.html'; 
+                // --- SUCCESS: Redirect to the Home Page ---
+                window.location.href = 'HomeF.html'; 
             } else {
                 // This path is usually not hit, as errors are thrown above.
                 loginMessages.textContent = data.message || 'Login failed. Please try again.';
