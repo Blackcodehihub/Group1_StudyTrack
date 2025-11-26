@@ -39,27 +39,34 @@
 
             <form action="process_signup.php" method="POST" id="signupForm">
                 <div class="input-row">
-                    <div class="input-group">
-                        <input type="text" id="signup-first-name" placeholder="First Name" name="first_name" required>
-                    </div>
-                    <div class="input-group">
-                        <input type="text" id="signup-last-name" placeholder="Last Name" name="last_name" required>
-                    </div>
+                <div class="float-group">
+                    <input type="text" id="signup-first-name" name="first_name" required>
+                    <label for="signup-first-name">First Name</label>
                 </div>
 
-                <div class="input-group">
-                    <input type="email" id="signup-email" placeholder="Email" name="email" required>
+                <div class="float-group">
+                    <input type="text" id="signup-last-name" name="last_name" required>
+                    <label for="signup-last-name">Last Name</label>
+                </div>
                 </div>
 
-                <div class="input-group password-group">
-                    <input type="password" id="signup-password" placeholder="Password" name="password" required>
+                <div class="float-group">
+                    <input type="email" id="signup-email" name="email" required>
+                    <label for="signup-email">Email</label>
+                </div>
+
+                <div class="float-group password-group">
+                    <input type="password" id="signup-password" name="password" required>
+                    <label for="signup-password">Password</label>
                     <i class="fa-solid fa-eye-slash toggle-password" data-target="signup-password"></i>
                 </div>
-                
-                <div class="input-group password-group">
-                    <input type="password" id="signup-confirm-password" placeholder="Confirm Password" name="confirm_password" required>
+
+                <div class="float-group password-group">
+                    <input type="password" id="signup-confirm-password" name="confirm_password" required>
+                    <label for="signup-confirm-password">Confirm Password</label>
                     <i class="fa-solid fa-eye-slash toggle-password" data-target="signup-confirm-password"></i>
                 </div>
+
 
                 <div id="password-policy-feedback" style="display: none;"> 
                     <p id="feedback-message">Password Requirements:</p>
