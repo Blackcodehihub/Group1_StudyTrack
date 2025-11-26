@@ -1,4 +1,7 @@
 <?php
+// CRITICAL: Start the session to access $_SESSION['user_id']
+session_start();
+
 header('Content-Type: application/json');
 
 // 1. DATABASE CONFIGURATION (Reuse settings)
@@ -22,14 +25,22 @@ try {
      exit();
 }
 
-// 2. DEFINE USER ID (HARDCODED AS REQUESTED)
-// !!! MUST BE REPLACED WITH SESSION VARIABLE AFTER SIGN IN IS IMPLEMENTED !!!
-$current_user_id = 1; 
+// 2. DEFINE USER ID (NOW FROM SESSION)
+$current_user_id = $_SESSION['user_id'] ?? null; 
+
+// CRITICAL CHECK: If not logged in, return an empty list or error
+if (empty($current_user_id)) {
+    // If user is not logged in, we return a success status but an empty list.
+    // The frontend JS handles displaying the "no classes" message.
+    echo json_encode(['success' => true, 'classes' => []]);
+    exit();
+}
 
 
 // 3. FETCH CLASSES FOR THE USER
 try {
-    $sql = "SELECT subject_name, instructor, location, start_time, end_time, repeat_days
+    // Fetch the class_id now, so we can use it for the delete button in the future!
+    $sql = "SELECT class_id, subject_name, instructor, location, start_time, end_time, repeat_days
             FROM classes
             WHERE user_id = ?
             ORDER BY start_time ASC";
@@ -38,13 +49,7 @@ try {
     $stmt->execute([$current_user_id]);
     $classes = $stmt->fetchAll();
 
-    if (empty($classes)) {
-        // Return an empty array if no classes are found
-        echo json_encode(['success' => true, 'classes' => []]);
-    } else {
-        // Return the array of classes
-        echo json_encode(['success' => true, 'classes' => $classes]);
-    }
+    echo json_encode(['success' => true, 'classes' => $classes]);
 
 } catch (\PDOException $e) {
     error_log("Class fetching error: " . $e->getMessage());

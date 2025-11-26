@@ -32,11 +32,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const [hour, minute] = time24.split(':');
         const h = parseInt(hour);
         const ampm = h >= 12 ? 'PM' : 'AM';
-        const formattedH = h % 12 || 12; // Converts 0 to 12
+        const formattedH = h % 12 || 12; 
         return `${formattedH}:${minute} ${ampm}`;
     }
 
-    // --- RENDERER Function: Creates the HTML for the Repeater ---
+    // --- RENDERER Function: Creates the HTML for the Repeater (No change in logic) ---
     function renderClassItems(classes) {
         if (classes.length === 0) {
             classesListContainer.innerHTML = `
@@ -48,16 +48,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         const html = classes.map(cls => {
-            // Join repeat days with ' & ' for display (e.g., Mon & Tue)
             const days = cls.repeat_days ? cls.repeat_days.split(',').join(' & ') : 'N/A';
             const locationText = cls.location ? `, ${cls.location}` : '';
             const instructorText = cls.instructor ? ` by ${cls.instructor}` : '';
             
-            // Format times for display
             const formattedStartTime = formatTime(cls.start_time);
             const formattedEndTime = formatTime(cls.end_time);
             
-            // Note: The displayed class-time is simplified to the start time.
             return `
                 <div class="class-item" data-class-id="${cls.class_id}">
                     <div class="class-info">
@@ -79,7 +76,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- FETCH Function: Calls PHP and Renders ---
     function fetchAndRenderClasses() {
-        // Display a loading message
         classesListContainer.innerHTML = '<p style="text-align: center; color: var(--text-dim); margin-top: 20px;">Loading classes...</p>';
         
         fetch('fetch_classes.php')
@@ -101,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
     fetchAndRenderClasses();
 
 
-    // --- 3. Modal Open/Close Logic ---
+    // --- 3. Modal Open/Close Logic (No change) ---
 
     function openModal(modalToOpen) {
         modalToOpen.style.display = 'flex';
@@ -121,6 +117,10 @@ document.addEventListener('DOMContentLoaded', function() {
         saveClassBtn.disabled = true; 
         
         closeModal(successModal);
+        
+        // Ensure time fields have default values upon reset/open
+        startTimeInput.value = "09:00";
+        endTimeInput.value = "10:15";
     }
 
     // Attach listeners
@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
 
-    // Success Modal Handlers
+    // Success Modal Handlers (No change)
     successCloseBtn.addEventListener('click', () => closeModal(successModal));
     addAnotherClassBtn.addEventListener('click', function() {
         closeModal(successModal);
@@ -151,30 +151,41 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
 
-    // --- 4. Client-side Validation and Button Enabling ---
+    // --- 4. Client-side Validation and Button Enabling (CRITICAL UPDATE) ---
 
     function checkFormValidity() {
         let isValid = true;
 
-        if (subjectNameInput.value.trim() === '' || startTimeInput.value.trim() === '' || endTimeInput.value.trim() === '') {
+        // 1. Required field check (Subject Name)
+        if (subjectNameInput.value.trim() === '') {
             isValid = false;
         }
 
-        if (startTimeInput.value && endTimeInput.value) {
+        // 2. Required time checks
+        if (startTimeInput.value.trim() === '' || endTimeInput.value.trim() === '') {
+            isValid = false;
+        }
+
+        // 3. Time comparison check
+        if (isValid && startTimeInput.value && endTimeInput.value) {
+            // Compare time strings (HH:MM format). Must be strictly greater.
             if (startTimeInput.value >= endTimeInput.value) {
                 isValid = false;
             }
         }
         
+        // 4. Update the button status
         saveClassBtn.disabled = !isValid;
         return isValid;
     }
 
-    // --- 5. Repeat Days Toggle Logic ---
+    // --- 5. Repeat Days Toggle Logic (UPDATED) ---
     let selectedDays = new Set(); 
 
     dayButtons.forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function(e) {
+            e.preventDefault(); // <--- PREVENT DEFAULT FORM SUBMISSION/RELOAD
+            
             const day = this.getAttribute('data-day');
             if (selectedDays.has(day)) {
                 selectedDays.delete(day);
@@ -187,7 +198,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Attach listeners for live validation
+    // Attach listeners for live validation on form inputs
     subjectNameInput.addEventListener('input', checkFormValidity);
     startTimeInput.addEventListener('input', checkFormValidity);
     endTimeInput.addEventListener('input', checkFormValidity);
@@ -197,12 +208,13 @@ document.addEventListener('DOMContentLoaded', function() {
     addClassForm.addEventListener('submit', function(event) {
         event.preventDefault();
 
+        // Final check before sending data
         if (!checkFormValidity()) {
             formMessages.textContent = 'Please fill in required fields and ensure End Time is after Start Time.';
             formMessages.style.color = 'red';
             return;
         }
-
+        // If validation passed, clear messages
         formMessages.textContent = ''; 
 
         // Collect all form data
@@ -224,6 +236,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => {
             return response.json().then(data => {
                 if (!response.ok) {
+                    // This catches HTTP 400 (Client error) or 500 (Server error)
                     throw new Error(data.message || 'Server error occurred.');
                 }
                 return data;
@@ -235,11 +248,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 closeModal(addClassModal);
                 openModal(successModal);
                 
-                // *** IMPORTANT: REFRESH THE CLASS LIST ***
                 fetchAndRenderClasses(); 
 
             } else {
-                // Validation failed on server-side (PHP)
+                // This path should ideally be covered by the throw above, but is a safe fallback
                 formMessages.textContent = data.message || 'Failed to add class.';
                 if (data.errors) {
                     formMessages.innerHTML += '<ul style="margin-left: 20px; text-align: left;">' + data.errors.map(err => `<li>${err}</li>`).join('') + '</ul>';
@@ -249,8 +261,12 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => {
             console.error('Fetch error:', error);
-            formMessages.textContent = `An unexpected error occurred: ${error.message}`;
+            // Display error from PHP (e.g., "User not logged in" or "Database connection failed")
+            formMessages.textContent = `Error: ${error.message}`;
             formMessages.style.color = 'red';
         });
     });
+    
+    // Initial check when script loads
+    checkFormValidity();
 });
