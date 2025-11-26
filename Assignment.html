@@ -6,6 +6,7 @@
     <title>StudyTrack - Assignment</title>
     <link rel="icon" href="fav logo.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<<<<<<< HEAD
     <style>
         :root {
             --bg: #121212;
@@ -399,12 +400,490 @@
             background: #e0b020;
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(243, 194, 41, 0.5);
-        }
+=======
+<style>
+    :root {
+        --bg: #121212;
+        --card: #1b1b1b;
+        --text: #ffffff;
+        --text-dim: #b5b5b5;
+        --accent: #f3c229;
+        --border: #333333;
+        --sidebar-bg: #1b1b1b;
+    }
+    .light-theme {
+        --bg: #ffffff;
+        --card: #f5f5f5;
+        --text: #000000;
+        --text-dim: #555555;
+        --border: #cccccc;
+        --sidebar-bg: #f0f0f0;
+    }
 
-        textarea {
-            height: 80px;
-            resize: none;
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
+    body { 
+        background:var(--bg); 
+        color:var(--text); 
+        min-height:100vh; 
+        display:flex; 
+        transition:all .3s;
+        overflow: auto;
+    }
+
+    /* ==================== SIDEBAR (IDENTICAL TO HOME) ==================== */
+    .sidebar {
+        width:235px;
+        background:var(--sidebar-bg);
+        padding:30px 20px;
+        border-right:1px solid var(--border);
+        position:fixed;
+        height:93%;
+        z-index:10;
+        overflow-y: none;
+        margin-top:27px;
+        border-top-right-radius:45px;
+        border-bottom-right-radius:45px;
+        transition:left .3s ease;
+        justify-content: space-between;
+    }
+    .nav-menu {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 85%;
+    }
+    .logo img { height: 95px; display:block; margin-top: -2px;  }
+    .nav-menu a {
+        display:flex; align-items:center; gap:15px; padding:12px 18px;
+        border-top-left-radius:14px; border-bottom-left-radius:14px;
+        color:var(--text-dim); text-decoration:none; font-size:15px; transition:all .3s;
+    }
+    .nav-menu {
+        margin-top: 12px;
+        
+    }
+    .nav-menu a:hover, .nav-menu a.active { background:var(--bg); color:var(--text); width: 240px;}
+    .nav-menu a.active { color:var(--text);}
+    .nav-menu img { width:22px; height:22px; opacity:0.7; }
+    .nav-menu a:hover img, .nav-menu a.active img { opacity:1; }
+
+            /* Inactive links = white icons (dark theme) */
+    .nav-menu a:not(.active) img {
+        filter: brightness(0) invert(1);
+    }
+
+    /* Inactive links = black icons (light theme) */
+    .light-theme .nav-menu a:not(.active) img {
+        filter: none;
+    }
+
+    /* Active link – your existing look */
+
+    .nav-menu a.active img {
+        filter: brightness(0) invert(1);
+    }
+
+    .light-theme .nav-menu a.active img {
+        filter: invert(0);
+    }
+
+
+    /* ==================== MAIN CONTENT ==================== */
+    .main-content {
+        margin-left:260px;
+        padding:30px;
+        width:calc(100% - 260px);
+        transition:all .3s;
+    }
+    .container { max-width:1350px; margin:0 auto; }
+
+    /* ==================== HEADER ==================== */
+    .header {
+        display:flex; align-items:center; gap:15px; margin-bottom:30px; position:relative;
+    }
+    .greeting h2 { font-size:28px; font-weight:700; color:var(--accent); margin-bottom:4px; }
+    .greeting p { color:var(--text-dim); font-size:15px; }
+
+    /* ==================== THEME TOGGLE ==================== */
+    .theme-toggle {
+        margin-left:auto; background:var(--card); padding:12px; border-radius:50%;
+        cursor:pointer; width:50px; height:50px; display:flex; align-items:center; justify-content:center;
+    }
+    .theme-toggle img { width:42px; height:28px; }
+
+    /* ==================== HAMBURGER ==================== */
+    .hamburger {
+        display:none; font-size:28px; background:var(--card); color:var(--text);
+        border:1px solid var(--border); padding:8px 12px; border-radius:10px; cursor:pointer;
+    }
+
+    /* ==================== CLASSES PAGE SPECIFIC STYLES ==================== */
+    .card { background:var(--card); padding:28px; border-radius:18px; border:1px solid var(--border); }
+
+    .classes-header-row {
+        display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;
+    }
+    .classes-header-row h3 { font-size:20px; font-weight:600; }
+    .add-class-btn {
+        background:var(--card); border:1px solid var(--border); color:var(--text);
+        padding:10px 24px; border-radius:30px; font-size:14px; cursor:pointer; transition:all .3s;
+    }
+    .add-class-btn:hover { background:var(--accent); color:#000; }
+
+    .classes-subtitle {
+        color:var(--text-dim); font-size:14px; margin-bottom:20px;
+    }
+
+    .class-item {
+        background:var(--card); border:1px solid var(--border); border-radius:16px;
+        padding:18px; display:flex; align-items:center; justify-content:space-between;
+        position:relative; margin-top:20px;
+    }
+    .class-info { display:flex; align-items:center; gap:16px; }
+    .class-info img { width:42px; height:42px; filter:invert(1); }
+    .light-theme .class-info img { filter:invert(0); }
+    .class-info h4 { margin:0; font-size:16px; font-weight:600; }
+    .class-info p { margin:4px 0 0; font-size:13px; color:var(--text-dim); }
+    .due-time { text-align:center; font-weight:600; font-size:15px; }
+    .priority-level {
+        background-color: #a61d1d56;      
+        padding: 6px 16px;
+        border-radius: 20px;
+        display: inline-block;
+        margin-top: 6px;
+    }
+
+    .priority-level p {
+        color: #F43434;                
+        font-size: 15px;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .delete-btn {
+        position:absolute; top:-15px; right:-2px;
+        background:#ff4d4f; color:white; border:none; border-radius:50%;
+        width:30px; height:30px; cursor:pointer; font-size:16px;
+        display:flex; align-items:center; justify-content:center;
+        transition:background .3s;
+    }
+    .delete-btn:hover { background:#ff1f1f; }
+
+    .edit-btn {
+        position: absolute;
+        top: -15px;
+        right: 35px;
+        background: #007efd;
+        border: none;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: 0.25s;
+        color: white;
+    }
+
+    .edit-btn:hover {
+        background: #0057ad;
+    }
+
+    .edit-btn svg {
+        width: 15px;
+        height: 15px;
+}
+
+    /* ==================== RESPONSIVE ==================== */
+    @media (max-width: 900px) {
+        .hamburger { display:block; }
+        .theme-toggle {
+         position: absolute;
+        top: 0;
+        right: 0;
+        transform: none;
+        margin: 0;
+    }
+        .sidebar {
+            position:fixed; height:100%; left:-260px; top:0; margin-top:0;
+            border-radius:0; transition:left .3s ease; z-index:1000;
         }
+        .sidebar.active { left:0; }
+        .main-content {
+            margin-left:0 !important; width:100% !important; padding:20px;
+>>>>>>> 9c04a768bae3747b51ff893699b20fd837b17ee5
+        }
+        .main-content.shift { transform:translateX(260px); }
+    }
+
+    @media (max-width: 768px) {
+        .classes-header-row { flex-direction:column; align-items:flex-start; gap:10px; }
+        .theme-toggle {
+         position: absolute;
+        top: 0;
+        right: 0;
+        transform: none;
+        margin: 0;
+    }
+        .class-item { flex-direction:column; align-items:flex-start; gap:10px; }
+        .class-time { text-align:left; }
+    }
+
+    @media (max-width: 480px) {
+        .header { flex-direction:column; align-items:flex-start; gap:10px; }
+        .theme-toggle {
+         position: absolute;
+        top: 0;
+        right: 0;
+        transform: none;
+        margin: 0;
+    }
+        .greeting h2 { font-size:clamp(20px,5vw,26px); }
+        .add-class-btn { padding:8px 16px; font-size:13px; }
+        .card { padding:20px; }
+    }
+
+        /* ==================== RESPONSIVE ADD CLASS MODAL ==================== */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.75);
+        backdrop-filter: blur(8px);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        overflow-y: auto;
+    }
+
+    .modal {
+        background: var(--card);
+        width: 100%;
+        max-width:560px;
+        border-radius: 20px;
+        padding: 28px 24px;
+        position: relative;
+        border: 1px solid var(--border);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+        margin-top: -12px;
+    }
+    .modal-header h3 {
+        font-size: 20px;
+        font-weight: 600;
+    }
+    .close-modal {
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        color:  var(--text-dim);
+        width: 25px;
+        height: 25px;
+        display: flex;
+        align-items: right;
+        justify-content: right;
+        border-radius: 50%;
+        
+    }
+
+    .modal label {
+        margin-top: -5px;
+        display: block;
+        margin-bottom: 8px;
+        font-size: 14px;
+        color: var(--text-dim);
+        font-weight: 500;
+    }
+
+    .modal input, .modal select {
+        width: 100%;
+        padding: 14px 16px;
+        background: #2a2a2a;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        color: var(--text);
+        font-size: 15px;
+        margin-bottom: 18px;
+    }
+
+    .modal input[type="time"] {
+        cursor: pointer;
+    }
+    .light-theme .modal input,
+    .light-theme .modal select {
+        background: #f0f0f0;
+        color: #000;
+    }
+
+    .time-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        margin-bottom: 18px;
+    }
+
+    /* Time picker clock icon color follows theme */
+    input[type="time"]::-webkit-calendar-picker-indicator {
+        filter: brightness(0) invert(1); /* White in dark mode */
+        cursor: pointer;
+    }
+
+    /* When light theme is active → make clock icon black */
+    .light-theme input[type="time"]::-webkit-calendar-picker-indicator {
+        filter: none;
+    }
+
+    /* Optional: bigger & nicer click area */
+    input[type="time"]::-webkit-calendar-picker-indicator {
+        margin-right: -8px;
+    }
+
+    .priority-row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin: 10px 0 22px;
+    }
+
+    .reminder-row {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .reminder-btn {
+        padding: 8px 14px;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        color: white;
+        background-color: #4b4b4b;
+    }
+
+    .reminder-row select { flex: 1; width: 510px; margin-bottom: 0; 
+    padding-right: 48px !important;        /* gives space for the arrow */
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23b5b5b5' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat !important;
+        background-position: right 16px center !important;  
+        background-size: 18px !important;
+        appearance: none;                       
+        -webkit-appearance: none;
+        -moz-appearance: none;
+    }
+
+    .light-theme .reminder-row select {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23000000' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    }
+
+    .reminder-row select option:hover {
+        background: var(--accent) !important;
+        color: var(--text) !important;
+    }
+
+
+
+    .modal-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 28px;
+    }
+    .btn-cancel, .btn-save {
+        flex: 1;
+        padding: 14px 20px;
+        border-radius: 30px;
+        transition: all 0.3s ease;        
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        text-align: center;
+    }
+    .btn-cancel {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--text-dim);
+        transition: all 0.3s ease;        
+    }
+
+    .btn-cancel:hover {
+        background: var(--accent);
+        color: #000;
+        border-color: var(--accent);
+        transform: translateY(-2px);
+    }
+
+    .btn-save {
+        background: var(--accent);
+        border: none;
+        color: #000;
+    }
+
+    .btn-save:hover {
+        background: #e0b020;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(243, 194, 41, 0.5);
+    }
+
+    input, textarea {
+        width: 100%;
+        background: #2b2b2b;
+        border: none;
+        outline: none;
+        padding: 12px;
+        border-radius: 10px;
+        color: #fff;
+        font-size: 1em;
+    }
+
+    textarea {
+        height: 80px;
+        resize: none;
+        margin-bottom: 10px;
+    }
+    
+    .row {
+        display: flex;
+        gap: 15px;
+    }
+
+    .priority-row {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .priority-btn {
+        padding: 8px 14px;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        color: white;
+    }
+    
+    .priority-btn.low { background: #4b4b4b; }
+    .priority-btn.med { background: #6d6d6d; }
+    .priority-btn.high { background: #ff3b3b; }
+
+
+    /* Responsive Adjustments */
+    @media (max-width: 480px) {
+        .modal {
+            padding: 24px 20px;
+            border-radius: 16px;
+        }
+<<<<<<< HEAD
 
         /* ==================== SUCCESS MODAL ==================== */
         .success-modal {
@@ -625,24 +1104,224 @@
                 padding: 16px;
                 font-size: 15.5px;
             }
+=======
+        .time-row {
+            grid-template-columns: 1fr;
         }
-    </style>
+        .modal-actions {
+            flex-direction: column;
+        }
+        .day-btn {
+            min-width: 44px;
+            height: 44px;
+            font-size: 13px;
+        }
+        .reminder-row {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .reminder-row a {
+            text-align: center;
+            margin-top: 8px;
+        }
+    }
+
+    /* Success Modal - Fully Responsive */
+    .success-modal {
+        max-width: 500px;
+        width: 90%;
+        margin: 20px;
+        padding: 40px 32px;
+        text-align: center;
+        border-radius: 24px;
+        border: 1px solid var(--border);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        animation: modalPop 0.4s ease-out;
+    }
+
+    @keyframes modalPop {
+        0% { transform: scale(0.9); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+    .success-close {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        color:  var(--text-dim);
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        font-size: 20px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.2s;
+        backdrop-filter: blur(4px);
+        z-index: 1;
+    }
+
+
+    .success-icon {
+        width: 90px;
+        height: 90px;
+        background: #28a745;
+        border-radius: 50%;
+        margin: 0 auto 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+    }
+
+    .success-content h3 {
+        font-size: 26px;
+        font-weight: 700;
+        margin-bottom: 14px;
+        line-height: 1.2;
+    }
+
+    .success-content p {
+        color: var(--text-dim);
+        font-size: 15px;
+        line-height: 1.6;
+        margin-bottom: 32px;
+        padding: 0 10px;
+    }
+
+    /* Responsive Button Layout */
+    .success-actions {
+        display: flex;
+        gap: 14px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-secondary,
+    .btn-primary {
+        padding: 14px 28px;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 15px;
+        cursor: pointer;
+        min-height: 52px;
+        transition: all 0.3s ease;
+        flex: 1;
+        min-width: 145px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .btn-secondary {
+        background: var(--card);
+        color: var(--text);
+        border: 1.5px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+        background: var(--accent);
+        color: #000;
+        border-color: var(--accent);
+        transform: translateY(-2px);
+    }
+
+    .btn-primary {
+        background: var(--accent);
+        color: #000;
+        border: none;
+        box-shadow: 0 4px 15px rgba(243, 194, 41, 0.4);
+    }
+
+    .btn-primary:hover {
+        background: #e0b020;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(243, 194, 41, 0.5);
+    }
+
+/* Mobile Optimization */
+    @media (max-width: 480px) {
+        .success-modal {
+            padding: 32px 24px;
+            margin: 15px;
+            border-radius: 20px;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+        }
+
+        .success-content h3 {
+            font-size: 23px;
+        }
+
+        .success-content p {
+            font-size: 14.5px;
+            margin-bottom: 28px;
+        }
+
+        .success-actions {
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn-secondary,
+        .btn-primary {
+            width: 100%;
+            padding: 16px;
+            font-size: 15.5px;
+        }
+
+        .success-close {
+            width: 36px;
+            height: 36px;
+            font-size: 18px;
+            top: 12px;
+            right: 12px;
+        }
+    }
+
+    @media (max-width: 350px) {
+        .success-content h3 {
+            font-size: 21px;
+>>>>>>> 9c04a768bae3747b51ff893699b20fd837b17ee5
+        }
+        .success-content p {
+            font-size: 14px;
+        }
+    }
+</style>
 </head>
 <body>
 
+<<<<<<< HEAD
     <!-- Sidebar -->
+=======
+    <!-- Sidebar - Now matches Home perfectly -->
+>>>>>>> 9c04a768bae3747b51ff893699b20fd837b17ee5
     <aside class="sidebar" id="sidebar">        
         <div class="logo">
             <a href="HomeF.html"><img src="logo.png" alt="StudyTrack"></a>
         </div>
         <div class="nav-menu">
             <div class="top-nav">
+<<<<<<< HEAD
                 <a href="HomeF.html"><img src="home.png" alt=""> Home</a>
                 <a href="Classes.html"><img src="class.png" alt=""> Classes</a>
                 <a href="Assignment.html" class="active"><img src="assignment.png" alt=""> Assignment</a>
                 <a href="Reminder.html"><img src="reminder.png" alt=""> Reminder</a>
                 <a href="Wallet.html"><img src="wallet.png" alt=""> Wallet</a>
                 <a href="Habits.html"><img src="streak.png" alt=""> Habit</a>
+=======
+            <a href="HomeF.html" ><img src="home.png" alt=""> Home</a>
+            <a href="Classes.html" ><img src="class.png" alt=""> Classes</a>
+            <a href="Assignment.html" class="active"><img src="assignment.png" alt=""> Assignment</a>
+            <a href="Reminder.html" ><img src="reminder.png" alt=""> Reminder</a>
+            <a href="Wallet.html"><img src="wallet.png" alt=""> Wallet</a>
+            <a href="Habits.html"><img src="streak.png" alt=""> Habit</a>
+>>>>>>> 9c04a768bae3747b51ff893699b20fd837b17ee5
             </div>
             <div class="bot-nav">
                 <a href="Settings.html"><img src="settings.png" alt=""> Settings</a>
@@ -650,7 +1329,6 @@
             </div>
         </div>
     </aside>
-
     <!-- Main Content -->
     <div class="main-content">
         <div class="container">
@@ -659,7 +1337,11 @@
             <div class="header">
                 <button class="hamburger" id="hamburgerBtn">☰</button>
                 <div class="greeting">
+<<<<<<< HEAD
                     <h2><strong style="color: var(--border);">Your</strong> Assignment</h2>
+=======
+                    <h2><strong style="color: var(--border);">Your</strong> Assignemnt</h2>
+>>>>>>> 9c04a768bae3747b51ff893699b20fd837b17ee5
                     <p>Stay on top of due dates and priorities</p>
                 </div>
                 <button class="theme-toggle" id="themeToggle">
@@ -667,6 +1349,7 @@
                 </button>
             </div>
 
+<<<<<<< HEAD
             <!-- Assignments Card -->
             <div class="card">
                 <div class="assignments-header-row">
@@ -681,11 +1364,44 @@
                 <!-- Empty State -->
                 <div id="emptyState" style="text-align: center; padding: 40px 20px; color: var(--text-dim); font-size: 15px;">
                     No assignments yet. Click '+ Add Assignment' to create one!
+=======
+            <!-- Classes Card -->
+            <div class="card">
+                <div class="classes-header-row">
+                    <h3>Assignment</h3>
+                    <button class="add-class-btn" id="openModalBtn">+ Add Assignemnt</button>
+                </div>
+                <div class="classes-subtitle">fill in the basics now, you can adjust it later.</div>
+
+                <div class="class-item">
+                    <div class="class-info">
+                        <img src="book.png" alt="Book">
+                        <div>
+                            <h4>CS 201, Linked lists</h4>
+                            <p>CS 201, Data Structures, 1200- 1500 words, online submission</p>
+                        </div>
+                    </div>
+                    <div class="due-time">
+                        <h3>Due Today, 11:59</h3> 
+                        <div class="priority-level">
+                            <p>High Priority</p>
+                        </div>
+                    </div>
+                    <button class="edit-btn" title="Edit Reminder">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 20h9"></path>
+                            <path d="M16.5 3.5l4 4L7 21l-4 1 1-4L16.5 3.5z"></path>
+                        </svg>
+                    </button>
+                    <button class="delete-btn">×</button>
+>>>>>>> 9c04a768bae3747b51ff893699b20fd837b17ee5
                 </div>
             </div>
         </div>
     </div>
 
+<<<<<<< HEAD
     <!-- Add Assignment Modal -->
     <div class="modal-overlay" id="addAssignmentModal">
         <div class="modal">
@@ -709,8 +1425,34 @@
                     <label>Due Time</label>
                     <input type="time" id="assignmentDueTime" value="23:59" required>
                 </div>
-            </div>
+=======
+    <!-- Add Assignment Modal (Fully Responsive) -->
+<div class="modal-overlay" id="addClassModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>Add Assignemnt</h3>
+            <button class="close-modal" id="closeModalBtn">X</button>
+        </div>
 
+        <label>Title</label>
+        <input type="text" placeholder="CS 201, Data Structures">
+
+        <label>Class</label>
+        <input type="text" placeholder="Prof. Jane">
+
+        <div class="time-row">
+            <div>
+                <label>Due Date</label>
+                <input type="date" required>
+>>>>>>> 9c04a768bae3747b51ff893699b20fd837b17ee5
+            </div>
+            <div>
+                <label>Due Time</label>
+                <input type="time" value="10:15" required>
+            </div>
+        </div>
+
+<<<<<<< HEAD
             <!-- ✅ PRIORITY (Modern Reminder-style) -->
             <label style="margin-top: 10px;">Priority</label>
             <div class="priority-row">
@@ -724,19 +1466,75 @@
 
             <!-- ✅ REMINDER (Modern Reminder-style) -->
             <label>Reminder</label>
+=======
+        <label style="margin-top: -22px;">Priority</label>
+        <div class="priority-row">
+                <button class="priority-btn low">Low</button>
+                <button class="priority-btn med">Medium</button>
+                <button class="priority-btn high">High</button>
+        </div>
+
+        <label>Notes</label>
+        <textarea placeholder="Write your notes..."></textarea>
+
+
+        <div>
+        <label>Reminder</label>
+>>>>>>> 9c04a768bae3747b51ff893699b20fd837b17ee5
             <div class="reminder-row">
                 <button type="button" class="reminder-btn active" data-reminder="1_day">1 day before</button>
                 <button type="button" class="reminder-btn" data-reminder="3_days">3 days before</button>
                 <button type="button" class="reminder-btn" data-reminder="1_week">1 week before</button>
             </div>
+        </div>
 
+<<<<<<< HEAD
             <div class="modal-actions">
                 <button class="btn-cancel" id="cancelBtn">Cancel</button>
                 <button class="btn-save" id="saveAssignmentBtn">Save Assignment</button>
+=======
+
+        <div class="modal-actions">
+            <button class="btn-cancel" id="cancelBtn">Cancel</button>
+            <button class="btn-save">
+                 Save Assignemnt</button>
+        </div>
+    </div>
+</div>
+
+<!-- Success Modal - Class Saved (100% Responsive) -->
+<div class="modal-overlay" id="successModal" style="display: none;">
+    <div class="modal success-modal">
+        <button class="close-modal success-close" id="successCloseBtn" aria-label="Close">X</button>
+        
+        <div class="success-content">
+            <!-- Checkmark Icon -->
+            <div class="success-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 6 L9 17 L4 12"></path>
+                </svg>
+            </div>
+            
+            <h3>Assignemnt Saved</h3>
+            <p>
+                Your timetable and reminders have been updated for <br>this Assignment
+            </p>
+
+            <!-- Action Buttons - Stack vertically on small screens -->
+            <div class="success-actions">
+                <button class="btn-secondary" id="addAnotherClassBtn">
+                    Add Assignemnt
+                </button>
+                <button class="btn-primary" id="viewClassBtn">
+                    View Assignemnt
+                </button>
+>>>>>>> 9c04a768bae3747b51ff893699b20fd837b17ee5
             </div>
         </div>
     </div>
+</div>  
 
+<<<<<<< HEAD
     <!-- Success Modal -->
     <div class="modal-overlay" id="successModal">
         <div class="modal success-modal">
@@ -757,6 +1555,8 @@
         </div>
     </div>
 
+=======
+>>>>>>> 9c04a768bae3747b51ff893699b20fd837b17ee5
     <!-- Scripts -->
     <script>
         // Theme Toggle
@@ -796,6 +1596,7 @@
                 mainContent.classList.remove('shift');
             }
         });
+<<<<<<< HEAD
 
         // Modal Controls
         const openModalBtn = document.getElementById('openModalBtn');
@@ -995,5 +1796,80 @@
         </div>
     </div>
 </div>
+=======
+
+        // Hamburger Menu
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.querySelector('.main-content');
+
+        hamburgerBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            sidebar.classList.toggle('active');
+            mainContent.classList.toggle('shift');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (sidebar.classList.contains('active') && 
+                !sidebar.contains(e.target) && 
+                !hamburgerBtn.contains(e.target)) {
+                sidebar.classList.remove('active');
+                mainContent.classList.remove('shift');
+            }
+        });
+
+        // ========== MODAL CONTROL ==========
+const openModalBtn = document.getElementById('openModalBtn');
+const modal = document.getElementById('addClassModal');
+const closeModalBtn = document.getElementById('closeModalBtn');
+const cancelBtn = document.getElementById('cancelBtn');
+
+function openModal() {
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+openModalBtn.addEventListener('click', openModal);
+closeModalBtn.addEventListener('click', closeModal);
+cancelBtn.addEventListener('click', closeModal);
+
+// Close when clicking outside the modal content
+modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+});
+
+// Day buttons toggle
+document.querySelectorAll('.day-btn').forEach(btn => {
+    btn.addEventListener('click', () => btn.classList.toggle('active'));
+});
+
+document.querySelector('.btn-save').addEventListener('click', function() {
+    closeModal();
+    document.getElementById('successModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+});
+
+document.getElementById('successCloseBtn').addEventListener('click', () => {
+    document.getElementById('successModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+});
+
+document.getElementById('addAnotherClassBtn').addEventListener('click', () => {
+    document.getElementById('successModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+    openModal();
+});
+
+document.getElementById('viewClassBtn').addEventListener('click', () => {
+    document.getElementById('successModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+    // Future: scroll to newly added class or open edit modal
+});
+    </script>
+>>>>>>> 9c04a768bae3747b51ff893699b20fd837b17ee5
 </body>
 </html>
