@@ -18,7 +18,7 @@
             --sidebar-bg: #1b1b1b;
             --income-green: #28a745;
             --expense-red: #dc3545;
-            --modal-bg: #1c1c1c; 
+            --modal-bg: #1c1c1c;
         }
         .light-theme {
             --bg: #ffffff;
@@ -27,6 +27,7 @@
             --text-dim: #555555;
             --border: #cccccc;
             --sidebar-bg: #f0f0f0;
+            --modal-bg: #f9f9f9;
         }
 
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
@@ -282,7 +283,7 @@
             width: 480px;
             padding: 25px;
             border-radius: 20px;
-            color: white;
+            color: var(--text);
             position: relative;
             animation: fadeIn 0.3s ease;
             border: 1px solid var(--border);
@@ -321,6 +322,9 @@
             border-radius: 12px;
             padding: 5px;
             margin-bottom: 25px;
+        }
+        .light-theme .type-selector {
+            background: #e0e0e0;
         }
         .type-selector button {
             flex: 1;
@@ -391,6 +395,7 @@
             transition: background 0.2s;
         }
         .category-item:hover { background: #2a2a2a; }
+        .light-theme .category-item:hover { background: #e0e0e0; }
         .category-item i {
             font-size: 24px;
             color: var(--text);
@@ -402,6 +407,10 @@
             border-radius: 50%;
             background: #2a2a2a;
             margin: 0 auto 8px;
+        }
+        .light-theme .category-item i {
+            background: var(--card);
+            color: var(--text);
         }
         .category-item p {
             font-size: 12px;
@@ -430,6 +439,11 @@
         .modal-actions .cancel-btn, .delete-modal-buttons .cancel-btn {
             background: #3a3a3a;
             color: var(--text);
+        }
+        .light-theme .modal-actions .cancel-btn,
+        .light-theme .delete-modal-buttons .cancel-btn {
+            background: #e0e0e0;
+            color: #333;
         }
         .modal-actions .add-record-btn { background: var(--accent); color: #000; }
         .delete-modal-buttons .confirm-delete-btn {
@@ -476,6 +490,40 @@
             line-height: 1.5;
         }
 
+        /* SCROLLABLE RECENT TRANSACTIONS */
+        .recent-transactions-container {
+            max-height: 160px;
+            overflow-y: auto;
+            padding-right: 8px;
+            padding-bottom: 8px; /* Prevent last item from being hidden */
+        }
+
+        /* Custom scrollbar styling */
+        .recent-transactions-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        .recent-transactions-container::-webkit-scrollbar-track {
+            background: var(--card);
+            border-radius: 10px;
+        }
+        .recent-transactions-container::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 10px;
+        }
+        .recent-transactions-container::-webkit-scrollbar-thumb:hover {
+            background: var(--text-dim);
+        }
+
+        /* Ensure card container has fixed height to trigger scroll */
+        .card.recent-list-card {
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+        }
+        .card.recent-list-card > h4 {
+            margin-bottom: 10px;
+        }
+
         /* RESPONSIVE */
         @media (max-width: 900px) {
             .hamburger { display:block; }
@@ -498,6 +546,9 @@
             .balance-card .amount { font-size: 50px; }
             .transaction-item { padding: 12px 0; }
             .record-modal, .delete-modal { width: 90%; padding: 25px; }
+            .recent-transactions-container {
+                max-height: 140px;
+            }
         }
     </style>
 </head>
@@ -558,9 +609,11 @@
                         </div>
                         <div class="value amount-income">₱ 0</div>
                     </div>
-                    <div class="card">
-                        <h4 style="margin-bottom: 20px; font-weight: 600;">Recent Income</h4>
-                        <!-- Will be filled dynamically -->
+                    <div class="card recent-list-card">
+                        <h4 style="margin-bottom: 10px; font-weight: 600;">Recent Income</h4>
+                        <div class="recent-transactions-container" id="recentIncomeContainer">
+                            <!-- Will be filled dynamically -->
+                        </div>
                     </div>
                 </div>
 
@@ -573,9 +626,11 @@
                         </div>
                         <div class="value amount-expense">₱ 0</div>
                     </div>
-                    <div class="card">
-                        <h4 style="margin-bottom: 20px; font-weight: 600;">Recent Expense</h4>
-                        <!-- Will be filled dynamically -->
+                    <div class="card recent-list-card">
+                        <h4 style="margin-bottom: 10px; font-weight: 600;">Recent Expense</h4>
+                        <div class="recent-transactions-container" id="recentExpenseContainer">
+                            <!-- Will be filled dynamically -->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -728,9 +783,15 @@
 
         // Render list — handles empty state naturally
         function renderTransactionList(container, records, type) {
+            // Get the actual scrollable container inside the card
+            let scrollContainer = container;
+            if (container.id !== 'recentIncomeContainer' && container.id !== 'recentExpenseContainer') {
+                // If not already the scroll container, find it
+                scrollContainer = container.querySelector('.recent-transactions-container') || container;
+            }
+
             const header = container.querySelector('h4');
-            container.innerHTML = '';
-            if (header) container.appendChild(header);
+            scrollContainer.innerHTML = ''; // Clear only the scroll area
 
             const fragment = document.createDocumentFragment();
             const recentRecords = records.slice(-3);
@@ -776,9 +837,10 @@
                 });
             }
 
-            container.appendChild(fragment);
+            scrollContainer.appendChild(fragment);
 
-            container.querySelectorAll('.delete-btn').forEach(btn => {
+            // Reattach delete event listeners
+            scrollContainer.querySelectorAll('.delete-btn').forEach(btn => {
                 btn.removeEventListener('click', handleDeleteRecord);
                 btn.addEventListener('click', handleDeleteRecord);
             });
@@ -804,10 +866,10 @@
             document.querySelector('.expense-summary .value').textContent = 
                 `₱ ${walletData.totalExpense.toLocaleString(undefined, { minimumFractionDigits: 0 })}`;
 
-            const incomeContainer = document.querySelectorAll('.grid-layout > div')[0].querySelector('.card:last-child');
+            const incomeContainer = document.getElementById('recentIncomeContainer');
             renderTransactionList(incomeContainer, walletData.incomeRecords, 'income');
 
-            const expenseContainer = document.querySelectorAll('.grid-layout > div')[1].querySelector('.card:last-child');
+            const expenseContainer = document.getElementById('recentExpenseContainer');
             renderTransactionList(expenseContainer, walletData.expenseRecords, 'expense');
         }
 

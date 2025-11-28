@@ -70,7 +70,6 @@
         .nav-menu a:hover img, .nav-menu a.active img { opacity:1; }
         .nav-menu a:not(.active) img { filter: brightness(0) invert(1); }
         .light-theme .nav-menu a:not(.active) img { filter: none; }
-        .nav-menu a.active img { filter: brightness(0) invert(1); }
         .light-theme .nav-menu a.active img { filter: invert(0); }
 
         .main-content {
@@ -339,8 +338,10 @@
             width: 0%;
             background: var(--accent);
             border-radius: 6px;
+            transition: width 0.5s ease; /* Added */
         }
 
+        /* ✅ FIXED: Added smooth transition to spending bar */
         .spending-bar {
             height: 20px;
             background: #2d2d2d;
@@ -349,9 +350,11 @@
             margin-top: 15px;
         }
         .spending-fill {
-            height:100%;
-            width:0%;
-            background:var(--accent);
+            height: 100%;
+            width: 0%;
+            background: var(--accent);
+            border-radius: 6px;
+            transition: width 0.5s ease; /* ✅ ADDED: Smooth animation */
         }
 
         /* Responsive */
@@ -382,15 +385,6 @@
             .class-date-picker { width: 100%; }
             .days { width: 100%; }
             .class-box { flex-direction: row; }
-            .hamburger { left: 0;  position: absolute;}
-            .user-icon {
-                margin-top: 50px;
-            }
-          .circle-wrapper { position: absolute; right: 0; margin-right: 40px; margin-top: -160px;}
-          .circle-text { margin-left: 5px !important; margin-top: 1px !important;}
-          .habit-card {margin-bottom: 10px !important;}
-          .wallet-card {margin-bottom: 10px;}
-            
         }
         @media (max-width: 600px) {
             .card, .habit-card, .wallet-card, .overview-card { padding: 16px; }
@@ -596,7 +590,7 @@
             document.getElementById('income-this-month').textContent = `₱ ${wallet.totalIncome.toFixed(2)}`;
             document.getElementById('expense-this-month').textContent = `₱ ${wallet.totalExpense.toFixed(2)}`;
 
-            // Spending bar (% of income spent)
+            // Spending bar: % of income spent (capped at 100%)
             const spendRatio = wallet.totalIncome > 0 ? wallet.totalExpense / wallet.totalIncome : 0;
             const spendPct = Math.min(100, spendRatio * 100);
             document.getElementById('spending-fill-bar').style.width = `${spendPct.toFixed(1)}%`;
@@ -624,7 +618,6 @@
 
         // Simulated habit data (replace with habits_api.php later)
         function updateHabitUI() {
-            // 🔁 Replace with real API call when available
             const data = {
                 activeHabits: 10,
                 completedToday: 3,
@@ -666,14 +659,20 @@
             if (walletData && walletData.wallet) {
                 updateWalletUI(walletData.wallet);
             } else {
-                updateWalletUI({ balance: 0, totalIncome: 0, totalExpense: 0, incomeRecords: [], expenseRecords: [] });
+                updateWalletUI({ 
+                    balance: 0, 
+                    totalIncome: 0, 
+                    totalExpense: 0, 
+                    incomeRecords: [], 
+                    expenseRecords: [] 
+                });
             }
 
             // Update habits (simulated)
             updateHabitUI();
         }
 
-        // =============== EXISTING LOGIC (UNCHANGED) ===============
+        // =============== SIDEBAR & THEME ===============
         const hamburgerBtn = document.getElementById('hamburgerBtn');
         const sidebar = document.getElementById('sidebar');
         const mainContent = document.querySelector('.main-content');
@@ -710,6 +709,7 @@
             themeIcon.src = isLight ? 'moon.png' : 'sun.png';
         });
 
+        // =============== CALENDAR ===============
         const classDateInput = document.getElementById('classDate');
         const daysContainer = document.getElementById('daysContainer');
         classDateInput.valueAsDate = new Date();
@@ -736,6 +736,29 @@
 
         generateWeekDays(new Date());
         classDateInput.addEventListener('change', () => generateWeekDays(classDateInput.value));
+
+        // =============== ✅ ENHANCEMENTS: Auto-refresh on tab return / back navigation ===============
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                console.log('[Dashboard] Tab visible — refreshing data...');
+                loadDashboardData();
+            }
+        });
+
+        window.addEventListener('pageshow', (event) => {
+            if (event.persisted || (window.performance && window.performance.navigation && 
+                window.performance.navigation.type === 2)) {
+                // Reload after back/forward cache
+                setTimeout(() => {
+                    console.log('[Dashboard] pageshow (back nav) — refreshing...');
+                    loadDashboardData();
+                }, 300);
+            }
+        });
+
+        // Expose for external use (e.g., Wallet page can call `updateWalletUI()` via localStorage event later)
+        window.updateWalletUI = updateWalletUI;
+        window.loadDashboardData = loadDashboardData;
 
         // INIT
         document.addEventListener("DOMContentLoaded", () => {

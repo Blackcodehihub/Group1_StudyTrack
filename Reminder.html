@@ -530,6 +530,95 @@
         background: #ff1f1f;
         box-shadow: 0 6px 15px rgba(255,77,79,0.4);
     }
+
+    /* ✅ VALIDATION ERROR MODAL (NEW) */
+    .validation-modal {
+        background: #121212;
+        border: none;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+        max-width: 450px;
+        padding: 32px 28px;
+        border-radius: 16px;
+        text-align: center;
+    }
+    .validation-modal .modal-header {
+        justify-content: flex-end;
+    }
+    .validation-modal .close-modal {
+        color: #b5b5b5;
+        font-size: 20px;
+        width: 25px;
+        height: 25px;
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
+    .validation-modal .error-icon {
+        width: 60px;
+        height: 60px;
+        background: #ff4d4f;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        box-shadow: 0 0 10px rgba(255,77,79,0.5);
+    }
+    .validation-modal .error-icon svg {
+        stroke: #ffffff;
+        width: 48px;
+        height: 48px;
+        display: block;
+    }
+    .validation-modal h3 {
+        font-size: 20px;
+        font-weight: 700;
+        color: #ffffff;
+        text-align: center;
+        margin: 0 0 16px 0;
+    }
+    .validation-modal p {
+        color: #b5b5b5;
+        font-size: 15px;
+        line-height: 1.5;
+        text-align: center;
+        margin: 0 0 28px 0;
+    }
+    .validation-modal .modal-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 0;
+        justify-content: center;
+    }
+    .validation-modal .btn-cancel {
+        background: #2a2a2a;
+        border: 1px solid #333333;
+        color: #b5b5b5;
+        padding: 12px 24px;
+        border-radius: 30px;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+    .validation-modal .btn-cancel:hover {
+        background: #333333;
+        color: #ffffff;
+    }
+    .validation-modal .btn-save {
+        background: #ff4d4f;
+        border: none;
+        color: #ffffff;
+        padding: 12px 24px;
+        border-radius: 30px;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.2s;
+        box-shadow: 0 4px 10px rgba(255,77,79,0.3);
+    }
+    .validation-modal .btn-save:hover {
+        background: #ff1f1f;
+        box-shadow: 0 6px 15px rgba(255,77,79,0.4);
+    }
 </style>
 </head>
 <body>
@@ -675,6 +764,31 @@
             <div class="modal-actions">
                 <button class="btn-cancel" id="cancelDeleteBtn">Cancel</button>
                 <button class="btn-save" id="confirmDeleteBtn">Delete Permanently</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ VALIDATION ERROR MODAL (NEW) -->
+    <div class="modal-overlay" id="validationModal">
+        <div class="modal validation-modal">
+            <div class="modal-header">
+                <button class="close-modal" id="closeValidationModal">✕</button>
+            </div>
+
+            <div class="error-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+            </div>
+
+            <h3>Validation Error</h3>
+            <p id="validationMessage">Title cannot be empty.</p>
+
+            <div class="modal-actions">
+                <button class="btn-cancel" id="cancelValidationBtn">Cancel</button>
+                <button class="btn-save" id="tryAgainBtn">Try Again</button>
             </div>
         </div>
     </div>
@@ -867,6 +981,13 @@
             document.body.style.overflow = 'hidden';
         }
 
+        // ✅ SHOW VALIDATION ERROR MODAL
+        function showValidationError(message) {
+            document.getElementById('validationMessage').textContent = message;
+            document.getElementById('validationModal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
         // === EVENT LISTENERS ===
         document.getElementById('openModalBtn').addEventListener('click', openModal);
         document.getElementById('closeModalBtn').addEventListener('click', closeModal);
@@ -890,8 +1011,15 @@
             const priority = document.querySelector('.priority-btn.active')?.dataset.priority || 'medium';
             const notes = document.getElementById('reminderNotes').value.trim();
 
-            if (!title) return alert('Title is required.');
-            if (!dueDate) return alert('Due date is required.');
+            // ✅ VALIDATION USING MODAL INSTEAD OF ALERT
+            if (!title) {
+                showValidationError('Title cannot be empty.');
+                return;
+            }
+            if (!dueDate) {
+                showValidationError('Due date is required.');
+                return;
+            }
 
             const data = { title, due_date: dueDate, due_time: dueTime, remind_before: remindBefore, priority, notes };
 
@@ -906,8 +1034,26 @@
                 renderReminders();
             } catch (err) {
                 console.error(err);
-                alert('Error: ' + (err.message || 'Failed to save.'));
+                showValidationError('Error: ' + (err.message || 'Failed to save.'));
             }
+        });
+
+        // ✅ VALIDATION MODAL HANDLERS
+        document.getElementById('closeValidationModal').addEventListener('click', () => {
+            document.getElementById('validationModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+
+        document.getElementById('cancelValidationBtn').addEventListener('click', () => {
+            document.getElementById('validationModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+
+        document.getElementById('tryAgainBtn').addEventListener('click', () => {
+            document.getElementById('validationModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+            // Optionally, focus back on the first invalid field?
+            document.getElementById('reminderTitle').focus();
         });
 
         // ✅ DELETE MODAL HANDLERS (USING YOUR SVG)
@@ -935,7 +1081,7 @@
                 renderReminders();
             } catch (err) {
                 console.error(err);
-                alert('Failed to delete. Check console for details.');
+                showValidationError('Failed to delete. Check console for details.');
                 document.getElementById('deleteModal').style.display = 'none';
                 document.body.style.overflow = 'auto';
                 pendingDeleteId = null;
