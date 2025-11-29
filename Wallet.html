@@ -19,6 +19,11 @@
             --income-green: #28a745;
             --expense-red: #dc3545;
             --modal-bg: #1c1c1c;
+            --error-modal-bg: #1c1c1c;
+            --error-icon-bg: #ff4d4f;
+            --error-btn-bg: #ff4d4f;
+            --error-btn-hover: #ff1f1f;
+            --cancel-btn-bg: #3a3a3a;
         }
         .light-theme {
             --bg: #ffffff;
@@ -28,6 +33,11 @@
             --border: #cccccc;
             --sidebar-bg: #f0f0f0;
             --modal-bg: #f9f9f9;
+            --error-modal-bg: #f9f9f9;
+            --error-icon-bg: #ff4d4f;
+            --error-btn-bg: #ff4d4f;
+            --error-btn-hover: #ff1f1f;
+            --cancel-btn-bg: #e0e0e0;
         }
 
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
@@ -278,7 +288,7 @@
             z-index: 1000;
         }
 
-        .record-modal, .delete-modal {
+        .record-modal, .delete-modal, .error-modal {
             background: var(--modal-bg);
             width: 480px;
             padding: 25px;
@@ -422,12 +432,12 @@
         .category-item.active p { color: var(--text); }
 
         /* MODAL BUTTONS */
-        .modal-actions, .delete-modal-buttons {
+        .modal-actions, .delete-modal-buttons, .error-modal-buttons {
             display: flex;
             justify-content: center;
             gap: 15px;
         }
-        .modal-actions button, .delete-modal-buttons button {
+        .modal-actions button, .delete-modal-buttons button, .error-modal-buttons button {
             flex: 1;
             padding: 12px 20px;
             border-radius: 12px;
@@ -436,54 +446,58 @@
             cursor: pointer;
             font-size: 16px;
         }
-        .modal-actions .cancel-btn, .delete-modal-buttons .cancel-btn {
-            background: #3a3a3a;
+        .modal-actions .cancel-btn, .delete-modal-buttons .cancel-btn, .error-modal-buttons .cancel-btn {
+            background: var(--cancel-btn-bg);
             color: var(--text);
         }
         .light-theme .modal-actions .cancel-btn,
-        .light-theme .delete-modal-buttons .cancel-btn {
-            background: #e0e0e0;
+        .light-theme .delete-modal-buttons .cancel-btn,
+        .light-theme .error-modal-buttons .cancel-btn {
+            background: var(--cancel-btn-bg);
             color: #333;
         }
         .modal-actions .add-record-btn { background: var(--accent); color: #000; }
         .delete-modal-buttons .confirm-delete-btn {
-            background: #ff4d4f;
+            background: var(--error-btn-bg);
             color: white;
             box-shadow: 0 0 10px rgba(255, 77, 79, 0.4);
         }
-        .delete-modal-buttons .confirm-delete-btn:hover { background: #ff1f1f; }
+        .delete-modal-buttons .confirm-delete-btn:hover { background: var(--error-btn-hover); }
 
-        /* DELETE MODAL */
-        .delete-modal {
+        /* ERROR MODAL */
+        .error-modal {
             width: 400px;
             text-align: center;
         }
-        .modal-header { display: flex; justify-content: flex-end; }
-        .warning-icon {
+        .error-modal-header {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .error-icon {
             margin: 20px auto;
             width: 60px;
             height: 60px;
-            background: #ffd700;
+            background: var(--error-icon-bg);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+            box-shadow: 0 0 15px rgba(255, 77, 79, 0.5);
         }
-        .warning-icon svg {
+        .error-icon svg {
             width: 36px;
             height: 36px;
             fill: none;
             stroke: #000;
             stroke-width: 2;
         }
-        .delete-modal h3 {
+        .error-modal h3 {
             font-size: 22px;
             font-weight: 700;
             margin-bottom: 15px;
             color: var(--text);
         }
-        .delete-modal p {
+        .error-modal p {
             font-size: 15px;
             color: var(--text-dim);
             margin-bottom: 25px;
@@ -545,7 +559,7 @@
             .balance-card { padding: 30px 20px; }
             .balance-card .amount { font-size: 50px; }
             .transaction-item { padding: 12px 0; }
-            .record-modal, .delete-modal { width: 90%; padding: 25px; }
+            .record-modal, .delete-modal, .error-modal { width: 90%; padding: 25px; }
             .recent-transactions-container {
                 max-height: 140px;
             }
@@ -679,6 +693,28 @@
             <div class="delete-modal-buttons">
                 <button class="cancel-btn" id="cancelDeleteBtn">Cancel</button>
                 <button class="confirm-delete-btn" id="confirmDeleteBtn">Delete Permanently</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ERROR MODAL -->
+    <div class="modal-overlay" id="errorModal">
+        <div class="error-modal">
+            <div class="error-modal-header">
+                <button class="close-modal" id="closeErrorModal">✕</button>
+            </div>
+            <div class="error-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+            </div>
+            <h3>Validation Error</h3>
+            <p id="errorMessage">Please enter a valid amount greater than 0.</p>
+            <div class="error-modal-buttons">
+                <button class="cancel-btn" id="errorCancelBtn">Cancel</button>
+                <button class="try-again-btn" id="tryAgainBtn">Try Again</button>
             </div>
         </div>
     </div>
@@ -967,7 +1003,10 @@
         addRecordSubmitBtn.addEventListener('click', async () => {
             const amount = parseInt(recordAmountInput.value) || 0;
             if (amount <= 0) {
-                alert('Please enter a valid amount greater than 0.');
+                // Show error modal instead of alert
+                document.getElementById('errorMessage').textContent = 'Please enter a valid amount greater than 0.';
+                document.getElementById('errorModal').style.display = 'flex';
+                document.body.style.overflow = 'hidden';
                 return;
             }
 
@@ -1030,6 +1069,36 @@
 
         deleteModal.addEventListener('click', e => {
             if (e.target === deleteModal) closeDeleteModal();
+        });
+
+        // Error modal functionality
+        const errorModal = document.getElementById('errorModal');
+        const closeErrorModal = document.getElementById('closeErrorModal');
+        const errorCancelBtn = document.getElementById('errorCancelBtn');
+        const tryAgainBtn = document.getElementById('tryAgainBtn');
+
+        closeErrorModal.addEventListener('click', () => {
+            errorModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+
+        errorCancelBtn.addEventListener('click', () => {
+            errorModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+
+        tryAgainBtn.addEventListener('click', () => {
+            errorModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            // Focus on the amount input field
+            recordAmountInput.focus();
+        });
+
+        errorModal.addEventListener('click', e => {
+            if (e.target === errorModal) {
+                errorModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
         });
 
         // Initial load
