@@ -497,7 +497,7 @@
         background: #ff1f1f;
         box-shadow: 0 6px 15px rgba(255,77,79,0.4);
     }
-    /* ✅ VALIDATION ERROR MODAL (NEW) */
+    /* ✅ VALIDATION ERROR MODAL (UPDATED — Cancel removed) */
     .validation-modal {
         background: var(--card);
         border: 1px solid var(--border);
@@ -556,20 +556,7 @@
         margin-top: 0;
         justify-content: center;
     }
-    .validation-modal .btn-cancel {
-        background: #2a2a2a;
-        border: 1px solid var(--border);
-        color: var(--text-dim);
-        padding: 12px 24px;
-        border-radius: 30px;
-        font-size: 14px;
-        font-weight: 600;
-        transition: all 0.2s;
-    }
-    .validation-modal .btn-cancel:hover {
-        background: #333333;
-        color: var(--text);
-    }
+    /* ❌ .btn-cancel removed from validation-modal styles — no longer used */
     .validation-modal .btn-save {
         background: #ff4d4f;
         border: none;
@@ -580,6 +567,7 @@
         font-weight: 600;
         transition: all 0.2s;
         box-shadow: 0 4px 10px rgba(255,77,79,0.3);
+        min-width: 120px;
     }
     .validation-modal .btn-save:hover {
         background: #ff1f1f;
@@ -718,7 +706,7 @@
             </div>
         </div>
     </div>
-    <!-- ✅ VALIDATION ERROR MODAL (NEW) -->
+    <!-- ✅ VALIDATION ERROR MODAL (UPDATED — Cancel button removed) -->
     <div class="modal-overlay" id="validationModal">
         <div class="modal validation-modal">
             <div class="modal-header">
@@ -734,7 +722,7 @@
             <h3>Validation Error</h3>
             <p id="validationMessage">Title cannot be empty.</p>
             <div class="modal-actions">
-                <button class="btn-cancel" id="cancelValidationBtn">Cancel</button>
+                <!-- ❌ Removed Cancel button -->
                 <button class="btn-save" id="tryAgainBtn">Try Again</button>
             </div>
         </div>
@@ -950,19 +938,15 @@
                 showValidationError('Error: ' + (err.message || 'Failed to save.'));
             }
         });
-        // ✅ VALIDATION MODAL HANDLERS
+        // ✅ VALIDATION MODAL HANDLERS — Cancel listener REMOVED
         document.getElementById('closeValidationModal').addEventListener('click', () => {
             document.getElementById('validationModal').style.display = 'none';
             document.body.style.overflow = 'auto';
         });
-        document.getElementById('cancelValidationBtn').addEventListener('click', () => {
-            document.getElementById('validationModal').style.display = 'none';
-            document.body.style.overflow = 'auto';
-        });
+        // ❌ Removed: cancelValidationBtn listener
         document.getElementById('tryAgainBtn').addEventListener('click', () => {
             document.getElementById('validationModal').style.display = 'none';
             document.body.style.overflow = 'auto';
-            // Optionally, focus back on the first invalid field?
             document.getElementById('reminderTitle').focus();
         });
         // ✅ DELETE MODAL HANDLERS (USING YOUR SVG)
