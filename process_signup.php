@@ -1,7 +1,13 @@
 <?php
-// 1. DATABASE CONFIGURATION (No change)
+// **********************************************
+// 1. START SESSION
+session_start();
+// **********************************************
+
+
+// 2. DATABASE CONFIGURATION (No change)
 $host = 'localhost';
-$db   = 'studytrack_db';
+$db   = 'studytrack';
 $user = 'root';
 $pass = ''; 
 
@@ -18,22 +24,19 @@ try {
      throw new \PDOException($e->getMessage(), (int)$e->getCode());
 }
 
-// 2. CHECK IF FORM WAS SUBMITTED (No change)
+// 3. CHECK IF FORM WAS SUBMITTED (No change)
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     header("Location: Sign-up.html");
     exit();
 }
 
-// 3. RETRIEVE AND SANITIZE INPUTS
+// 4. RETRIEVE AND SANITIZE INPUTS
 $first_name = filter_input(INPUT_POST, 'first_name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 $last_name  = filter_input(INPUT_POST, 'last_name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 $email      = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
 $password   = $_POST['password'] ?? ''; 
 
-// REMOVED: $university_name and $school_id retrieval
-
-
-// 4. SERVER-SIDE VALIDATION (No change to logic, just cleaned up comments)
+// 5. SERVER-SIDE VALIDATION (No change)
 $errors = [];
 
 // Basic field checks
@@ -59,7 +62,7 @@ if (!$password_policy['length'] || !$password_policy['capital'] || !$password_po
 }
 
 
-// 5. IF VALIDATION FAILS (No change)
+// 6. IF VALIDATION FAILS (No change)
 if (!empty($errors)) {
     echo "<h2>Validation Errors:</h2>";
     echo "<ul>";
@@ -71,7 +74,7 @@ if (!empty($errors)) {
 }
 
 
-// 6. CHECK IF EMAIL ALREADY EXISTS (No change)
+// 7. CHECK IF EMAIL ALREADY EXISTS (No change)
 try {
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE email = ?");
     $stmt->execute([$email]);
@@ -85,11 +88,10 @@ try {
 }
 
 
-// 7. HASH PASSWORD & INSERT DATA
+// 8. HASH PASSWORD & INSERT DATA
 $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
 try {
-    // UPDATED SQL: Removed the two placeholders and columns
     $sql = "INSERT INTO users (first_name, last_name, email, password_hash)
             VALUES (?, ?, ?, ?)";
             
@@ -99,8 +101,17 @@ try {
         $last_name,
         $email,
         $password_hash
-        // REMOVED: $university_name and $school_id execution values
     ]);
+
+    // **********************************************
+    // NEW: Retrieve the last inserted ID and store it in the session
+    $last_id = $pdo->lastInsertId();
+    $_SESSION['user_id'] = $last_id;
+
+    // Optional: Store other useful session data
+    $_SESSION['user_first_name'] = $first_name;
+    // **********************************************
+
 
     // Success! Redirect to HomeF.html
     header("Location: HomeF.html");

@@ -6,7 +6,7 @@ header('Content-Type: application/json');
 
 // 1. DATABASE CONFIGURATION (Reuse settings)
 $host = 'localhost';
-$db   = 'studytrack_db';
+$db   = 'studytrack';
 $user = 'root';
 $pass = ''; 
 
