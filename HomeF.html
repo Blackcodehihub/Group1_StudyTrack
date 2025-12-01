@@ -38,25 +38,27 @@
         }
 
         .sidebar {
-            width:235px;
-            background:var(--sidebar-bg);
-            padding:30px 20px;
-            border-right:1px solid var(--border);
-            position:fixed;
-            height:93%;
-            z-index:10;
-            overflow-y: none;
-            margin-top:27px;
-            border-top-right-radius:45px;
-            border-bottom-right-radius:45px;
-            justify-content: space-between;
-        }
-        .nav-menu {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            height: 85%; 
-        }
+        width:235px;
+        background:var(--sidebar-bg);
+        padding:30px 20px;
+        border-right:1px solid var(--border);
+        position:fixed;
+        height:93%;
+        z-index:10;
+        overflow-y: none;
+        margin-top:27px;
+        border-top-right-radius:45px;
+        border-bottom-right-radius:45px;
+        transition:left .3s ease;
+        justify-content: space-between;
+    }
+    .nav-menu {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 85%;
+        margin-top: 12px;
+    }
         .logo img { height: 95px; display:block; margin-top: -2px; }
         .nav-menu a {
             display:flex; align-items:center; gap:15px; padding:12px 18px;
@@ -361,14 +363,8 @@
         }
         @media (max-width: 900px) {
             .sidebar {
-                position: fixed;
-                height: 100%;
                 left: -260px;
-                top: 0;
-                margin-top: 0;
-                border-radius: 0;
-                transition: left .3s ease;
-                z-index: 1000;
+                
             }
             .sidebar.active { left: 0; }
             .main-content {
@@ -424,7 +420,7 @@
         }
         @media (max-width: 1000px) {
             .hamburger { display: block; }
-            .sidebar { left: -260px !important; top: 0; height: 100%; border-radius: 0; }
+            .sidebar { left: -260px !important; top: 0; }
             .sidebar.active { left: 0 !important; }
             .main-content.shift { transform: translateX(260px); transition: transform .3s ease; }
         }
