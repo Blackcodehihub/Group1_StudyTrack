@@ -377,3 +377,183 @@ button {
     }
 }
 
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal {
+  background: #1b1b1b;;
+  width: 90%;
+  max-width: 440px;
+  border-radius: 20px;
+  padding: 40px 30px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.modal-overlay.active .modal {
+  transform: scale(1);
+}
+
+.modal h2 {
+  font-size: 1.7rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #f3c229;
+}
+
+.modal p {
+  color: #ffffff;
+  font-size: 0.95rem;
+  margin-bottom: 30px;
+}
+
+/* Close button (×) */
+.close-modal {
+  position: absolute;
+  top: 18px;
+  right: 24px;
+  font-size: 1.8rem;
+  color: #9ca3af;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.close-modal:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+/* Floating labels (same as your login form) */
+.modal .float-group {
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.modal .float-group input {
+  width: 100%;
+  padding: 16px 18px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.modal .float-group input:focus {
+  border-color: #f3c229;
+}
+
+.modal .float-group label {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 0 6px;
+  font-size: 0.95rem;
+  color: #ffffff;
+  transition: all 0.3s;
+  pointer-events: none;
+}
+
+.modal .float-group input:focus + label,
+.modal .float-group input:not(:placeholder-shown) + label {
+  margin-top: -35px;
+  margin-left: -15px;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+/* 4-Digit PIN Inputs */
+.pin-inputs {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin: 30px 0;
+}
+
+.pin-inputs input {
+  width: 60px;
+  height: 70px;
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: 600;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.pin-inputs input:focus {
+  border-color: #f3c229;
+  box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.15);
+}
+
+/* Success Icon */
+.success-icon {
+  font-size: 4.5rem;
+  color: #10b981;
+  margin-bottom: 20px;
+}
+
+/* Buttons inside modal */
+.modal .btn-primary {
+  width: 100%;
+  padding: 16px;
+  background: #f3c229;
+  color: rgb(11, 11, 11);
+  border: none;
+  border-radius: 12px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.modal .btn-primary:hover {
+  background: #daa70e;
+}
+
+/* Hide all steps by default */
+.modal .step {
+  display: none;
+}
+
+.modal .step.active {
+  display: block;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .modal {
+    padding: 30px 20px;
+  }
+  .pin-inputs input {
+    width: 50px;
+    height: 60px;
+    font-size: 1.6rem;
+  }
+}

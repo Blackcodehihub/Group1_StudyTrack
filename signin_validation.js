@@ -1,66 +1,211 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
+    // ====================== LOGIN FORM (unchanged) ======================
     const loginForm = document.getElementById('loginForm');
-    const passwordInput = document.getElementById('signin-password');
-    const toggleIcon = document.querySelector('.toggle-password');
     const loginMessages = document.getElementById('login-messages');
 
-    // --- 1. Password Toggle Functionality ---
-    if (toggleIcon) {
-        toggleIcon.addEventListener('click', function() {
-            const targetInput = passwordInput;
+    if (loginForm) {
+        loginForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            loginMessages.textContent = 'Logging in...';
+            loginMessages.style.color = '#fff';
 
-            // Toggle the type attribute
-            const type = targetInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            targetInput.setAttribute('type', type);
+            const formData = new FormData(loginForm);
 
-            // Toggle the icon (eye open/closed)
-            this.classList.toggle('fa-eye');
-            this.classList.toggle('fa-eye-slash');
+            try {
+                const res = await fetch('process_login.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    loginMessages.textContent = 'Login successful! Redirecting...';
+                    loginMessages.style.color = 'lime';
+                    setTimeout(() => window.location.href = 'HomeF.html', 1000);
+                } else {
+                    loginMessages.textContent = data.message || 'Login failed';
+                    loginMessages.style.color = '#ff4d4d';
+                }
+            } catch (err) {
+                loginMessages.textContent = 'Network error. Please try again.';
+                loginMessages.style.color = '#ff4d4d';
+            }
         });
     }
 
-    // --- 2. AJAX Form Submission ---
-    loginForm.addEventListener('submit', function(event) {
-        event.preventDefault(); // Stop default form submission
-        loginMessages.textContent = ''; // Clear previous messages
-        
-        const formData = new FormData(loginForm);
-        
-        // Show a loading state
-        loginMessages.textContent = 'Logging in...';
-
-        fetch('process_login.php', {
-            method: 'POST',
-            body: formData,
-        })
-        .then(response => {
-            // Check if the response status is OK (2xx), otherwise assume an error
-            return response.json().then(data => {
-                if (!response.ok) {
-                    // Throw the error data to be caught below
-                    throw new Error(data.message || 'Login failed.');
-                }
-                return data; // Return success data
-            });
-        })
-        .then(data => {
-            if (data.success) {
-                loginMessages.textContent = 'Login successful! Redirecting...';
-                loginMessages.style.color = 'lime'; 
-                
-                // --- SUCCESS: Redirect to the Home Page ---
-                window.location.href = 'HomeF.html'; 
+    // ====================== PASSWORD TOGGLE (both login & modal) ======================
+    document.querySelectorAll('.toggle-password').forEach(icon => {
+        icon.addEventListener('click', () => {
+            const target = document.getElementById(icon.dataset.target);
+            if (target.type === 'password') {
+                target.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
             } else {
-                // This path is usually not hit, as errors are thrown above.
-                loginMessages.textContent = data.message || 'Login failed. Please try again.';
-                loginMessages.style.color = '#ff4d4d';
+                target.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
             }
-        })
-        .catch(error => {
-            // Display error messages from the PHP script
-            console.error('Login error:', error);
-            loginMessages.textContent = error.message || 'An unexpected error occurred during login.';
-            loginMessages.style.color = '#ff4d4d';
         });
     });
+
+    // ====================== FORGOT PASSWORD MODAL ======================
+    const modal = document.getElementById('forgotModal');
+    const openBtn = document.getElementById('openForgotModal');
+    const closeBtn = document.getElementById('closeModal');
+
+    openBtn.onclick = () => modal.classList.add('active');
+    closeBtn.onclick = () => modal.classList.remove('active');
+    modal.onclick = (e) => { if (e.target === modal) modal.classList.remove('active'); };
+
+    const steps = document.querySelectorAll('.step');
+    function showStep(n) {
+        steps.forEach(s => s.classList.remove('active'));
+        document.getElementById(`step${n}`).classList.add('active');
+    }
+
+    // Store token globally after sending code
+    let resetToken = '';
+
+    // Step 1 → Send Code (FIXED: save to resetToken)
+    document.getElementById('sendCodeBtn').onclick = async () => {
+        const email = document.getElementById('forgot-email').value.trim();
+        if (!email || !email.includes('@')) {
+            return alert('Please enter a valid email');
+        }
+
+        const btn = document.getElementById('sendCodeBtn');
+        btn.disabled = true;
+        btn.textContent = 'Sending...';
+
+        try {
+            const res = await fetch('send_code.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ email })
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                // FIXED: Save to resetToken (not window.currentToken)
+                resetToken = data.token;   // ← THIS IS THE KEY FIX
+                console.log('Token saved:', resetToken); // for debugging
+
+                document.getElementById('emailDisplay').textContent = email;
+                showStep(2);
+                document.querySelector('.pin-digit').focus();
+
+             
+            } else {
+                alert(data.message || 'Failed to send code');
+            }
+        } catch (err) {
+            alert('Network error');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Send Code';
+        }
+    };
+
+    // Auto-move between PIN digits
+    document.querySelectorAll('.pin-digit').forEach((input, idx, inputs) => {
+        input.addEventListener('input', () => {
+            if (input.value.length === 1 && idx < inputs.length - 1) {
+                inputs[idx + 1].focus();
+            }
+        });
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && input.value === '' && idx > 0) {
+                inputs[idx - 1].focus();
+            }
+        });
+    });
+
+    // Step 2 → Verify PIN (FIXED: use resetToken)
+    document.getElementById('verifyCodeBtn').onclick = async () => {
+        const code = Array.from(document.querySelectorAll('.pin-digit'))
+            .map(i => i.value)
+            .join('');
+
+        if (code.length !== 4 || !/^\d+$/.test(code)) {
+            return alert('Please enter a valid 4-digit code');
+        }
+
+        const btn = document.getElementById('verifyCodeBtn');
+        btn.disabled = true;
+        btn.textContent = 'Verifying...';
+
+        try {
+            console.log('Sending token:', resetToken); // for debugging
+            console.log('Sending PIN:', code);
+
+            const res = await fetch('verify_pin.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({
+                    token: resetToken,    // ← NOW THIS HAS THE REAL TOKEN
+                    pin: code
+                })
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                showStep(3);
+            } else {
+                alert(data.message || 'Invalid or expired code');
+            }
+        } catch (err) {
+            alert('Network error');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Verify Code';
+        }
+    };
+
+    // Step 3 → Set New Password (FIXED: use resetToken)
+    document.getElementById('submitNewPassword').onclick = async () => {
+        const pw = document.getElementById('new-password').value;
+        const confirm = document.getElementById('confirm-password').value;
+
+        if (pw.length < 8) return alert('Password must be at least 8 characters');
+        if (pw !== confirm) return alert('Passwords do not match');
+
+        const btn = document.getElementById('submitNewPassword');
+        btn.disabled = true;
+        btn.textContent = 'Saving...';
+
+        try {
+            const res = await fetch('reset_password.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({
+                    token: resetToken,    // ← NOW THIS HAS THE REAL TOKEN
+                    password: pw
+                })
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                showStep(4);
+            } else {
+                alert(data.message || 'Failed to reset password');
+            }
+        } catch (err) {
+            alert('Network error');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Save Password';
+        }
+    };
+
+    // Step 4 → Back to Login
+    document.getElementById('backToLoginBtn').onclick = () => {
+        modal.classList.remove('active');
+        document.querySelectorAll('#forgotModal input').forEach(i => i.value = '');
+        document.querySelectorAll('.pin-digit').forEach(i => i.value = '');
+        showStep(1);
+        resetToken = '';  // Clear token
+    };
 });

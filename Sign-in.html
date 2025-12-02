@@ -58,7 +58,7 @@
                     <div id="login-messages" style="margin-top: 10px; color: #ff4d4d; font-size: 0.9em; text-align: center;"></div>
 
                     <div class="forgot-password">
-                        <a href="forgot.html">Forgot password?</a>
+                        <a href="#" id="openForgotModal">Forgot password?</a>
                     </div>                
 
                     <button type="submit" class="btn btn-primary" id="login-btn">Log in</button>
@@ -77,6 +77,66 @@
         </div>
 
     </div>
+
+    <!-- FORGOT PASSWORD MODAL -->
+  <div class="modal-overlay" id="forgotModal">
+    <div class="modal">
+      <span class="close-modal" id="closeModal">×</span>
+
+      <!-- Step 1: Email -->
+      <div class="step active" id="step1">
+        <h2>Forgot Password</h2>
+        <p>Enter your email address and we’ll send you a verification code.</p>
+        <div class="input-group">
+          <div class="float-group">
+            <input type="email" id="forgot-email" placeholder=" " required>
+            <label for="forgot-email">Email Address</label>
+          </div>
+        </div>
+        <button class="btn-primary" id="sendCodeBtn">Send Code</button>
+      </div>
+
+      <!-- Step 2: 4-digit PIN -->
+      <div class="step" id="step2">
+        <h2>Enter Verification Code</h2>
+        <p>We sent a code to <span id="emailDisplay"></span></p>
+        <div class="pin-inputs">
+          <input type="text" maxlength="1" class="pin-digit">
+          <input type="text" maxlength="1" class="pin-digit">
+          <input type="text" maxlength="1" class="pin-digit">
+          <input type="text" maxlength="1" class="pin-digit">
+        </div>
+        <button class="btn-primary" id="verifyCodeBtn">Verify Code</button>
+      </div>
+
+      <!-- Step 3: New Password -->
+      <div class="step" id="step3">
+        <h2>Set New Password</h2>
+        <p>Create a strong password for your account</p>
+        <div class="input-group">
+          <div class="float-group">
+            <input type="password" id="new-password" placeholder=" " required>
+            <label for="new-password">New Password</label>
+          </div>
+        </div>
+        <div class="input-group">
+          <div class="float-group">
+            <input type="password" id="confirm-password" placeholder=" " required>
+            <label for="confirm-password">Confirm Password</label>
+          </div>
+        </div>
+        <button class="btn-primary" id="submitNewPassword">Save Password</button>
+      </div>
+
+      <!-- Step 4: Success -->
+      <div class="step" id="step4">
+        <i class="fa-solid fa-circle-check success-icon"></i>
+        <h2>Password Reset Successful!</h2>
+        <p>Your password has been updated. You can now sign in with your new password.</p>
+        <button class="btn-primary" id="backToLoginBtn">Back to Login</button>
+      </div>
+    </div>
+  </div>
     <script src="signin_validation.js"></script>
     </body>
     </html>
