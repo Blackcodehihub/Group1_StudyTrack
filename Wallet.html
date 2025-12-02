@@ -99,16 +99,21 @@
         .header {
             display:flex; align-items:center; gap:15px; margin-bottom:30px; position:relative;
         }
+        .greeting { 
+            flex-grow: 1; /* Allows greeting to take space on mobile */
+        }
         .greeting h2 { font-size:28px; font-weight:700; color:var(--accent); margin-bottom:4px; }
         .greeting p { color:var(--text-dim); font-size:15px; }
         /* THEME TOGGLE */
         .theme-toggle {
-            margin-left:auto; background:var(--card); padding:12px; border-radius:50%;
+            margin-left:auto; /* Pushes it to the far right on desktop */
+            background:var(--card); padding:12px; border-radius:50%;
             cursor:pointer; width:50px; height:50px; display:flex; align-items:center; justify-content:center;
         }
         .theme-toggle img { width:42px; height:28px; }
         .hamburger {
-            display:none; font-size:28px; background:var(--card); color:var(--text);
+            display:none; /* Hidden by default on desktop */
+            font-size:28px; background:var(--card); color:var(--text);
             border:1px solid var(--border); padding:8px 12px; border-radius:10px; cursor:pointer;
         }
         /* WALLET SPECIFIC */
@@ -156,7 +161,7 @@
             transition: background 0.2s;
         }
         .balance-card button:hover {
-            background: #2a2a2a;
+            background: #f3c229;
         }
         /* GRID LAYOUT */
         .grid-layout {
@@ -541,11 +546,38 @@
         }
         /* RESPONSIVE */
         @media (max-width: 900px) {
-            .hamburger { display:block; }
-            .theme-toggle { margin-left: auto; }
+            
+            /* KEY CHANGE: Use Flexbox ordering for mobile header */
+            .header {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                /* Ensure header is the main container for alignment */
+            }
+
+            /* HAMBURGER: Show it and align left */
+            .hamburger { 
+                display:block; 
+                order: 1;
+            }
+            
+            /* GREETING: Take up the space in the center */
+            .greeting {
+                flex-grow: 1; 
+                order: 2;
+                min-width: 0;
+            }
+
+            /* THEME TOGGLE: Align right */
+            .theme-toggle { 
+                display: flex; /* Ensure it is visible */
+                margin-left: 0; /* Override desktop's auto margin */
+                order: 3;
+            }
+
+            /* SIDEBAR/MAIN CONTENT SHIFT */
             .sidebar {
                left:-235px;
-             
             }
             .sidebar.active { left:0; }
             .main-content {
@@ -555,7 +587,7 @@
             .grid-layout { grid-template-columns: 1fr; }
         }
         @media (max-width: 550px) {
-            .header { flex-direction:column; align-items:flex-start; gap:10px; }
+            .header { flex-wrap: wrap; }
             .greeting h2 { font-size:clamp(24px, 5vw, 28px); }
             .balance-card { padding: 30px 20px; }
             .balance-card .amount { font-size: 50px; }
@@ -565,99 +597,98 @@
                 max-height: 140px;
             }
         }
+        
+        /* Logout Modal Styles */
+        .modal-logout {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(3px);
+            justify-content: center;
+            align-items: center;
+        }
 
-                   /* Logout Modal Styles */
-.modal-logout {
-    display: none;
-    position: fixed;
-    z-index: 9999;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.6);
-    backdrop-filter: blur(3px);
-    justify-content: center;
-    align-items: center;
-}
+        .modal-logout-content {
+            background: var(--card);
+            padding: 25px;
+            width: 90%;
+            max-width: 380px;
+            border-radius: 18px;
+            text-align: center;
+            border: 1px solid var(--border);
+            animation: popScale 0.25s ease;
+        }
 
-.modal-logout-content {
-    background: var(--card);
-    padding: 25px;
-    width: 90%;
-    max-width: 380px;
-    border-radius: 18px;
-    text-align: center;
-    border: 1px solid var(--border);
-    animation: popScale 0.25s ease;
-}
+        @keyframes popScale {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
 
-@keyframes popScale {
-    from { transform: scale(0.8); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-}
+        .modal-logout-icon {
+            font-size: 50px;
+            margin-bottom: 10px;
+        }
 
-.modal-logout-icon {
-    font-size: 50px;
-    margin-bottom: 10px;
-}
+        .close-modal-logout {
+            position: absolute;
+            margin-left: 310px;
+            margin-top: -10px;
+            font-size: 26px;
+            cursor: pointer;
+        }
 
-.close-modal-logout {
-    position: absolute;
-    margin-left: 310px;
-    margin-top: -10px;
-    font-size: 26px;
-    cursor: pointer;
-}
+        .modal-logout h2 {
+            margin: 10px 0;
+            font-size: 20px;
+        }
 
-.modal-logout h2 {
-    margin: 10px 0;
-    font-size: 20px;
-}
+        .modal-logout p {
+            color: var(--text-dim);
+            margin-bottom: 20px;
+        }
 
-.modal-logout p {
-    color: var(--text-dim);
-    margin-bottom: 20px;
-}
+        .modal-logout-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+        }
 
-.modal-logout-buttons {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-}
+        .modal-logout-cancel-btn, .modal-logout-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            transition: 0.2s;
+        }
 
-.modal-logout-cancel-btn, .modal-logout-btn {
-    flex: 1;
-    padding: 10px;
-    border-radius: 12px;
-    cursor: pointer;
-    font-size: 15px;
-    font-weight: 600;
-    border: none;
-    transition: 0.2s;
-}
+        .modal-logout-cancel-btn {
+            background: #444;
+            color: #fff;
+        }
 
-.modal-logout-cancel-btn {
-    background: #444;
-    color: #fff;
-}
+        .modal-logout-cancel-btn:hover {
+            background: #555;
+        }
 
-.modal-logout-cancel-btn:hover {
-    background: #555;
-}
+        .modal-logout-btn {
+            background: #e53935;
+            color: #fff;
+        }
 
-.modal-logout-btn {
-    background: #e53935;
-    color: #fff;
-}
-
-.modal-logout-btn:hover {
-    background: #c62828;
-}
+        .modal-logout-btn:hover {
+            background: #c62828;
+        }
     </style>
 </head>
 <body>
-    <!-- Sidebar -->
     <aside class="sidebar" id="sidebar"> 
         <div class="logo">
             <a href="HomeF.html"><img src="logo.png" alt="StudyTrack"></a>
@@ -677,10 +708,8 @@
             </div>
         </div>
     </aside>
-    <!-- Main Content -->
     <div class="main-content">
         <div class="container">
-            <!-- Header -->
             <div class="header">
                 <button class="hamburger" id="hamburgerBtn">☰</button>
                 <div class="greeting">
@@ -691,7 +720,6 @@
                     <img src="sun.png" alt="Toggle Theme" id="themeIcon">
                 </button>
             </div>
-            <!-- Total Balance Card -->
             <div class="balance-card">
                 <div class="title">TOTAL BALANCE</div>
                 <div class="amount">
@@ -699,9 +727,7 @@
                 </div>
                 <button id="openRecordModalBtn">+Add Record</button>
             </div>
-            <!-- Summary Cards and Recent Transactions (Grid Layout) -->
             <div class="grid-layout">
-                <!-- LEFT COLUMN -->
                 <div>
                     <div class="card summary-card income-summary" style="margin-bottom: 30px;">
                         <div class="header">
@@ -713,11 +739,9 @@
                     <div class="card recent-list-card">
                         <h4 style="margin-bottom: 10px; font-weight: 600;">Recent Income</h4>
                         <div class="recent-transactions-container" id="recentIncomeContainer">
-                            <!-- Will be filled dynamically -->
-                        </div>
+                            </div>
                     </div>
                 </div>
-                <!-- RIGHT COLUMN -->
                 <div>
                     <div class="card summary-card expense-summary" style="margin-bottom: 30px;">
                         <div class="header">
@@ -729,14 +753,12 @@
                     <div class="card recent-list-card">
                         <h4 style="margin-bottom: 10px; font-weight: 600;">Recent Expense</h4>
                         <div class="recent-transactions-container" id="recentExpenseContainer">
-                            <!-- Will be filled dynamically -->
-                        </div>
+                            </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- ADD RECORD MODAL -->
     <div class="modal-overlay" id="addRecordModal">
         <div class="record-modal">
             <button class="modal-close-btn" id="closeRecordModalBtn">&times;</button>
@@ -755,11 +777,10 @@
             <div class="category-grid" id="categoryGrid"></div>
             <div class="modal-actions">
                 <button class="cancel-btn" id="modalCancelBtn">Cancel</button>
-                <button class="add-record-btn" id="addRecordSubmitBtn">Add record</button>
+                <button class="add-record-btn" id="addRecordSubmitBtn">Add Record</button>
             </div>
         </div>
     </div> 
-    <!-- DELETE MODAL -->
     <div class="modal-overlay" id="deleteModal">
         <div class="delete-modal">
             <div class="modal-header">
@@ -780,7 +801,6 @@
             </div>
         </div>
     </div>
-    <!-- ✅ VALIDATION ERROR MODAL (UPDATED — Cancel button REMOVED) -->
     <div class="modal-overlay" id="validationModal">
         <div class="modal validation-modal">
             <div class="modal-header">
@@ -801,7 +821,6 @@
         </div>
     </div>
 
-        <!-- LOGOUT CONFIRMATION MODAL -->
     <div id="logoutModal" class="modal-logout">
         <div class="modal-logout-content">
             <div class="modal-logout-icon">😢</div>
@@ -817,15 +836,15 @@
 
     <script>
 
-            //Logout Modal
+        //Logout Modal
     const logoutTrigger = document.querySelector('.bot-nav a[href="#"]');
 
-   
+    
     const logoutModal = document.getElementById('logoutModal');
     const cancelLogoutBtn = document.getElementById('cancelLogout');
     const confirmLogoutBtn = document.getElementById('confirmLogout');
 
- 
+    
     logoutTrigger.addEventListener('click', (e) => {
         e.preventDefault();
         logoutModal.style.display = "flex";
@@ -836,12 +855,12 @@
         logoutModal.style.display = "none";
     });
 
-  
+    
     confirmLogoutBtn.addEventListener('click', () => {
         window.location.href = "Sign-in.html"; 
     });
 
-  
+    
     window.addEventListener('click', (e) => {
         if (e.target === logoutModal) {
             logoutModal.style.display = "none";
