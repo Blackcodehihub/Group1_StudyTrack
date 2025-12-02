@@ -48,23 +48,57 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // ====================== FORGOT PASSWORD MODAL ======================
-    const modal = document.getElementById('forgotModal');
-    const openBtn = document.getElementById('openForgotModal');
-    const closeBtn = document.getElementById('closeModal');
+   // ====================== FORGOT PASSWORD MODAL ======================
+const modal = document.getElementById('forgotModal');
+const openBtn = document.getElementById('openForgotModal');
+const closeBtn = document.getElementById('closeModal');
 
-    openBtn.onclick = () => modal.classList.add('active');
-    closeBtn.onclick = () => modal.classList.remove('active');
-    modal.onclick = (e) => { if (e.target === modal) modal.classList.remove('active'); };
+let resetToken = ''; // Token stored here
 
-    const steps = document.querySelectorAll('.step');
-    function showStep(n) {
-        steps.forEach(s => s.classList.remove('active'));
-        document.getElementById(`step${n}`).classList.add('active');
-    }
+// Open modal → always start fresh at Step 1
+openBtn.onclick = () => {
+    modal.classList.add('active');
+    resetModal(); // Ensures clean state every time modal opens
+};
 
-    // Store token globally after sending code
-    let resetToken = '';
+// Close with X button
+closeBtn.onclick = () => closeModal();
+
+// Click outside modal to close
+modal.onclick = (e) => {
+    if (e.target === modal) closeModal();
+};
+
+// Back to Login button (Step 4)
+document.getElementById('backToLoginBtn').onclick = () => closeModal();
+
+// ====================== REUSABLE RESET FUNCTION ======================
+function resetModal() {
+    showStep(1);
+
+    // Clear all form fields
+    document.getElementById('forgot-email').value = '';
+    document.getElementById('new-password').value = '';
+    document.getElementById('confirm-password').value = '';
+    document.querySelectorAll('.pin-digit').forEach(input => input.value = '');
+
+    // Clear stored token
+    resetToken = '';
+
+    // Remove any alerts or messages if you have them
+    // Optional: focus email field
+    document.getElementById('forgot-email').focus();
+}
+
+function closeModal() {
+    modal.classList.remove('active');
+    resetModal(); // This ensures everything is reset when closed
+}
+
+function showStep(n) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.getElementById(`step${n}`).classList.add('active');
+}
 
     // Step 1 → Send Code (FIXED: save to resetToken)
     document.getElementById('sendCodeBtn').onclick = async () => {
