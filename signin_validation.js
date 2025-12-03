@@ -3,50 +3,16 @@ document.addEventListener('DOMContentLoaded', function () {
     const loginForm = document.getElementById('loginForm');
     const loginMessages = document.getElementById('login-messages');
     
-    // --- NEW SELECTORS ---
-    const loginButton = document.getElementById('login-btn'); // Log in button
-    const requiredInputs = loginForm.querySelectorAll('input[required]'); // Get all required fields
-    const emailInput = document.getElementById('signin-email'); 
-    const passwordInput = document.getElementById('signin-password'); 
-    // ----------------------------------------
-
-
-    // --- LOGIN VALIDITY CHECK FUNCTION ---
-    function checkLoginValidity() {
-        let allRequiredFilled = true;
-        
-        // Iterate over ALL required inputs (Email and Password)
-        requiredInputs.forEach(input => {
-            // Use checkValidity() for browser's internal checks (like email format)
-            if (input.value.trim() === '' || !input.checkValidity()) {
-                allRequiredFilled = false;
-            }
-        });
-
-        // The button is disabled if NOT all fields are filled
-        loginButton.disabled = !allRequiredFilled;
-    }
-
-    // --- EVENT LISTENERS FOR VALIDITY CHECK ---
-    // Attach the check to every required input's 'input' event
-    requiredInputs.forEach(input => {
-        input.addEventListener('input', checkLoginValidity);
-    });
-
-    // Initial check to ensure the button starts disabled (matches HTML state)
-    checkLoginValidity(); 
-    // ----------------------------------------
-
+    // --- REVERTED: Removed all button validity selectors and functions ---
+    // (EmailInput, PasswordInput, LoginButton, checkLoginValidity, and listeners are removed)
+    // ---------------------------------------------------------------------
 
     if (loginForm) {
         loginForm.addEventListener('submit', async function (e) {
             e.preventDefault();
             
-            // Safety net: Do not submit if the button is disabled
-            if (loginButton.disabled) {
-                return; 
-            }
-
+            // Safety net: Since the button is always enabled, we don't need the check.
+            
             // Clear previous error state
             loginMessages.textContent = '';
             loginMessages.classList.remove('active-error'); 
@@ -74,13 +40,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Failure state
                     loginMessages.textContent = data.message || 'Login failed. Please try again.';
                     loginMessages.style.color = '#ff4d4d';
-                    loginMessages.classList.add('active-error'); 
+                    loginMessages.classList.add('active-error'); // Keep this class for alignment/fade
                 }
             } catch (err) {
                 // Network error state
                 loginMessages.textContent = 'Network error. Please try again.';
                 loginMessages.style.color = '#ff4d4d';
-                loginMessages.classList.add('active-error'); 
+                loginMessages.classList.add('active-error'); // Keep this class for alignment/fade
             }
         });
     }

@@ -121,6 +121,71 @@
         </div>
 </div>
 
+<div class="modal-overlay" id="editClassModal" style="display: none;">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>Edit Class: <span id="editClassTitle"></span></h3>
+            <button class="close-modal" id="closeEditModalBtn">X</button>
+        </div>
+
+        <form id="edit-class-form">
+            <input type="hidden" id="edit_class_id" name="class_id">
+            
+            <label for="edit_subject_name">Subject name</label>
+            <input type="text" id="edit_subject_name" name="subject_name" placeholder="CS 201, Data Structures" required>
+
+            <label for="edit_instructor">Instructor</label>
+            <input type="text" id="edit_instructor" name="instructor" placeholder="Prof. Jane">
+
+            <label for="edit_location">Location</label>
+            <input type="text" id="edit_location" name="location" placeholder="BSIT Department CL 2">
+
+            <div class="time-row">
+                <div>
+                    <label for="edit_start_time">Start Time</label>
+                    <input type="time" id="edit_start_time" name="start_time" required>
+                </div>
+                <div>
+                    <label for="edit_end_time">End Time</label>
+                    <input type="time" id="edit_end_time" name="end_time" required>
+                </div>
+            </div>
+
+            <label>Repeat</label>
+            <div class="repeat-days" id="edit-repeat-days">
+                <button type="button" class="day-btn" data-day="Mon">Mon</button>
+                <button type="button" class="day-btn" data-day="Tue">Tue</button>
+                <button type="button" class="day-btn" data-day="Wed">Wed</button>
+                <button type="button" class="day-btn" data-day="Thu">Thu</button>
+                <button type="button" class="day-btn" data-day="Fri">Fri</button>
+                <button type="button" class="day-btn" data-day="Sat">Sat</button>
+                <button type="button" class="day-btn" data-day="Sun">Sun</button>
+            </div>
+
+            <div class="reminder-row">
+                <div>
+                    <label for="edit_reminder_time">Reminder Time</label>
+                    <select id="edit_reminder_time" name="reminder_time">
+                        <option value="">None</option>
+                        <option value="5">5 minutes before</option>
+                        <option value="10">10 minutes before</option>
+                        <option value="15">15 minutes before</option>
+                        <option value="30">30 minutes before</option>
+                        <option value="60">1 hour before</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div id="edit-form-messages" style="margin-top: 10px; color: red;"></div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" id="cancelEditBtn">Cancel</button>
+                <button type="submit" class="btn-save" id="save-edit-class-btn" disabled>Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <!-- Delete Confirmation Modal -->
 <div class="modal-overlay" id="deleteConfirmationModal" style="display: none;">
     <div class="modal success-modal delete-modal">
