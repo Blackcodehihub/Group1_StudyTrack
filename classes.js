@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return `
                 <div class="class-item" data-class-id="${cls.class_id}">
                     <div class="class-info">
-                        <img src="book.png" alt="Book">
+                        <img src="images_icons/book.png" alt="Book">
                         <div>
                             <h4>${cls.subject_name}${instructorText}</h4>
                             <p>${days} ${formattedStartTime} - ${formattedEndTime}${locationText}</p>
