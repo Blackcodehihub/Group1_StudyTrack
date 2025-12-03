@@ -57,10 +57,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const target = document.getElementById(icon.dataset.target);
             if (target.type === 'password') {
                 target.type = 'text';
-                icon.classList.replace('fa-eye', 'fa-eye-slash');
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
             } else {
                 target.type = 'password';
-                icon.classList.replace('fa-eye-slash', 'fa-eye');
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
             }
         });
     });

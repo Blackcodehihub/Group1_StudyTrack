@@ -14,18 +14,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-
+    <a href="landingpage.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back</a>
 <div class="login-container">
 
-    <div class="panel signup-image-panel panel-gradient-bg">
-        <div class="phone-wrapper">
-            <img src="images_icons/Mock2.png" alt="App Mockup">
-        </div>
-    </div>
-
     <div class="panel signup-form-panel">
-
-        <a href="landingpage.html" class="back-btn"><i class="fa-solid fa-circle-xmark"></i> </a>
 
         <div class="auth-wrapper">
 
@@ -40,31 +32,36 @@
             <form action="process_signup.php" method="POST" id="signupForm">
                 <div class="input-row">
                 <div class="float-group">
-                    <input type="text" id="signup-first-name" name="first_name" required>
+                    <input type="text" id="signup-first-name" name="first_name" required placeholder=" ">
                     <label for="signup-first-name">First Name</label>
                 </div>
 
                 <div class="float-group">
-                    <input type="text" id="signup-last-name" name="last_name" required>
+                    <input type="text" id="signup-last-name" name="last_name" required placeholder=" ">
                     <label for="signup-last-name">Last Name</label>
                 </div>
                 </div>
 
                 <div class="float-group">
-                    <input type="email" id="signup-email" name="email" required>
+                    <input type="email" id="signup-email" name="email" required placeholder=" ">
                     <label for="signup-email">Email</label>
                 </div>
 
                 <div class="float-group password-group">
-                    <input type="password" id="signup-password" name="password" required>
+                    <input type="password" id="signup-password" name="password" required placeholder=" ">
                     <label for="signup-password">Password</label>
                     <i class="fa-solid fa-eye-slash toggle-password" data-target="signup-password"></i>
                 </div>
 
                 <div class="float-group password-group">
-                    <input type="password" id="signup-confirm-password" name="confirm_password" required>
+                    <input type="password" id="signup-confirm-password" name="confirm_password" required placeholder=" ">
                     <label for="signup-confirm-password">Confirm Password</label>
                     <i class="fa-solid fa-eye-slash toggle-password" data-target="signup-confirm-password"></i>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="terms-checkbox" name="terms" required>
+                    <label for="terms-checkbox">I accept the <strong>Terms of Service</strong> and <strong>Privacy Policy</strong></label>
                 </div>
 
 

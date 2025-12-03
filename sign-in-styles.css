@@ -10,40 +10,60 @@ body {
     background: #1D1C1C;
     height: 100vh;
     overflow: hidden;
+    /* Centering the content panel */
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-/* OUTER SPLIT SCREEN */
+/* OUTER SPLIT SCREEN (Now acting as a full viewport container for centering) */
 .login-container {
     display: flex;
     width: 100%;
     height: 100vh;
+    /* Centering the content when the screen is wide */
+    justify-content: center;
+    align-items: center;
 }
 
-/* LEFT SIDE */
+/* LEFT SIDE (Now the only content panel) */
 .left-panel {
-    width: 65%;
+    width: auto; 
     background: #1D1C1C;
     display: flex;
     align-items: center;
-    padding-left: 300px;
+    justify-content: center; /* Center content horizontally within panel */
+    padding: 0;
+    position: relative; 
 }
 
+/* 🔑 AUTH WRAPPER - CENTERED, BORDERED, STYLED */
 .auth-wrapper {
-    width: 100%;
-    max-width: 500px;
+    width: 600px;
+    max-width: 1000px; /* Defines the size of the login box */
+    padding: 50px; /* Internal padding */
+    
+    /* NEW: Border and Styling */
+    background: #1e1e1e; /* Slightly lighter background than body */
+    border: 2px solid #ffc107; /* Gold border */
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 193, 7, 0.5); /* Gold shadow */
+    
+    margin: auto; 
 }
 
-/* LOGO */
+/* LOGO - Adjusted alignment for centered form */
 .logo {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
+    justify-content: center; /* Center logo elements */
 }
 
 .logo img {
-    width: 150px;
-    margin-right: 0px;
-    margin-left: 100px;
+    width: 120px; 
+    margin-right: 10px;
+    margin-left: 0; 
 }
 
 .logo-text {
@@ -51,6 +71,7 @@ body {
     font-weight: 700;
     line-height: 0.9;
     color: #474B4E;
+    text-align: left;
 }
 
 .logo-text .highlight {
@@ -71,47 +92,23 @@ h1 {
     margin-bottom: 35px;
 }
 
-label {
-    display: block; 
-    margin-bottom: 10px;
-    font-size: 1.2em;
-    color: #fff;
-}
-
-input {
-    width: 100%;
-    height: 52px;
-    padding: 14px 20px;
-    border-radius: 12px;
-    border: none;
-    background: #2d2d2d;
-    font-size: 1em;
-    color: #fff;
-}
-
-input::placeholder {
-    color: #bfbfbf;
-}
-
 /* FLOATING LABEL */
 .float-group {
     position: relative;
     margin-bottom: 22px;
 }
 
-/* --- UPDATED INPUT SIZE --- */
 .float-group input {
     width: 100%;
-    height: 65px; /* Bigger box */
+    height: 65px; 
     padding: 22px 22px 0 22px; 
     background: #2d2d2d;
     border: none;
     border-radius: 14px;
     color: #fff;
-    font-size: 1.15em; /* Slightly larger text */
+    font-size: 1.15em; 
 }
 
-/* Updated floating label position for bigger input */
 .float-group label {
     position: absolute;
     left: 22px;
@@ -124,16 +121,14 @@ input::placeholder {
     opacity: 0.9;
 }
 
-/* Float effect when typing or focused */
 .float-group input:focus + label,
 .float-group input:not(:placeholder-shown) + label {
-    top: 12px;   /* Slightly higher than before */
+    top: 12px;
     transform: translateY(0);
     font-size: 0.95em;
     color: white;
 }
 
-/* Placeholder-hidden trick */
 .float-group input::placeholder {
     opacity: 0;
 }
@@ -217,6 +212,7 @@ button {
     position: absolute;
     top: 50px;
     left: 50px;
+    
     color: #ffc107;
     font-size: 1.3em;
     font-weight: 600;
@@ -245,335 +241,274 @@ button {
     font-weight: 600;
 }
 
-/* --- LOGIN ERROR MESSAGE CONTAINER FIX (Left Alignment & No Jump) --- */
+/* --- LOGIN ERROR MESSAGE CONTAINER FIX --- */
 #login-messages {
-    /* Set alignment to left */
     text-align: left !important; 
-    
-    /* CRITICAL: Reserves space to prevent form jump */
     min-height: 25px; 
     margin-top: -10px !important; 
     margin-bottom: 25px !important;
-    
-    /* Initial state: Hidden but occupies space */
-    opacity: 0; 
+    opacity: 0;
     transition: opacity 0.3s ease-in-out;
 }
 
-/* Style for when the message is active (revealed by JS) */
 #login-messages.active-error {
     opacity: 1;
 }
 
-/* RIGHT SIDE */
+/* RIGHT SIDE - REMOVED */
 .right-panel {
-    width: 50%;
-    background: linear-gradient(145deg, #ffcc00 0%, #1e1e1e 60%);
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding-top: 100px;
-    border-top-left-radius: 25%;
+    display: none; 
 }
 
-.phone-wrapper img {
-    width: 700px;
-    max-width: 1000px;
-    object-fit: fill;
-}
 
-/* Tablets and medium screens */
+/* 🔑 RESPONSIVE ADJUSTMENTS */
+
+/* Tablets and medium screens (1200px) */
 @media (max-width: 1200px) {
-    .left-panel {
-        padding-left: 150px;
+    .auth-wrapper {
+        max-width: 450px;
     }
-
-    .logo img {
-        margin-left: 50px;
-        width: 120px;
+    
+    .back-btn {
+        top: 25px;
+        left: 25px; 
     }
 }
 
-/* Tablets / landscape phones */
+/* Tablets / landscape phones (992px) - Stacked Mobile Layout */
 @media (max-width: 992px) {
     body {
         overflow: auto;
     }
 
     .login-container {
-        flex-direction: column;
         height: auto;
+        padding: 50px 0;
     }
 
     .left-panel {
         width: 100%;
-        padding: 40px 30px;
-        justify-content: center;
-        text-align: center;
+        padding: 0 20px;
+        justify-content: flex-start;
     }
 
     .auth-wrapper {
-        max-width: 420px;
-        margin: 0 auto;
+        width: 100%;
+        max-width: 400px;
+        padding: 35px 30px; 
     }
 
     .logo {
-        justify-content: center;
+        margin-bottom: 15px;
     }
-
-    .logo img {
-        margin-left: 0;
-        width: 130px;
+    
+    /* Back button position fix for scrollable mobile view */
+    .back-btn {
+        position: fixed; 
+        top: 20px;
+        left: 20px;
+        z-index: 100;
+        background: #1D1C1C;
+        padding: 5px 10px;
+        border-radius: 8px;
     }
-
-    .logo-text {
-        font-size: 1.9em;
-    }
-
-    .right-panel {
-        width: 100%;
-        border-radius: 0;
-        padding: 50px 0;
-        text-align: center;
-    }
-
-    .phone-wrapper img {
-        width: 60%;
-    }
+    
+    /* Deleted .right-panel mobile styles */
 }
 
-/* Mobile screens */
+/* Mobile screens (768px) */
 @media (max-width: 768px) {
     h1 {
         font-size: 2em;
         margin-bottom: 35px;
     }
-
-    label {
-        font-size: 1em;
-    }
-
-    input {
-        height: 48px;
-        font-size: 0.95em;
-    }
-
-    .btn {
-        height: 50px;
-        font-size: 1.1em;
-    }
-
-    .back-btn {
-        top: 20px;
-        left: 20px;
-        font-size: 1.1em;
-    }
-
-    .phone-wrapper img {
-        width: 75%;
-    }
 }
 
-/* Small phones */
+/* Small phones (480px) */
 @media (max-width: 480px) {
-    .left-panel {
-        padding: 25px 20px;
-    }
-
     .auth-wrapper {
-        max-width: 100%;
-    }
-
-    .logo img {
-        width: 100px;
-    }
-
-    .logo-text {
-        font-size: 1.6em;
-    }
-
-    .phone-wrapper img {
-        width: 85%;
+        padding: 30px 20px; 
     }
 }
 
+/* --- MODAL STYLES (Unchanged) --- */
 .modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s ease;
+ position: fixed;
+ inset: 0;
+ background: rgba(0, 0, 0, 0.5);
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ z-index: 1000;
+ opacity: 0;
+ visibility: hidden;
+ transition: all 0.3s ease;
 }
 
 .modal-overlay.active {
-  opacity: 1;
-  visibility: visible;
+ opacity: 1;
+ visibility: visible;
 }
 
 .modal {
-  background: #1b1b1b;;
-  width: 90%;
-  max-width: 440px;
-  border-radius: 20px;
-  padding: 40px 30px;
-  text-align: center;
-  position: relative;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-  transform: scale(0.9);
-  transition: transform 0.3s ease;
+ background: #1b1b1b;;
+ width: 90%;
+ max-width: 440px;
+ border-radius: 20px;
+ padding: 40px 30px;
+ text-align: center;
+ position: relative;
+ box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+ transform: scale(0.9);
+ transition: transform 0.3s ease;
 }
 
 .modal-overlay.active .modal {
-  transform: scale(1);
+ transform: scale(1);
 }
 
 .modal h2 {
-  font-size: 1.7rem;
-  font-weight: 700;
-  margin-bottom: 12px;
-  color: #f3c229;
+ font-size: 1.7rem;
+ font-weight: 700;
+ margin-bottom: 12px;
+ color: #f3c229;
 }
 
 .modal p {
-  color: #ffffff;
-  font-size: 0.95rem;
-  margin-bottom: 30px;
+ color: #ffffff;
+ font-size: 0.95rem;
+ margin-bottom: 30px;
 }
 
 /* Close button (×) */
 .close-modal {
-  position: absolute;
-  top: 18px;
-  right: 24px;
-  font-size: 1.8rem;
-  color: #9ca3af;
-  cursor: pointer;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: all 0.2s;
+ position: absolute;
+ top: 18px;
+ right: 24px;
+ font-size: 1.8rem;
+ color: #9ca3af;
+ cursor: pointer;
+ width: 36px;
+ height: 36px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ border-radius: 50%;
+ transition: all 0.2s;
 }
 
 .close-modal:hover {
-  background: #f3f4f6;
-  color: #374151;
+ background: #f3f4f6;
+ color: #374151;
 }
 
 /* Floating labels (same as your login form) */
 .modal .float-group {
-  position: relative;
-  margin-bottom: 24px;
+ position: relative;
+ margin-bottom: 24px;
 }
 
 .modal .float-group input {
-  width: 100%;
-  padding: 16px 18px;
-  border: 1.5px solid #e5e7eb;
-  border-radius: 12px;
-  font-size: 1rem;
-  outline: none;
-  transition: border-color 0.3s;
+ width: 100%;
+ padding: 16px 18px;
+ border: 1.5px solid #e5e7eb;
+ border-radius: 12px;
+ font-size: 1rem;
+ outline: none;
+ transition: border-color 0.3s;
 }
 
 .modal .float-group input:focus {
-  border-color: #f3c229;
+ border-color: #f3c229;
 }
 
 .modal .float-group label {
-  position: absolute;
-  left: 18px;
-  top: 50%;
-  transform: translateY(-50%);
-  padding: 0 6px;
-  font-size: 0.95rem;
-  color: #ffffff;
-  transition: all 0.3s;
-  pointer-events: none;
+ position: absolute;
+ left: 18px;
+ top: 50%;
+ transform: translateY(-50%);
+ padding: 0 6px;
+ font-size: 0.95rem;
+ color: #ffffff;
+ transition: all 0.3s;
+ pointer-events: none;
 }
 
 .modal .float-group input:focus + label,
 .modal .float-group input:not(:placeholder-shown) + label {
-  margin-top: -35px;
-  margin-left: -15px;
-  color: #ffffff;
-  font-weight: 500;
+ margin-top: -35px;
+ margin-left: -15px;
+ color: #ffffff;
+ font-weight: 500;
 }
 
 /* 4-Digit PIN Inputs */
 .pin-inputs {
-  display: flex;
-  justify-content: center;
-  gap: 14px;
-  margin: 30px 0;
+ display: flex;
+ justify-content: center;
+ gap: 14px;
+ margin: 30px 0;
 }
 
 .pin-inputs input {
-  width: 60px;
-  height: 70px;
-  text-align: center;
-  font-size: 1.8rem;
-  font-weight: 600;
-  border: 1.5px solid #e5e7eb;
-  border-radius: 12px;
-  outline: none;
-  transition: border-color 0.3s;
+ width: 60px;
+ height: 70px;
+ text-align: center;
+ font-size: 1.8rem;
+ font-weight: 600;
+ border: 1.5px solid #e5e7eb;
+ border-radius: 12px;
+ outline: none;
+ transition: border-color 0.3s;
 }
 
 .pin-inputs input:focus {
-  border-color: #f3c229;
-  box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.15);
+ border-color: #f3c229;
+ box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.15);
 }
 
 /* Success Icon */
 .success-icon {
-  font-size: 4.5rem;
-  color: #10b981;
-  margin-bottom: 20px;
+ font-size: 4.5rem;
+ color: #10b981;
+ margin-bottom: 20px;
 }
 
 /* Buttons inside modal */
 .modal .btn-primary {
-  width: 100%;
-  padding: 16px;
-  background: #f3c229;
-  color: rgb(11, 11, 11);
-  border: none;
-  border-radius: 12px;
-  font-size: 1.05rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.3s;
+ width: 100%;
+ padding: 16px;
+ background: #f3c229;
+ color: rgb(11, 11, 11);
+ border: none;
+ border-radius: 12px;
+ font-size: 1.05rem;
+ font-weight: 600;
+ cursor: pointer;
+ transition: background 0.3s;
 }
 
 .modal .btn-primary:hover {
-  background: #daa70e;
+ background: #daa70e;
 }
 
 /* Hide all steps by default */
 .modal .step {
-  display: none;
+ display: none;
 }
 
 .modal .step.active {
-  display: block;
+ display: block;
 }
 
 /* Responsive */
 @media (max-width: 480px) {
-  .modal {
-    padding: 30px 20px;
-  }
-  .pin-inputs input {
-    width: 50px;
-    height: 60px;
-    font-size: 1.6rem;
-  }
+ .modal {
+  padding: 30px 20px;
+ }
+ .pin-inputs input {
+  width: 50px;
+  height: 60px;
+  font-size: 1.6rem;
+ }
 }

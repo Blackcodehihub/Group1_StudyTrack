@@ -9,14 +9,21 @@
 body {
     background: #1D1C1C;
     height: 100vh;
+    /* 🔑 MODIFIED: Used Flexbox to center content */
+    display: flex;
+    justify-content: center;
+    align-items: center;
     overflow: hidden;
 }
 
-/* OUTER SPLIT SCREEN */
+/* OUTER SPLIT SCREEN (Now acting as a full viewport container for centering) */
 .login-container {
     display: flex;
     width: 100%;
     height: 100vh;
+    /* 🔑 MODIFIED: Used Flexbox to center content */
+    justify-content: center;
+    align-items: center;
 }
 
 /* PANEL SIZING AND ALIGNMENT (SIGN UP SPECIFIC) */
@@ -24,47 +31,64 @@ body {
     display: flex;
     align-items: center;
     background: #1D1C1C;
+    /* 🔑 MODIFIED: Ensure panels fill space, effectively hiding the image panel below */
+    width: 100%; 
 }
 
 /* Image on Left (40%) */
 .signup-image-panel {
-    width: 40%;
+    /* 🔑 MODIFIED: Force width to 0 and hide content to remove image panel */
+    width: 0;
     justify-content: flex;
-    padding-right: 100px;
+    padding-right: 0; /* Changed from 100px */
+    overflow: hidden; /* Hide the image content */
+    min-height: 100vh; /* Retain original height structure */
 }
 
 /* Form on Right (60%) */
 .signup-form-panel {
-    width: 60%;
+    /* 🔑 MODIFIED: Takes full space and centers the form */
+    width: 100%;
     justify-content: center;
-    padding-left: 100px;
+    padding-left: 0; /* Changed from 100px */
 }
 
 /* GRADIENT BACKGROUND (Image side) */
 .panel-gradient-bg {
-    background: linear-gradient(to bottom left, #ffcc00 0%, #1e1e1e 60%);
+    /* 🔑 MODIFIED: Hides the panel but keeps the rule */
+    background: transparent;
     border-top-right-radius: 0; 
     border-bottom-right-radius: 0;
     border-top-right-radius: 25%;
 }
 
-/* Auth Wrapper (The form content block) */
+/* 🔑 Auth Wrapper - CENTERED, BORDERED, BIGGER */
 .auth-wrapper {
-    width: 100%;
-    max-width: 450px; 
+    width: 600px;
+    max-width: 600px; /* 🔑 MODIFIED: Increased container size */ 
+    
+    /* 🔑 NEW STYLES: Border, Shadow, and Background */
+    background: #1e1e1e; 
+    border: 2px solid #ffc107; 
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 193, 7, 0.5);
+    
+    padding: 65px; /* 🔑 MODIFIED: Increased padding */
 }
 
 /* LOGO */
 .logo {
     display: flex;
     align-items: center;
-    margin-bottom: 20px;
+    /* 🔑 MODIFIED: Adjusted margin and centered */
+    justify-content: center;
+    margin-bottom: 10px;
 }
 
 .logo img {
-    width: 150px; 
-    margin-right: 0px;
-    margin-left: 60px;
+    width: 120px; /* 🔑 MODIFIED: Adjusted size */
+    margin-right: 10px; /* 🔑 MODIFIED: Adjusted margin */
+    margin-left: 0; /* Changed from 60px */
 }
 
 .logo-text {
@@ -82,15 +106,19 @@ body {
 h1 {
     font-size: 2.6em;
     font-weight: 700;
-    margin-bottom: 5px; /* Reduced space for subtitle */
+    margin-bottom: 5px; 
     color: #fff;
-    text-align: left;
+    /* 🔑 MODIFIED: Center align */
+    text-align: center;
+    margin-top: 20px; /* Add top margin */
 }
 
 .subtitle {
     color: #bbb;
     font-size: 0.95em;
-    margin-bottom: 35px; /* Space below subtitle */
+    /* 🔑 MODIFIED: Adjusted margin and centered */
+    margin-bottom: 35px;
+    text-align: center; 
 }
 
 /* FORM INPUTS - GENERAL */
@@ -140,13 +168,13 @@ input::placeholder {
 
 .float-group input {
     width: 100%;
-    height: 52px;
-    padding: 16px 20px 0 20px; /* extra top padding for label */
+    height: 65px; /* 🔑 MODIFIED: Increased height for bigger form feel */
+    padding: 22px 20px 0 20px; /* 🔑 MODIFIED: Adjusted padding for label float */
     background: #2d2d2d;
     border: none;
     border-radius: 12px;
     color: #fff;
-    font-size: 1em;
+    font-size: 1.15em; /* 🔑 MODIFIED: Slightly larger text */
 }
 
 .float-group label {
@@ -157,14 +185,15 @@ input::placeholder {
     color: #bfbfbf;
     pointer-events: none;
     transition: 0.2s ease;
-    font-size: 1em;
+    font-size: 1.1em; /* 🔑 MODIFIED: Adjusted initial size */
 }
 
 /* When typing or focused */
 .float-group input:focus + label,
 .float-group input:not(:placeholder-shown) + label {
     top: 12px;
-    font-size: 0.75em;
+    transform: translateY(0);
+    font-size: 0.95em; /* 🔑 MODIFIED: Adjusted floating size */
     color: white;
     opacity: 0.9;
 }
@@ -277,10 +306,12 @@ input::placeholder {
 /* BACK BUTTON */
 .back-btn {
     position: absolute;
+    /* 🔑 MODIFIED: Positioned relative to the centered auth wrapper */
     top: 50px;
-    right: 50px;
+    left: 50px;
+    
     color: #ffc107;
-    font-size: 2em;
+    font-size: 1.3em; /* 🔑 MODIFIED: Adjusted size to match Sign-in */
     font-weight: 600;
     text-decoration: none;
     display: flex;
@@ -296,7 +327,8 @@ input::placeholder {
 
 /* BOTTOM TEXT */
 .new-user-prompt {
-    margin-top: 35px;
+    /* 🔑 MODIFIED: Adjusted margin */
+    margin-top: 50px;
     text-align: center;
     color: #bbb;
     font-size: 0.95em;
@@ -309,7 +341,8 @@ input::placeholder {
 
 /* IMAGE WRAPPER */
 .phone-wrapper {
-    display: flex;
+    /* 🔑 MODIFIED: Hides the image wrapper */
+    display: none;
     justify-content: center;
     align-items: center;
     height: 100%;
@@ -382,16 +415,26 @@ input::placeholder {
 /* Large tablets / small laptops */
 @media (max-width: 1200px) {
     .signup-form-panel {
-        padding-left: 40px;
+        padding-left: 0; /* Changed from 40px */
     }
 
     .signup-image-panel {
-        padding-right: 40px;
+        padding-right: 0; /* Changed from 40px */
+    }
+
+    .auth-wrapper {
+        max-width: 520px; /* 🔑 MODIFIED: Adjusted max-width */
+        padding: 50px; /* 🔑 MODIFIED: Adjusted padding */
     }
 
     .logo img {
         width: 130px;
-        margin-left: 40px;
+        margin-left: 0; /* Changed from 40px */
+    }
+
+    .back-btn {
+        top: 25px;
+        left: 25px;
     }
 }
 
@@ -404,30 +447,34 @@ input::placeholder {
     .login-container {
         flex-direction: column;
         height: auto;
+        padding: 50px 0;
     }
 
     /* Image on top, form below */
     .signup-image-panel,
     .signup-form-panel {
         width: 100%;
-        padding: 40px 25px;
+        padding: 0; /* Changed from 40px 25px */
         justify-content: center;
         height: auto;
     }
 
     .signup-image-panel {
         order: 1;
-        padding-bottom: 10px;
+        padding-bottom: 0; /* Changed from 10px */
+        /* 🔑 MODIFIED: Hides panel fully */
+        display: none;
     }
 
     .signup-form-panel {
         order: 2;
-        padding-top: 10px;
+        padding-top: 25px; /* Added some top padding */
     }
 
     .auth-wrapper {
-        max-width: 430px;
+        max-width: 450px;
         margin: 0 auto;
+        padding: 40px 30px;
     }
 
     .logo {
@@ -448,9 +495,15 @@ input::placeholder {
     }
 
     .back-btn {
-        top: 25px;
-        right: 25px;
-        font-size: 1.5em;
+        top: 20px; /* 🔑 MODIFIED: Adjusted positioning */
+        right: auto; /* 🔑 MODIFIED: Reset right alignment */
+        left: 20px; /* 🔑 MODIFIED: Aligned left for mobile */
+        position: fixed; /* 🔑 MODIFIED: Keeps button visible */
+        font-size: 1.2em; /* 🔑 MODIFIED: Adjusted size */
+        background: #1D1C1C;
+        padding: 5px 10px;
+        border-radius: 8px;
+        z-index: 100;
     }
 
     h1 {
@@ -523,8 +576,8 @@ input::placeholder {
 
     .back-btn {
         top: 15px;
-        right: 15px;
-        font-size: 1.4em;
+        left: 15px;
+        right: auto;
     }
 
     h1 {

@@ -7,23 +7,17 @@
         <link rel="icon" href="images_icons/fav logo.png" type="image/png">
         <link rel="stylesheet" href="sign-in-styles.css">
 
-        <!-- Font Awesome -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
-        <!-- Inter Font -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     </head>
     <body>
-
+      <a href="landingpage.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back</a>
     <div class="login-container">
 
-        <!-- LEFT PANEL -->
-        <div class="left-panel">
-
-            <!-- BACK BUTTON -->
-            <a href="landingpage.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back</a>
+        <div class="left-panel">           
 
             <div class="auth-wrapper">
 
@@ -34,32 +28,27 @@
 
                 <h1>Sign in</h1>
 
-                <!-- UPDATED: Added action, method, and ID -->
                 <form action="process_login.php" method="POST" id="loginForm">
                     <div class="input-group">
                         <div class="float-group">
-                            <!-- ADDED: name attribute -->
                             <input type="email" id="signin-email" name="email" required>
                             <label for="signin-email">Email</label>
-                        </div>    
+                        </div> 
                     </div>
 
                     <div class="input-group password-group">
                         <div class="float-group">
-                            <!-- ADDED: name attribute -->
                             <input type="password" id="signin-password" name="password" required>
                             <label for="signin-password">Password</label>
-                            <!-- ADDED: data-target for JS toggle -->
-                            <i class="fa-solid fa-eye toggle-password" data-target="signin-password"></i>
+                            <i class="fa-solid fa-eye-slash toggle-password" data-target="signin-password"></i>
                         </div>
                     </div>
                     
-                    <!-- Feedback area for JS/PHP errors -->
                     <div id="login-messages"></div>
 
                     <div class="forgot-password">
                         <a href="#" id="openForgotModal">Forgot password?</a>
-                    </div>                
+                    </div>             
 
                     <button type="submit" class="btn btn-primary" id="login-btn">Sign in</button>
                 </form>
@@ -69,21 +58,12 @@
             </div>
         </div>
 
-        <!-- RIGHT PANEL -->
-        <div class="right-panel">
-            <div class="phone-wrapper">
-                <img src="images_icons/Mock.png" alt="App Mockup">
-            </div>
         </div>
 
-    </div>
-
-    <!-- FORGOT PASSWORD MODAL -->
-  <div class="modal-overlay" id="forgotModal">
+    <div class="modal-overlay" id="forgotModal">
     <div class="modal">
       <span class="close-modal" id="closeModal">×</span>
 
-      <!-- Step 1: Email -->
       <div class="step active" id="step1">
         <h2>Forgot Password</h2>
         <p>Enter your email address and we’ll send you a verification code.</p>
@@ -96,7 +76,6 @@
         <button class="btn-primary" id="sendCodeBtn">Send Code</button>
       </div>
 
-      <!-- Step 2: 4-digit PIN -->
       <div class="step" id="step2">
         <h2>Enter Verification Code</h2>
         <p>We sent a code to <span id="emailDisplay"></span></p>
@@ -109,7 +88,6 @@
         <button class="btn-primary" id="verifyCodeBtn">Verify Code</button>
       </div>
 
-      <!-- Step 3: New Password -->
       <div class="step" id="step3">
         <h2>Set New Password</h2>
         <p>Create a strong password for your account</p>
@@ -128,7 +106,6 @@
         <button class="btn-primary" id="submitNewPassword">Save Password</button>
       </div>
 
-      <!-- Step 4: Success -->
       <div class="step" id="step4">
         <i class="fa-solid fa-circle-check success-icon"></i>
         <h2>Password Reset Successful!</h2>
