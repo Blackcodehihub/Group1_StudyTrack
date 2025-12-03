@@ -70,6 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                     </div>
                     <div class="class-time">${formattedStartTime}</div>
+
                     <button class="delete-btn" data-class-id="${cls.class_id}" data-subject-name="${cls.subject_name}">×</button>
                 </div>
             `;
