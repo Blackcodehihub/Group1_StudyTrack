@@ -540,7 +540,9 @@
         }
         /* RESPONSIVE */
         @media (max-width: 900px) {
-            
+            .greeting {position: absolute; margin-top: 130px;}
+
+            .balance-card{margin-top: 80px;}
             /* KEY CHANGE: Use Flexbox ordering for mobile header */
             .header {
                 display: flex;
@@ -555,25 +557,20 @@
                 order: 1;
             }
             
-            /* GREETING: Take up the space in the center */
-            .greeting {
-                flex-grow: 1; 
-                order: 2;
-                min-width: 0;
-            }
+   
 
             /* THEME TOGGLE: Align right */
             .theme-toggle { 
                 display: flex; /* Ensure it is visible */
-                margin-left: 0; /* Override desktop's auto margin */
-                order: 3;
+                right: 0; /* Override desktop's auto margin */
+                order: 2;
             }
 
             /* SIDEBAR/MAIN CONTENT SHIFT */
             .sidebar {
                left:-235px;
             }
-            .sidebar.active { left:0; }
+            .sidebar.active { left:0;}
             .main-content {
                 margin-left:0 !important; width:100% !important; padding:20px;
             }

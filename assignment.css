@@ -558,6 +558,9 @@
             }
             .main-content.shift { transform: translateX(260px); }
             .modal { overflow-y: auto;}
+            .add-assignment-btn {position: absolute; right: 0; margin-right: 40px;}
+            .assignments-subtitle {margin-top: 20px;}
+
         }
 
         @media (max-width: 768px) {
