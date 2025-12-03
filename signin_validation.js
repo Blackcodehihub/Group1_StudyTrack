@@ -1,11 +1,57 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // ====================== LOGIN FORM (unchanged) ======================
+    // ====================== LOGIN FORM ======================
     const loginForm = document.getElementById('loginForm');
     const loginMessages = document.getElementById('login-messages');
+    
+    // --- NEW SELECTORS ---
+    const loginButton = document.getElementById('login-btn'); // Log in button
+    const requiredInputs = loginForm.querySelectorAll('input[required]'); // Get all required fields
+    const emailInput = document.getElementById('signin-email'); 
+    const passwordInput = document.getElementById('signin-password'); 
+    // ----------------------------------------
+
+
+    // --- LOGIN VALIDITY CHECK FUNCTION ---
+    function checkLoginValidity() {
+        let allRequiredFilled = true;
+        
+        // Iterate over ALL required inputs (Email and Password)
+        requiredInputs.forEach(input => {
+            // Use checkValidity() for browser's internal checks (like email format)
+            if (input.value.trim() === '' || !input.checkValidity()) {
+                allRequiredFilled = false;
+            }
+        });
+
+        // The button is disabled if NOT all fields are filled
+        loginButton.disabled = !allRequiredFilled;
+    }
+
+    // --- EVENT LISTENERS FOR VALIDITY CHECK ---
+    // Attach the check to every required input's 'input' event
+    requiredInputs.forEach(input => {
+        input.addEventListener('input', checkLoginValidity);
+    });
+
+    // Initial check to ensure the button starts disabled (matches HTML state)
+    checkLoginValidity(); 
+    // ----------------------------------------
+
 
     if (loginForm) {
         loginForm.addEventListener('submit', async function (e) {
             e.preventDefault();
+            
+            // Safety net: Do not submit if the button is disabled
+            if (loginButton.disabled) {
+                return; 
+            }
+
+            // Clear previous error state
+            loginMessages.textContent = '';
+            loginMessages.classList.remove('active-error'); 
+            
+            // Show loading state
             loginMessages.textContent = 'Logging in...';
             loginMessages.style.color = '#fff';
 
@@ -20,21 +66,26 @@ document.addEventListener('DOMContentLoaded', function () {
                 const data = await res.json();
 
                 if (data.success) {
+                    // Success state
                     loginMessages.textContent = 'Login successful! Redirecting...';
                     loginMessages.style.color = 'lime';
                     setTimeout(() => window.location.href = 'HomeF.html', 1000);
                 } else {
-                    loginMessages.textContent = data.message || 'Login failed';
+                    // Failure state
+                    loginMessages.textContent = data.message || 'Login failed. Please try again.';
                     loginMessages.style.color = '#ff4d4d';
+                    loginMessages.classList.add('active-error'); 
                 }
             } catch (err) {
+                // Network error state
                 loginMessages.textContent = 'Network error. Please try again.';
                 loginMessages.style.color = '#ff4d4d';
+                loginMessages.classList.add('active-error'); 
             }
         });
     }
 
-    // ====================== PASSWORD TOGGLE (both login & modal) ======================
+    // ====================== PASSWORD TOGGLE (No Change) ======================
     document.querySelectorAll('.toggle-password').forEach(icon => {
         icon.addEventListener('click', () => {
             const target = document.getElementById(icon.dataset.target);
@@ -48,51 +99,43 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-   // ====================== FORGOT PASSWORD MODAL ======================
+   // ====================== FORGOT PASSWORD MODAL (No Change) ======================
 const modal = document.getElementById('forgotModal');
 const openBtn = document.getElementById('openForgotModal');
 const closeBtn = document.getElementById('closeModal');
 
-let resetToken = ''; // Token stored here
+let resetToken = ''; 
 
-// Open modal → always start fresh at Step 1
 openBtn.onclick = () => {
     modal.classList.add('active');
-    resetModal(); // Ensures clean state every time modal opens
+    resetModal(); 
 };
 
-// Close with X button
 closeBtn.onclick = () => closeModal();
 
-// Click outside modal to close
 modal.onclick = (e) => {
     if (e.target === modal) closeModal();
 };
 
-// Back to Login button (Step 4)
 document.getElementById('backToLoginBtn').onclick = () => closeModal();
 
-// ====================== REUSABLE RESET FUNCTION ======================
+// ====================== REUSABLE RESET FUNCTION (No Change) ======================
 function resetModal() {
     showStep(1);
 
-    // Clear all form fields
     document.getElementById('forgot-email').value = '';
     document.getElementById('new-password').value = '';
     document.getElementById('confirm-password').value = '';
     document.querySelectorAll('.pin-digit').forEach(input => input.value = '');
 
-    // Clear stored token
     resetToken = '';
 
-    // Remove any alerts or messages if you have them
-    // Optional: focus email field
     document.getElementById('forgot-email').focus();
 }
 
 function closeModal() {
     modal.classList.remove('active');
-    resetModal(); // This ensures everything is reset when closed
+    resetModal(); 
 }
 
 function showStep(n) {
@@ -100,7 +143,7 @@ function showStep(n) {
     document.getElementById(`step${n}`).classList.add('active');
 }
 
-    // Step 1 → Send Code (FIXED: save to resetToken)
+    // Step 1 → Send Code (No Change)
     document.getElementById('sendCodeBtn').onclick = async () => {
         const email = document.getElementById('forgot-email').value.trim();
         if (!email || !email.includes('@')) {
@@ -121,9 +164,8 @@ function showStep(n) {
             const data = await res.json();
 
             if (data.success) {
-                // FIXED: Save to resetToken (not window.currentToken)
-                resetToken = data.token;   // ← THIS IS THE KEY FIX
-                console.log('Token saved:', resetToken); // for debugging
+                resetToken = data.token;   
+                console.log('Token saved:', resetToken); 
 
                 document.getElementById('emailDisplay').textContent = email;
                 showStep(2);
@@ -141,7 +183,7 @@ function showStep(n) {
         }
     };
 
-    // Auto-move between PIN digits
+    // Auto-move between PIN digits (No Change)
     document.querySelectorAll('.pin-digit').forEach((input, idx, inputs) => {
         input.addEventListener('input', () => {
             if (input.value.length === 1 && idx < inputs.length - 1) {
@@ -155,7 +197,7 @@ function showStep(n) {
         });
     });
 
-    // Step 2 → Verify PIN (FIXED: use resetToken)
+    // Step 2 → Verify PIN (No Change)
     document.getElementById('verifyCodeBtn').onclick = async () => {
         const code = Array.from(document.querySelectorAll('.pin-digit'))
             .map(i => i.value)
@@ -170,14 +212,14 @@ function showStep(n) {
         btn.textContent = 'Verifying...';
 
         try {
-            console.log('Sending token:', resetToken); // for debugging
+            console.log('Sending token:', resetToken); 
             console.log('Sending PIN:', code);
 
             const res = await fetch('verify_pin.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: new URLSearchParams({
-                    token: resetToken,    // ← NOW THIS HAS THE REAL TOKEN
+                    token: resetToken,    
                     pin: code
                 })
             });
@@ -197,7 +239,7 @@ function showStep(n) {
         }
     };
 
-    // Step 3 → Set New Password (FIXED: use resetToken)
+    // Step 3 → Set New Password (No Change)
     document.getElementById('submitNewPassword').onclick = async () => {
         const pw = document.getElementById('new-password').value;
         const confirm = document.getElementById('confirm-password').value;
@@ -214,7 +256,7 @@ function showStep(n) {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: new URLSearchParams({
-                    token: resetToken,    // ← NOW THIS HAS THE REAL TOKEN
+                    token: resetToken,    
                     password: pw
                 })
             });
@@ -234,7 +276,7 @@ function showStep(n) {
         }
     };
 
-    // Step 4 → Back to Login
+    // Step 4 → Back to Login (No Change)
     document.getElementById('backToLoginBtn').onclick = () => {
         modal.classList.remove('active');
         document.querySelectorAll('#forgotModal input').forEach(i => i.value = '');

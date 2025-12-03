@@ -245,6 +245,26 @@ button {
     font-weight: 600;
 }
 
+/* --- LOGIN ERROR MESSAGE CONTAINER FIX --- */
+#login-messages {
+    /* Set alignment as requested */
+    text-align: left !important; 
+    
+    /* CRITICAL: Reserve the space so the layout doesn't jump */
+    min-height: 25px; 
+    margin-top: -10px !important; 
+    margin-bottom: 25px !important;
+    
+    /* Initial state: Transparent, takes up space but is hidden */
+    opacity: 0; 
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Style for when the message is active (revealed by JS) */
+#login-messages.active-error {
+    opacity: 1;
+}
+
 /* RIGHT SIDE */
 .right-panel {
     width: 50%;
@@ -556,4 +576,24 @@ button {
     height: 60px;
     font-size: 1.6rem;
   }
+}
+
+/* --- BUTTON DISABLE STATES (Guaranteed Override) --- */
+
+/* Target the specific disabled button ID to ensure maximum specificity */
+#login-btn:disabled {
+    cursor: not-allowed !important;
+    opacity: 0.5 !important; 
+    transform: none !important;
+    box-shadow: none !important;
+    pointer-events: none !important; /* CRITICAL: Kills all mouse interaction */
+    background: #ffc107 !important; /* Maintain base color */
+}
+
+/* Ensure there are absolutely NO hover effects when disabled */
+#login-btn:disabled:hover,
+#login-btn:disabled:active {
+    background: #ffc107 !important; 
+    transform: none !important;
+    box-shadow: none !important;
 }
