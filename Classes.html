@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StudyTrack - Classes</title>
-    <link rel="icon" href="fav logo.png" type="image/png">
+    <link rel="icon" href="images_icons/fav logo.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="classes.css">
 </head>
@@ -12,20 +12,20 @@
 
     <aside class="sidebar" id="sidebar">        
         <div class="logo">
-            <a href="HomeF.html"><img src="logo.png" alt="StudyTrack"></a>
+            <a href="HomeF.html"><img src="images_icons/logo.png" alt="StudyTrack"></a>
         </div>
         <div class="nav-menu">
             <div class="top-nav">
-            <a href="HomeF.html" ><img src="home.png" alt=""> Home</a>
-            <a href="Classes.html" class="active"><img src="class.png" alt=""> Classes</a>
-            <a href="Assignment.html"><img src="assignment.png" alt=""> Assignment</a>
-            <a href="Reminder.html" ><img src="reminder.png" alt=""> Reminder</a>
-            <a href="Wallet.html"><img src="wallet.png" alt=""> Wallet</a>
-            <a href="Habits.html" ><img src="streak.png" alt=""> Habit</a>
+            <a href="HomeF.html" ><img src="images_icons/home.png" alt=""> Home</a>
+            <a href="Classes.html" class="active"><img src="images_icons/class.png" alt=""> Classes</a>
+            <a href="Assignment.html"><img src="images_icons/assignment.png" alt=""> Assignment</a>
+            <a href="Reminder.html" ><img src="images_icons/reminder.png" alt=""> Reminder</a>
+            <a href="Wallet.html"><img src="images_icons/wallet.png" alt=""> Wallet</a>
+            <a href="Habits.html" ><img src="images_icons/streak.png" alt=""> Habit</a>
             </div>
             <div class="bot-nav">
-                <a href="Settings.html"><img src="settings.png" alt=""> Settings</a>
-                <a href="#"><img src="logout.png" alt=""> Log out</a>
+                <a href="Settings.html"><img src="images_icons/settings.png" alt=""> Settings</a>
+                <a href="#"><img src="images_icons/logout.png" alt=""> Log out</a>
             </div>
         </div>
     </aside>
@@ -40,7 +40,7 @@
                     <p>Organize lectures, labs, and study blocks</p>
                 </div>
                 <button class="theme-toggle" id="themeToggle">
-                    <img src="sun.png" alt="Toggle Theme" id="themeIcon">
+                    <img src="images_icons/Sun.png" alt="Toggle Theme" id="themeIcon">
                 </button>
             </div>
 
@@ -245,19 +245,19 @@
 
         if (localStorage.getItem('theme') === 'light') {
             document.body.classList.add('light-theme');
-            themeIcon.src = 'moon.png';
+            themeIcon.src = 'images_icons/moon.png';
         } else {
-            themeIcon.src = 'sun.png';
+            themeIcon.src = 'images_icons/sun.png';
         }
 
         themeToggle.addEventListener('click', () => {
             document.body.classList.toggle('light-theme');
             if (document.body.classList.contains('light-theme')) {
                 localStorage.setItem('theme', 'light');
-                themeIcon.src = 'moon.png';
+                themeIcon.src = 'images_icons/moon.png';
             } else {
                 localStorage.setItem('theme', 'dark');
-                themeIcon.src = 'sun.png';
+                themeIcon.src = 'images_icons/sun.png';
             }
         });
 

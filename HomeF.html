@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StudyTrack - Dashboard</title>
-    <link rel="icon" href="fav logo.png" type="image/png">
+    <link rel="icon" href="images_icons/fav logo.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -521,20 +521,20 @@
 <body>
     <aside class="sidebar" id="sidebar">
         <div class="logo">
-            <a href="HomeF.html"><img src="logo.png" alt="StudyTrack"></a>
+            <a href="HomeF.html"><img src="images_icons/logo.png" alt="StudyTrack"></a>
         </div>
         <div class="nav-menu">
             <div class="top-nav">
-                <a href="HomeF.html" class="active"><img src="home.png" alt=""> Home</a>
-                <a href="Classes.html"><img src="class.png" alt=""> Classes</a>
-                <a href="Assignment.html"><img src="assignment.png" alt=""> Assignment</a>
-                <a href="Reminder.html"><img src="reminder.png" alt=""> Reminder</a>
-                <a href="Wallet.html"><img src="wallet.png" alt=""> Wallet</a>
-                <a href="Habits.html"><img src="streak.png" alt=""> Habit</a>
+                <a href="HomeF.html" class="active"><img src="images_icons/home.png" alt=""> Home</a>
+                <a href="Classes.html"><img src="images_icons/class.png" alt=""> Classes</a>
+                <a href="Assignment.html"><img src="images_icons/assignment.png" alt=""> Assignment</a>
+                <a href="Reminder.html"><img src="images_icons/reminder.png" alt=""> Reminder</a>
+                <a href="Wallet.html"><img src="images_icons/wallet.png" alt=""> Wallet</a>
+                <a href="Habits.html"><img src="images_icons/streak.png" alt=""> Habit</a>
             </div>
             <div class="bot-nav">
-                <a href="Settings.html"><img src="settings.png" alt=""> Settings</a>
-                <a href="#"><img src="logout.png" alt=""> Log out</a>
+                <a href="Settings.html"><img src="images_icons/settings.png" alt=""> Settings</a>
+                <a href="#"><img src="images_icons/logout.png" alt=""> Log out</a>
             </div>
         </div>
     </aside>
@@ -544,14 +544,14 @@
             <div class="header">
                 <button class="hamburger" id="hamburgerBtn"> ☰ </button>
                 <div class="user-icon">
-                    <img src="user.png" alt="User">
+                    <img src="images_icons/user.png" alt="User">
                 </div>
                 <div class="greeting">
                     <h2>Good afternoon, User</h2>
                     <p id="current-date">Loading...</p>
                 </div>
                 <button class="theme-toggle" id="themeToggle">
-                    <img src="sun.png" alt="Toggle Theme" id="themeIcon">
+                    <img src="images_icons/Sun.png" alt="Toggle Theme" id="themeIcon">
                 </button>
             </div>
 
@@ -562,7 +562,7 @@
                     <div class="days" id="daysContainer"></div>
                 </div>
                 <div class="class-box">
-                    <img src="book.png" alt="">
+                    <img src="images_icons/book.png" alt="">
                     <div>
                         <h4>CS 201, Data Structures</h4>
                         <p>9:00 AM - 10:15 AM, BSIT Department CL 2</p>
@@ -575,17 +575,17 @@
                     <h3>Habit Summary</h3>
                     <div class="habit-row">
                         <div class="habit-line">
-                            <img src="active-habit.png" alt="Active"> 
+                            <img src="images_icons/active-habit.png" alt="Active"> 
                             <span>Active habit</span>
                             <strong id="active-habits-count">0</strong>
                         </div>
                         <div class="habit-line">
-                            <img src="complete.png" alt="Completed"> 
+                            <img src="images_icons/complete.png" alt="Completed"> 
                             <span>Completed today</span>
                             <strong id="completed-today">0</strong>
                         </div>
                         <div class="habit-line">
-                            <img src="missed.png" alt="Missed"> 
+                            <img src="images_icons/missed.png" alt="Missed"> 
                             <span>Missed today</span>
                             <strong id="missed-today">0</strong>
                         </div>
@@ -607,12 +607,12 @@
                 <div class="streak-card">
                     <h3>Streak Stats</h3>
                     <div class="streak-item">
-                        <img src="gold_fire.png" alt="Current">
-                        <span><strong id="current-streak">0 days</strong></span>
+                        <img src="images_icons/gold_fire.png" alt="Current"> Current Streak: 
+                        <span><strong id="current-streak" style=" margin-left: 10px;"> 0 days</strong></span>
                     </div>
                     <div class="streak-item">
-                        <img src="trophy.png" alt="Best">
-                        <span style="color: var(--text-dim);" id="best-streak">0 days</span>
+                        <img src="images_icons/trophy.png" alt="Best"> Best Streak: 
+                        <span style="color: var(--text-dim); margin-left: 10px;" id="best-streak">0 days</span>
                     </div>
                     <div class="progress-bar">
                         <div class="progress-fill" id="streak-progress-fill"></div>
@@ -828,16 +828,16 @@
 
         if (localStorage.getItem('theme') === 'light') {
             document.body.classList.add('light-theme');
-            themeIcon.src = 'moon.png';
+            themeIcon.src = 'images_icons/moon.png';
         } else {
-            themeIcon.src = 'sun.png';
+            themeIcon.src = 'images_icons/sun.png';
         }
 
         themeToggle.addEventListener('click', () => {
             document.body.classList.toggle('light-theme');
             const isLight = document.body.classList.contains('light-theme');
             localStorage.setItem('theme', isLight ? 'light' : 'dark');
-            themeIcon.src = isLight ? 'moon.png' : 'sun.png';
+            themeIcon.src = isLight ? 'images_icons/moon.png' : 'images_icons/sun.png';
         });
 
         const classDateInput = document.getElementById('classDate');

@@ -290,7 +290,7 @@ function createAssignmentItem(ass) {
     div.className = 'assignment-item';
     div.innerHTML = `
         <div class="assignment-info">
-            <img src="book.png" alt="Book">
+            <img src="images_icons/book.png" alt="Book">
             <div>
                 <h4>${escapeHtml(ass.Title)}</h4>
                 <p>${escapeHtml(ass.ClassName)}</p>
