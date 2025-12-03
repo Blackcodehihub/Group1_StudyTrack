@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return `
                 <div class="class-item" data-class-id="${cls.class_id}">
                     <div class="class-info">
-                        <img src="book.png" alt="Book">
+                        <img src="images_icons/book.png" alt="Book">
                         <div>
                             <h4>${cls.subject_name}${instructorText}</h4>
                             <p>${days} ${formattedStartTime} - ${formattedEndTime}${locationText}</p>
@@ -300,15 +300,26 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (isValid && editStartTimeInput.value && editEndTimeInput.value) {
-            if (startTimeInput.value >= endTimeInput.value) {
+            // ✅ CRITICAL FIX: Use the 'edit' inputs for comparison
+            if (editStartTimeInput.value >= editEndTimeInput.value) {
                 isValid = false;
+                // Optionally set a message for better feedback
+                editFormMessages.textContent = 'End time must be after Start time.';
+            } else {
+                // Clear message if time is valid, but keep general validation logic running
+                if (!editSubjectNameInput.value.trim() || !editStartTimeInput.value.trim() || !editEndTimeInput.value.trim()) {
+                    editFormMessages.textContent = ''; // Avoid clearing if required fields are empty
+                } else {
+                    editFormMessages.textContent = '';
+                }
             }
         }
         
         // RECOMMENDED ADDITION: Check if at least one day is selected
-        if (editClassForm.editSelectedDays && editClassForm.editSelectedDays.size === 0) {
-            // You might want to handle this visually, but for basic validation:
-            // isValid = false; // Uncomment if a day is strictly required
+        // Note: Since this is part of the validation logic, you should enable this check.
+        if (!editClassForm.editSelectedDays || editClassForm.editSelectedDays.size === 0) {
+            // If you require at least one day, uncomment the line below:
+            isValid = false; 
         }
         
         saveEditClassBtn.disabled = !isValid;
