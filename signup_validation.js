@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- NEW: Email Validation Logic ---
     let emailCheckTimeout;
+    let isCheckingEmail = false; // <<< NEW STATE VARIABLE
 
     function checkEmailExistence() {
         clearTimeout(emailCheckTimeout);
@@ -57,20 +58,23 @@ document.addEventListener('DOMContentLoaded', function() {
         const emailGroup = emailInput.parentNode;
         
         // Remove existing custom error messages
-        // Ensure error is removed from the correct location
         const existingError = emailGroup.parentNode.querySelector('.email-error-message'); 
         if (existingError) existingError.remove();
-
-        // Check format first (using the browser's/existing validation)
+        
+        // Check format first
         if (!emailInput.checkValidity()) {
-            emailIsRegistered = false; // Reset state if format is bad
+            emailIsRegistered = false; 
+            isCheckingEmail = false; // Ensure this is false if validation fails early
             checkFormValidity();
             return;
         }
 
-        // Only check server if email is not empty and valid format
         if (email.length > 0) {
-            // Debounce the request to avoid spamming the server
+            // Set checking state and disable button temporarily
+            isCheckingEmail = true; // <<< Set state to true while waiting
+            checkFormValidity();     // <<< Disable button immediately
+            
+            // Debounce the request
             emailCheckTimeout = setTimeout(() => {
                 fetch(`check_email.php?email=${encodeURIComponent(email)}`)
                     .then(response => {
@@ -82,24 +86,23 @@ document.addEventListener('DOMContentLoaded', function() {
                     .then(data => {
                         emailIsRegistered = data.exists;
                         
-                        // Display error message if email exists
                         if (emailIsRegistered) {
-                            // Use a distinct class for the email error
                             displayError(emailGroup, "This email is already registered.", 'email-error-message');
                         }
                         
-                        // Re-check form validity
-                        checkFormValidity();
+                        isCheckingEmail = false; // <<< Reset state after check
+                        checkFormValidity(); // Re-check validity now that we have the result
                     })
                     .catch(error => {
                         console.error('Error checking email:', error);
-                        // Treat a check error as "not registered" but keep button disabled if other fields fail
                         emailIsRegistered = false; 
+                        isCheckingEmail = false; // <<< Reset state on error
                         checkFormValidity();
                     });
             }, 500); // 500ms delay
         } else {
             emailIsRegistered = false;
+            isCheckingEmail = false; // No email means we aren't checking
             checkFormValidity();
         }
     }
@@ -171,11 +174,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const rulesMet = validatePassword(password);
         const allRulesMet = Object.values(rulesMet).every(status => status === true);
         
-        // --- Strict Password Match Check ---
         const passwordsMatch = password === confirmPasswordInput.value && password !== '';
 
-        // 👇 FIX 2: Added the crucial check: !emailIsRegistered
-        const formIsValid = allRequiredFilled && allRulesMet && passwordsMatch && !emailIsRegistered;
+        // 👇 FIX: Include isCheckingEmail in the disabled state
+        const formIsValid = allRequiredFilled && allRulesMet && passwordsMatch && !emailIsRegistered && !isCheckingEmail;
 
         createAccountBtn.disabled = !formIsValid;
         
