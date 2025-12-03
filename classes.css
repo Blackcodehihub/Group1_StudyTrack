@@ -142,13 +142,52 @@
     .class-time { text-align:right; font-weight:600; font-size:15px; }
 
     .delete-btn {
-        position:absolute; top:-5px; right:-2px;
-        background:#ff4d4f; color:white; border:none; border-radius:50%;
-        width:24px; height:24px; cursor:pointer; font-size:16px;
-        display:flex; align-items:center; justify-content:center;
-        transition:background .3s;
+        /* Updated position to match Assignment layout */
+        position: absolute;
+        top: -15px; /* Matches Assignment */
+        right: -2px; 
+        
+        background: #ff4d4f;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 30px; /* Increased size to match Assignment */
+        height: 30px; /* Increased size to match Assignment */
+        cursor: pointer;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.3s;
     }
-    .delete-btn:hover { background:#ff1f1f; }
+    .delete-btn:hover { background: #ff1f1f; }
+
+    /* NEW: Edit button styles matching Assignment.css */
+    .edit-btn {
+        position: absolute;
+        top: -15px;
+        right: 35px; /* Positioned left of the delete button */
+        background: #007efd;
+        border: none;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: 0.25s;
+        color: white;
+    }
+
+    .edit-btn:hover {
+        background: #0057ad;
+    }
+
+    .edit-btn svg {
+        width: 15px;
+        height: 15px;
+    }
 
     /* ==================== RESPONSIVE ==================== */
     @media (max-width: 900px) {

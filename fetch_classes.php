@@ -40,7 +40,7 @@ if (empty($current_user_id)) {
 // 3. FETCH CLASSES FOR THE USER
 try {
     // Fetch the class_id now, so we can use it for the delete button in the future!
-    $sql = "SELECT class_id, subject_name, instructor, location, start_time, end_time, repeat_days
+    $sql = "SELECT class_id, subject_name, instructor, location, start_time, end_time, repeat_days, reminder_time_minutes
             FROM classes
             WHERE user_id = ?
             ORDER BY start_time ASC";
