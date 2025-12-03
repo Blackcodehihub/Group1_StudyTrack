@@ -202,6 +202,9 @@
             margin-left:0 !important; width:100% !important; padding:20px;
         }
         .main-content.shift { transform:translateX(260px); }
+        .add-class-btn { right: 0; position: absolute; margin-right: 40px;}
+        .classes-subtitle {margin-top: 20px;}
+        
     }
 
     @media (max-width: 768px) {
@@ -228,7 +231,7 @@
     align-items: center;
     justify-content: center;
     padding: 20px;
-    overflow-y: auto;
+    
 }
 
 .modal {
@@ -396,12 +399,23 @@ padding-right: 48px !important;        /* gives space for the arrow */
     color: #000;
 }
 
+
+@media (max-width: 900px) { 
+
+     .reminder-row select {
+        width: 290px;
+    }
+}
+
+
 /* Responsive Adjustments */
 @media (max-width: 480px) {
     .modal {
         padding: 24px 20px;
         border-radius: 16px;
+        overflow-y: auto;
     }
+
     .time-row {
         grid-template-columns: 1fr;
     }
