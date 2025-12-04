@@ -174,6 +174,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // LOAD HABITS ON PAGE LOAD
     loadHabits();
+    // ✅ HISTORY FILTER: completed / all — now fully working
+    document.getElementById('historyFilter')?.addEventListener('change', async function () {
+    const filter = this.value;
+    const historyContainer = document.getElementById('historyHabitsContainer');
+    historyContainer.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-dim)">Loading...</div>';
+
+    try {
+        // Build URL
+        const url = filter === 'all' 
+            ? 'habit.php?action=list&filter=all' 
+            : 'habit.php?action=list'; // default = completed today
+
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+        const data = await res.json();
+        console.log('FilterWhere response:', data);
+
+        // Select correct habit list
+        const habits = filter === 'all' 
+            ? (data.all_habits || []) 
+            : (data.history || []);
+
+        renderHistoryHabits(habits);
+    } catch (err) {
+        console.error('FilterWhere error:', err);
+        historyContainer.innerHTML = `<div style="text-align:center;padding:30px;color:#ff4d4f">Error loading habits: ${err.message}</div>`;
+    }
+});
 
     // CREATE EDIT & DELETE MODALS
     createEditAndDeleteModals();
@@ -867,7 +896,7 @@ function renderHistoryHabits(habits) {
     if (!container) return;
 
     if (habits.length === 0) {
-        container.innerHTML = '<div style="text-align:center;padding:30px 20px;color:var(--text-dim);font-size:15px;">No habits completed yet</div>';
+        container.innerHTML = '<div style="text-align:center;padding:30px 20px;color:var(--text-dim);font-size:15px;">No habits to display</div>';
         return;
     }
 
@@ -880,22 +909,50 @@ function renderHistoryHabits(habits) {
                     <p>${h.repeat_days.replace(/,/g, ', ')} • ${formatTime(h.start_time)}</p>
                 </div>
             </div>
-            <div style="position:relative;">
-                <button class="delete-btn" title="Delete" data-id="${h.habit_id}" style="position: absolute; top: -15px; right: -2px; background: #ff4d4f; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: background 0.3s;">
-                    ×
+            <div class="today-habit-buttons">
+                <button class="edit-btn" title="Edit" data-id="${h.habit_id}">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 20h9"/><path d="M16.5 3.5l4 4L7 21l-4 1 1-4L16.5 3.5z"/>
+                    </svg>
                 </button>
+                <button class="delete-btn" title="Delete" data-id="${h.habit_id}" style="
+                    background: #ff4d4f; 
+                    color: white; 
+                    border: none; 
+                    border-radius: 50%; 
+                    width: 30px; 
+                    height: 30px; 
+                    cursor: pointer; 
+                    font-size: 16px; 
+                    display: flex; 
+                    align-items: center; 
+                    justify-content: center; 
+                    transition: background 0.3s;
+                ">×</button>
             </div>
         </div>
     `).join('');
 
-    // Delete buttons only
+    // ✅ Edit buttons — reuse same logic as Today
+    container.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const habitId = btn.dataset.id;
+            const habit = habits.find(h => h.habit_id == habitId);
+            if (habit) openEditModal(habit);
+        });
+    });
+
+    // ✅ Delete buttons
     container.querySelectorAll('.delete-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const habitId = btn.dataset.id;
-            const habit = habits.find(x => x.habit_id == habitId);
+            const habit = habits.find(h => h.habit_id == habitId);
             if (habit) openDeleteModal(habit);
         });
     });
+
+    // ✅ Re-apply glow effects (important for dynamic buttons)
+    applyGlowEffects();
 }
 
 function escapeHtml(text) {
