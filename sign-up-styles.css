@@ -62,10 +62,10 @@ body {
     border-top-right-radius: 25%;
 }
 
-/* 🔑 Auth Wrapper - CENTERED, BORDERED, BIGGER */
+/* 🔑 Auth Wrapper - CENTERED, BORDERED, SMALLER DESKTOP SIZE */
 .auth-wrapper {
-    width: 600px;
-    max-width: 600px; /* 🔑 MODIFIED: Increased container size */ 
+    width: 90%;
+    max-width: 550px; /* Base Desktop/Large Tablet Size */ 
     
     /* 🔑 NEW STYLES: Border, Shadow, and Background */
     background: #1e1e1e; 
@@ -73,26 +73,25 @@ body {
     border-radius: 20px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 193, 7, 0.5);
     
-    padding: 65px; /* 🔑 MODIFIED: Increased padding */
+    padding: 45px; /* Base Desktop Padding */
 }
 
 /* LOGO */
 .logo {
     display: flex;
     align-items: center;
-    /* 🔑 MODIFIED: Adjusted margin and centered */
     justify-content: center;
     margin-bottom: 10px;
 }
 
 .logo img {
-    width: 120px; /* 🔑 MODIFIED: Adjusted size */
-    margin-right: 10px; /* 🔑 MODIFIED: Adjusted margin */
-    margin-left: 0; /* Changed from 60px */
+    width: 100px; 
+    margin-right: 8px; 
+    margin-left: 0; 
 }
 
 .logo-text {
-    font-size: 2.1em;
+    font-size: 1.9em; 
     font-weight: 700;
     line-height: 0.9;
     color: #474B4E;
@@ -104,20 +103,18 @@ body {
 
 /* TITLE AND SUBTITLE (SIGN UP SPECIFIC) */
 h1 {
-    font-size: 2.6em;
+    font-size: 2.2em; 
     font-weight: 700;
     margin-bottom: 5px; 
     color: #fff;
-    /* 🔑 MODIFIED: Center align */
     text-align: center;
-    margin-top: 20px; /* Add top margin */
+    margin-top: 15px; 
 }
 
 .subtitle {
     color: #bbb;
-    font-size: 0.95em;
-    /* 🔑 MODIFIED: Adjusted margin and centered */
-    margin-bottom: 35px;
+    font-size: 0.9em; 
+    margin-bottom: 30px; 
     text-align: center; 
 }
 
@@ -168,13 +165,13 @@ input::placeholder {
 
 .float-group input {
     width: 100%;
-    height: 65px; /* 🔑 MODIFIED: Increased height for bigger form feel */
-    padding: 22px 20px 0 20px; /* 🔑 MODIFIED: Adjusted padding for label float */
+    height: 60px; /* Input Height */
+    padding: 20px 20px 0 20px; 
     background: #2d2d2d;
     border: none;
     border-radius: 12px;
     color: #fff;
-    font-size: 1.15em; /* 🔑 MODIFIED: Slightly larger text */
+    font-size: 1.1em; 
 }
 
 .float-group label {
@@ -185,15 +182,15 @@ input::placeholder {
     color: #bfbfbf;
     pointer-events: none;
     transition: 0.2s ease;
-    font-size: 1.1em; /* 🔑 MODIFIED: Adjusted initial size */
+    font-size: 1em; 
 }
 
 /* When typing or focused */
 .float-group input:focus + label,
 .float-group input:not(:placeholder-shown) + label {
-    top: 12px;
+    top: 10px; 
     transform: translateY(0);
-    font-size: 0.95em; /* 🔑 MODIFIED: Adjusted floating size */
+    font-size: 0.85em; 
     color: white;
     opacity: 0.9;
 }
@@ -223,6 +220,7 @@ input::placeholder {
     align-items: center;
     margin-top: 10px;
     margin-bottom: 35px;
+    padding-left: 10px; 
 }
 
 .checkbox-group input[type="checkbox"] {
@@ -265,6 +263,17 @@ input::placeholder {
     font-weight: 600;
 }
 
+.checkbox-group label a {
+    text-decoration: none;
+    transition: color 0.2s; 
+}
+
+.checkbox-group label a:hover {
+    color: #ffc107; 
+    text-decoration: underline; 
+}
+
+
 /* BUTTONS */
 .btn {
     width: 100%;
@@ -306,12 +315,11 @@ input::placeholder {
 /* BACK BUTTON */
 .back-btn {
     position: absolute;
-    /* 🔑 MODIFIED: Positioned relative to the centered auth wrapper */
-    top: 50px;
-    left: 50px;
+    top: 50px; 
+    left: 50px; 
     
     color: #ffc107;
-    font-size: 1.3em; /* 🔑 MODIFIED: Adjusted size to match Sign-in */
+    font-size: 1.3em; 
     font-weight: 600;
     text-decoration: none;
     display: flex;
@@ -327,8 +335,7 @@ input::placeholder {
 
 /* BOTTOM TEXT */
 .new-user-prompt {
-    /* 🔑 MODIFIED: Adjusted margin */
-    margin-top: 50px;
+    margin-top: 40px; 
     text-align: center;
     color: #bbb;
     font-size: 0.95em;
@@ -341,7 +348,6 @@ input::placeholder {
 
 /* IMAGE WRAPPER */
 .phone-wrapper {
-    /* 🔑 MODIFIED: Hides the image wrapper */
     display: none;
     justify-content: center;
     align-items: center;
@@ -358,10 +364,7 @@ input::placeholder {
 /* --- PASSWORD POLICY FEEDBACK STYLES (NEW) --- */
 #password-policy-feedback {
     margin-top: 10px;
-    /* Removed background/border to blend with dark UI */
     padding: 10px 0;
-    
-    /* Animation setup: Starts transparent and shrinks */
     opacity: 0;
     transform: translateY(-5px);
     transition: opacity 0.3s ease-out, transform 0.3s ease-out;
@@ -374,7 +377,7 @@ input::placeholder {
 
 #password-policy-feedback p, 
 #password-policy-feedback li {
-    color: #fff; /* Ensure text is visible against the dark background */
+    color: #fff; 
 }
 
 /* Specific styling for the list items */
@@ -390,7 +393,7 @@ input::placeholder {
 
 /* Icon spacing */
 #password-rules li i {
-    width: 15px; /* Fixed width to prevent text shifting */
+    width: 15px; 
     margin-right: 5px;
     display: inline-block;
 }
@@ -399,37 +402,37 @@ input::placeholder {
 .btn:disabled {
     cursor: not-allowed;
     opacity: 0.5;
-    transform: none !important; /* Prevents hover effect */
-    box-shadow: none !important; /* Prevents hover effect */
+    transform: none !important; 
+    box-shadow: none !important; 
 }
 
 /* Remove hover effect when disabled */
 .btn-primary:disabled:hover {
-    background: #ffc107; /* Maintain base color */
+    background: #ffc107; 
 }
 
 .btn-secondary:disabled:hover {
-    background: #2d2d2d; /* Maintain base color */
+    background: #2d2d2d; 
 }
 
 /* Large tablets / small laptops */
 @media (max-width: 1200px) {
     .signup-form-panel {
-        padding-left: 0; /* Changed from 40px */
+        padding-left: 0; 
     }
 
     .signup-image-panel {
-        padding-right: 0; /* Changed from 40px */
+        padding-right: 0; 
     }
 
     .auth-wrapper {
-        max-width: 520px; /* 🔑 MODIFIED: Adjusted max-width */
-        padding: 50px; /* 🔑 MODIFIED: Adjusted padding */
+        max-width: 500px; /* Tablet breakpoint size */
+        padding: 40px; /* Reduced padding */
     }
 
     .logo img {
-        width: 130px;
-        margin-left: 0; /* Changed from 40px */
+        width: 110px; 
+        margin-left: 0; 
     }
 
     .back-btn {
@@ -447,34 +450,33 @@ input::placeholder {
     .login-container {
         flex-direction: column;
         height: auto;
-        padding: 50px 0;
+        padding: 40px 0; /* Reduced top/bottom padding */
     }
 
     /* Image on top, form below */
     .signup-image-panel,
     .signup-form-panel {
         width: 100%;
-        padding: 0; /* Changed from 40px 25px */
+        padding: 0; 
         justify-content: center;
         height: auto;
     }
 
     .signup-image-panel {
         order: 1;
-        padding-bottom: 0; /* Changed from 10px */
-        /* 🔑 MODIFIED: Hides panel fully */
+        padding-bottom: 0; 
         display: none;
     }
 
     .signup-form-panel {
         order: 2;
-        padding-top: 25px; /* Added some top padding */
+        padding-top: 0; /* No top padding needed here */
     }
 
     .auth-wrapper {
-        max-width: 450px;
+        max-width: 400px; /* 🔑 MODIFIED: Further reduced max-width */
         margin: 0 auto;
-        padding: 40px 30px;
+        padding: 30px 25px; /* 🔑 MODIFIED: Reduced padding for mobile */
     }
 
     .logo {
@@ -483,11 +485,21 @@ input::placeholder {
 
     .logo img {
         margin-left: 0;
-        width: 120px;
+        width: 110px; /* Reduced logo size */
     }
 
     .logo-text {
-        font-size: 1.9em;
+        font-size: 1.8em; /* Reduced font size */
+    }
+    
+    h1 {
+        text-align: center;
+        font-size: 2em; /* Reduced title size */
+    }
+
+    .subtitle {
+        text-align: center;
+        font-size: 0.85em; /* Reduced subtitle size */
     }
 
     .phone-wrapper img {
@@ -495,28 +507,19 @@ input::placeholder {
     }
 
     .back-btn {
-        top: 20px; /* 🔑 MODIFIED: Adjusted positioning */
-        right: auto; /* 🔑 MODIFIED: Reset right alignment */
-        left: 20px; /* 🔑 MODIFIED: Aligned left for mobile */
-        position: fixed; /* 🔑 MODIFIED: Keeps button visible */
-        font-size: 1.2em; /* 🔑 MODIFIED: Adjusted size */
+        top: 20px; 
+        right: auto; 
+        left: 20px; 
+        position: fixed; 
+        font-size: 1.1em; /* Reduced font size */
         background: #1D1C1C;
         padding: 5px 10px;
         border-radius: 8px;
         z-index: 100;
     }
 
-    h1 {
-        text-align: center;
-        font-size: 2.2em;
-    }
-
-    .subtitle {
-        text-align: center;
-    }
-
     .new-user-prompt {
-        margin-top: 25px;
+        margin-top: 20px; /* Reduced margin */
     }
 }
 
@@ -525,6 +528,16 @@ input::placeholder {
     .input-row {
         flex-direction: column;
         gap: 10px;
+    }
+
+    /* 🔑 MODIFIED: Further adjustment of input size for smaller screens */
+    .float-group input {
+        height: 55px;
+        font-size: 1em;
+    }
+    
+    .float-group label {
+        font-size: 0.95em;
     }
 
     input {
@@ -542,19 +555,19 @@ input::placeholder {
     }
 
     h1 {
-        font-size: 1.9em;
+        font-size: 1.8em; /* Reduced title size */
     }
 
     .subtitle {
-        font-size: 0.9em;
+        font-size: 0.8em;
     }
 
     .logo img {
-        width: 100px;
+        width: 90px;
     }
 
     .logo-text {
-        font-size: 1.6em;
+        font-size: 1.5em;
     }
 }
 
@@ -563,11 +576,20 @@ input::placeholder {
 
     .signup-image-panel,
     .signup-form-panel {
-        padding: 25px 15px;
+        padding: 20px 10px; /* Reduced padding */
     }
 
     .auth-wrapper {
         max-width: 100%;
+        padding: 25px 15px; /* Minimal padding */
+    }
+    
+    .logo img {
+        width: 80px; /* Smallest logo size */
+    }
+    
+    .logo-text {
+        font-size: 1.4em;
     }
 
     .phone-wrapper img {
@@ -581,6 +603,103 @@ input::placeholder {
     }
 
     h1 {
-        font-size: 1.7em;
+        font-size: 1.6em;
+    }
+}
+
+/* --- NEW: MODAL STYLES FOR TOS/PRIVACY --- */
+.modal-overlay.tos-modal-overlay,
+.modal-overlay.privacy-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7); /* Dark semi-transparent backdrop */
+    backdrop-filter: blur(5px);
+    display: none; /* Hidden by default */
+    justify-content: center;
+    align-items: center;
+    z-index: 2000; /* Ensure it's above other elements */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.active {
+    display: flex;
+    opacity: 1;
+}
+
+/* Modal Content Box */
+.modal.scrollable-modal {
+    background: #1e1e1e;
+    width: 90%;
+    max-width: 650px; /* Reduced modal width to match new max-width */
+    max-height: 85vh; /* Increased max height for better viewing */
+    border-radius: 12px;
+    padding: 30px;
+    border: 1px solid #333;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
+    position: relative;
+    color: white;
+    overflow-y: auto; /* Enable scrolling for long content */
+    animation: modalPopUp 0.3s ease;
+}
+
+@keyframes modalPopUp {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.modal-title {
+    font-size: 1.6em; /* Reduced modal title size */
+    font-weight: 700;
+    color: #ffc107; /* Gold accent color */
+    margin-bottom: 25px;
+    text-align: left;
+}
+
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: #bbb;
+    font-size: 1.8em; /* Reduced close button size */
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close-modal:hover {
+    color: #ffc107;
+}
+
+/* Modal Body Content Styling */
+.modal-content-body {
+    padding-right: 15px; /* Space for scrollbar */
+}
+
+.modal-content-body h3 {
+    font-size: 1.05em; /* Reduced body heading size */
+    color: #ddd;
+    margin-top: 15px;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.modal-content-body p {
+    font-size: 0.9em; /* Reduced body text size */
+    line-height: 1.6;
+    color: #bbb;
+    margin-bottom: 20px;
+}
+
+/* Responsive adjustment for modal */
+@media (max-width: 768px) {
+    .modal.scrollable-modal {
+        max-width: 95%;
+        padding: 20px;
+        max-height: 90vh;
     }
 }
