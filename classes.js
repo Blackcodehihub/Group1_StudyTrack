@@ -379,7 +379,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Form submission handler for EDIT
     editClassForm.addEventListener('submit', handleEditFormSubmission);
-
+    
     function handleEditFormSubmission(event) {
         event.preventDefault();
 
@@ -391,23 +391,35 @@ document.addEventListener('DOMContentLoaded', function() {
 
         editFormMessages.textContent = ''; 
 
-        // --- CRITICAL FIX START: Clean Time Inputs before FormData creation ---
-        // Ensure only HH:MM is in the value fields being submitted, as the browser adds the suffix.
+        // --- CRITICAL FIX START: Defensive Time Cleaning ---
         
-        // Create a helper function to clean the time string (e.g., "09:00 am" -> "09:00")
+        // Helper function to extract ONLY HH:MM using a robust regex.
         function cleanTimeValue(timeString) {
             if (!timeString) return '';
-            // Strip out 'AM', 'PM', 'am', 'pm' and any trailing spaces
-            return timeString.replace(/\s*[ap]m/i, '').trim();
+            
+            // Regex to find and capture HH:MM, even if followed by AM/PM or other text.
+            // (\d{1,2}:\d{2}) captures the time format.
+            const match = timeString.match(/(\d{1,2}:\d{2})/);
+            
+            // If the time is found, return the captured group (HH:MM).
+            if (match) {
+                return match[1];
+            }
+            
+            // If the time string is already clean (e.g., '13:00'), return it.
+            // If it's empty or invalid, this ensures we don't send extra text.
+            return timeString.trim();
         }
-        
-        // Temporarily overwrite the input values with the cleaned 24hr version
-        // This ensures FormData captures the correct format.
-        const originalStartTime = editStartTimeInput.value;
-        const originalEndTime = editEndTimeInput.value;
 
-        editStartTimeInput.value = cleanTimeValue(originalStartTime);
-        editEndTimeInput.value = cleanTimeValue(originalEndTime);
+        // Get the current values from the inputs
+        const currentStartTime = editStartTimeInput.value;
+        const currentEndTime = editEndTimeInput.value;
+
+        // Temporarily overwrite the input values with the cleaned 24hr version.
+        // This ensures FormData captures the correct HH:MM format for *both* fields.
+        editStartTimeInput.value = cleanTimeValue(currentStartTime);
+        editEndTimeInput.value = cleanTimeValue(currentEndTime);
+        
         // --- CRITICAL FIX END ---
 
         const formData = new FormData(editClassForm);
@@ -418,7 +430,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 formData.append('repeat_days[]', day); 
             });
         }
-
+        
         fetch('update_class.php', { 
             method: 'POST',
             body: formData,
@@ -427,14 +439,14 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .then(response => {
-            // Restore original time values after the fetch attempt, regardless of success/fail
-            editStartTimeInput.value = originalStartTime;
-            editEndTimeInput.value = originalEndTime;
-            
+            // Restore original, formatted values immediately after the fetch attempt.
+            // This is crucial for the UI display if the update fails or the modal remains open.
+            editStartTimeInput.value = currentStartTime;
+            editEndTimeInput.value = currentEndTime;
+
             // Check the HTTP status first
             return response.json().then(data => {
                 if (!response.ok) {
-                    // Throw an error with the server's message (e.g., "Validation failed.")
                     throw new Error(data.message || 'Server error occurred.');
                 }
                 return data;
