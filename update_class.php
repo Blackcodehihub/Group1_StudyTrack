@@ -36,7 +36,7 @@ if (empty($current_user_id)) {
 }
 
 // 3. RETRIEVE AND SANITIZE INPUTS
-$class_id          = filter_input(INPUT_POST, 'class_id', FILTER_SANITIZE_NUMBER_INT);
+$class_id          = filter_input(INPUT_POST, 'class_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 $subject_name      = filter_input(INPUT_POST, 'subject_name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 $instructor        = filter_input(INPUT_POST, 'instructor', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 $location          = filter_input(INPUT_POST, 'location', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -50,18 +50,69 @@ $reminder_time_minutes = !empty($reminder_time_val) ? (int)$reminder_time_val : 
 
 // 4. SERVER-SIDE VALIDATION
 $errors = [];
+// Check required fields first
 if (empty($class_id)) { $errors[] = "Class ID is missing for update."; }
 if (empty($subject_name)) { $errors[] = "Subject name is required."; }
 if (empty($start_time) || empty($end_time)) { $errors[] = "Start and End times are required."; }
-if (!preg_match("/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/", $start_time)) { $errors[] = "Invalid Start Time format. Use HH:MM."; }
-if (!preg_match("/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/", $end_time)) { $errors[] = "Invalid End Time format. Use HH:MM."; }
-if (empty($errors) && strtotime($start_time) >= strtotime($end_time)) { $errors[] = "End time must be after Start time."; }
 
-if (!empty($errors)) {
+// Time Format Check
+if (!empty($start_time) && !preg_match("/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/", $start_time)) { 
+    $errors[] = "Invalid Start Time format. Use HH:MM."; 
+}
+if (!empty($end_time) && !preg_match("/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/", $end_time)) { 
+    $errors[] = "Invalid End Time format. Use HH:MM."; 
+}
+
+// Time Logic Check (CRITICAL FIX: Use DateTime objects for reliability)
+if (empty($errors) && !empty($start_time) && !empty($end_time)) { 
+    try {
+        $start = DateTime::createFromFormat('H:i', $start_time);
+        $end = DateTime::createFromFormat('H:i', $end_time);
+
+        // Check if parsing failed or if start time is greater than or equal to end time
+        if (!$start || !$end || $start >= $end) {
+             $errors[] = "End time must be after Start time."; 
+        }
+    } catch (\Exception $e) {
+        // Fallback catch for unexpected time issues
+        $errors[] = "Time comparison failed.";
+    }
+}
+
+
+/* if (!empty($errors)) {
     http_response_code(400); 
     echo json_encode(['success' => false, 'message' => 'Validation failed.', 'errors' => $errors]);
     exit();
-}
+} */
+
+    // TEMPORARY DEBUG BLOCK: Check what data passed validation
+    if (!empty($errors)) {
+        // The validation failed, return the errors as usual
+        http_response_code(400); 
+        echo json_encode(['success' => false, 'message' => 'Validation failed.', 'errors' => $errors]);
+        exit();
+    }
+
+    // --- START DEBUG HERE ---
+    if (isset($_GET['debug'])) {
+        http_response_code(200);
+        echo json_encode([
+            'success' => true, 
+            'message' => 'DEBUG SUCCESS: Validation Passed. Data Received:', 
+            'received' => [
+                'class_id' => $class_id,
+                'subject_name' => $subject_name,
+                'start_time' => $start_time,
+                'end_time' => $end_time,
+                'repeat_days' => $repeat_days,
+                'reminder_time_minutes' => $reminder_time_minutes,
+                'user_id' => $current_user_id
+            ]
+        ]);
+        exit();
+    }
+    // --- END DEBUG HERE ---
 
 // 5. UPDATE DATA IN DATABASE (Secured by user_id)
 try {
@@ -78,16 +129,30 @@ try {
         $end_time,
         $repeat_days_string,
         $reminder_time_minutes,
-        $class_id,
-        $current_user_id
+        $class_id,            // VARCHAR ID
+        $current_user_id      // VARCHAR ID from session
     ]);
 
+    // CRITICAL FIX: If rowCount > 0, we updated successfully.
     if ($stmt->rowCount() > 0) {
         echo json_encode(['success' => true, 'message' => 'Class updated successfully!']);
     } else {
-        // Class not found or no changes were made
-        http_response_code(404);
-        echo json_encode(['success' => false, 'message' => 'Class not found or no changes detected.']);
+        // If rowCount is 0, we assume the class exists and no changes were made.
+        // We still return true to prevent the client from displaying an error.
+        
+        // OPTIONAL: Better check if the row truly exists to ensure it's not a 404.
+        $check_sql = "SELECT class_id FROM classes WHERE class_id = ? AND user_id = ?";
+        $check_stmt = $pdo->prepare($check_sql);
+        $check_stmt->execute([$class_id, $current_user_id]);
+
+        if ($check_stmt->fetch()) {
+             // Class found, but no changes made -> Treat as success.
+             echo json_encode(['success' => true, 'message' => 'Class found. No new changes were applied as the data was identical.']);
+        } else {
+             // Class not found or access denied.
+             http_response_code(404);
+             echo json_encode(['success' => false, 'message' => 'Class not found or access denied.']);
+        }
     }
 
 } catch (\PDOException $e) {

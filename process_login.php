@@ -1,5 +1,11 @@
 <?php
-// CRITICAL: Start the PHP session FIRST. This makes $_SESSION available.
+// ===== FIX LOCALHOST SESSION COOKIE (MAGIC LINES) =====
+ini_set('session.cookie_domain', 'localhost');
+ini_set('session.cookie_path', '/Group1_StudyTrack');
+ini_set('session.cookie_samesite', 'Lax');
+ini_set('session.cookie_secure', '0');
+ini_set('session.cookie_httponly', '0');
+// =====================================================
 session_start();
 
 header('Content-Type: application/json');
@@ -44,7 +50,7 @@ if (empty($email_input) || empty($password_input)) {
 
 // 4. FIND USER BY EMAIL AND GET HASH
 try {
-    // Select the user_id and password_hash for verification
+    // Select the user_id (which is now VARCHAR) and password_hash for verification
     $stmt = $pdo->prepare("SELECT user_id, password_hash, first_name FROM users WHERE email = ?");
     $stmt->execute([$email_input]);
     $user = $stmt->fetch();
@@ -68,12 +74,13 @@ try {
 // 5. VERIFY PASSWORD HASH
 if (password_verify($password_input, $stored_hash)) {
     
-    // --- SUCCESS: START SESSION AND STORE ID ---
-    // This makes the user_id globally accessible across PHP scripts.
+
     $_SESSION['user_id'] = $user['user_id'];
     $_SESSION['first_name'] = $user['first_name'];
     
     http_response_code(200);
+    // ADD THIS LINE - Store plain password temporarily in session
+    $_SESSION['plain_password'] = $password_input;
     echo json_encode(['success' => true, 'message' => 'Login successful!']);
 
 } else {

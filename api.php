@@ -5,6 +5,9 @@ ini_set('display_errors', 1);
 ini_set('log_errors', 1);
 ini_set('error_log', __DIR__ . '/php_errors.log');
 
+// CRITICAL: Start the session to access $_SESSION['user_id']
+session_start();
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
@@ -13,6 +16,44 @@ header('Access-Control-Allow-Headers: Content-Type');
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
+
+// 0. CHECK USER AUTHENTICATION
+$current_user_id = $_SESSION['user_id'] ?? null; 
+if (empty($current_user_id)) {
+    http_response_code(403);
+    echo json_encode(['error' => 'Authentication required.']);
+    exit;
+}
+
+// --- ID GENERATION FUNCTION ---
+/**
+ * Finds the highest numeric suffix for reminder IDs and returns the next sequential ID (e.g., REM11).
+ */
+function generateNextReminderId(PDO $pdo): string {
+    try {
+        $sql = "SELECT id FROM reminders 
+                WHERE id REGEXP '^REM[0-9]+$'
+                ORDER BY CAST(SUBSTRING(id, 4) AS UNSIGNED) DESC
+                LIMIT 1";
+
+        $stmt = $pdo->query($sql);
+        $lastId = $stmt->fetchColumn();
+
+        $nextNumber = 1;
+
+        if ($lastId) {
+            // Extract the numeric part (e.g., 'REM10' -> '10')
+            $numberPart = (int) substr($lastId, 3); 
+            $nextNumber = $numberPart + 1;
+        }
+
+        return 'REM' . $nextNumber;
+    } catch (\PDOException $e) {
+        error_log("Reminder ID generation error: " . $e->getMessage());
+        throw $e;
+    }
+}
+
 
 // ✅ MySQL CONFIG — XAMPP defaults
 $host = 'localhost';
@@ -28,9 +69,10 @@ try {
         PDO::ATTR_EMULATE_PREPARES => false,
     ]);
 
-    // ✅ Ensure table exists (safe for existing DB)
+    // CRITICAL FIX: Update the internal table schema definition for VARCHAR IDs
     $pdo->exec("CREATE TABLE IF NOT EXISTS reminders (
-        id INT AUTO_INCREMENT PRIMARY KEY,
+        id VARCHAR(50) PRIMARY KEY,                                 -- Changed from INT AUTO_INCREMENT
+        user_id VARCHAR(50) NOT NULL,                               -- Added user_id FK
         title VARCHAR(255) NOT NULL,
         due_date DATE NOT NULL,
         due_time TIME NOT NULL,
@@ -39,6 +81,8 @@ try {
         notes TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+    // NOTE: Foreign key constraints should be applied outside of this exec block 
+    // by the main SQL script for stability, but the VARCHAR structure is essential here.
 
 } catch (Exception $e) {
     error_log("DB CONNECTION FAILED: " . $e->getMessage());
@@ -49,12 +93,15 @@ try {
 
 // === API LOGIC ===
 $method = $_SERVER['REQUEST_METHOD'];
-$id = isset($_GET['id']) ? (int)$_GET['id'] : null;
+// CRITICAL: ID is now VARCHAR (string), not INT
+$id = isset($_GET['id']) ? filter_var($_GET['id'], FILTER_SANITIZE_FULL_SPECIAL_CHARS) : null; 
 
 try {
     switch ($method) {
         case 'GET':
-            $stmt = $pdo->query("SELECT * FROM reminders ORDER BY due_date ASC, due_time ASC");
+            // CRITICAL: Filter results by the authenticated user's ID
+            $stmt = $pdo->prepare("SELECT * FROM reminders WHERE user_id = ? ORDER BY due_date ASC, due_time ASC");
+            $stmt->execute([$current_user_id]);
             echo json_encode($stmt->fetchAll() ?: []);
             break;
 
@@ -65,10 +112,16 @@ try {
                 echo json_encode(['error' => 'Missing required fields: title, due_date, due_time']);
                 exit;
             }
+            
+            // CRITICAL: Generate new VARCHAR ID
+            $new_reminder_id = generateNextReminderId($pdo);
 
-            $stmt = $pdo->prepare("INSERT INTO reminders (title, due_date, due_time, remind_before, priority, notes) 
-                VALUES (?, ?, ?, ?, ?, ?)");
+            // CRITICAL: Include ID and user_id in INSERT statement
+            $stmt = $pdo->prepare("INSERT INTO reminders (id, user_id, title, due_date, due_time, remind_before, priority, notes) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
             $stmt->execute([
+                $new_reminder_id,                           // VARCHAR ID
+                $current_user_id,                           // VARCHAR USER_ID
                 trim($data['title']),
                 $data['due_date'],
                 $data['due_time'],
@@ -77,7 +130,7 @@ try {
                 $data['notes'] ?? ''
             ]);
 
-            echo json_encode(['id' => $pdo->lastInsertId(), 'success' => true]);
+            echo json_encode(['id' => $new_reminder_id, 'success' => true]);
             break;
 
         case 'PUT':
@@ -87,9 +140,11 @@ try {
                 exit;
             }
             $data = json_decode(file_get_contents('php://input'), true);
+            
+            // CRITICAL: Update statement must check both reminder ID AND user_id for security
             $stmt = $pdo->prepare("UPDATE reminders SET 
                 title = ?, due_date = ?, due_time = ?, remind_before = ?, priority = ?, notes = ?
-                WHERE id = ?");
+                WHERE id = ? AND user_id = ?");
             $stmt->execute([
                 trim($data['title']),
                 $data['due_date'],
@@ -97,7 +152,8 @@ try {
                 $data['remind_before'] ?? 'None',
                 $data['priority'] ?? 'medium',
                 $data['notes'] ?? '',
-                $id
+                $id,                                    // VARCHAR ID
+                $current_user_id                        // VARCHAR USER_ID
             ]);
             echo json_encode(['success' => true]);
             break;
@@ -108,8 +164,9 @@ try {
                 echo json_encode(['error' => 'ID required']);
                 exit;
             }
-            $stmt = $pdo->prepare("DELETE FROM reminders WHERE id = ?");
-            $stmt->execute([$id]);
+            // CRITICAL: Delete statement must check both reminder ID AND user_id for security
+            $stmt = $pdo->prepare("DELETE FROM reminders WHERE id = ? AND user_id = ?");
+            $stmt->execute([$id, $current_user_id]);
             echo json_encode(['success' => true]);
             break;
 

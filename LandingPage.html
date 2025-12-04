@@ -140,7 +140,7 @@
         .main-nav {
             flex-grow: 1; /* Allow nav to take remaining space */
             display: flex;
-            justify-content: flex-end; /* Push links to the right */
+            justify-content: center;
             align-items: center;
             padding-right: 20px; /* Spacing before button */
         }
@@ -221,6 +221,9 @@
 
         .btn-get-started:hover{
             background-color: var(--color-accent);
+            transform: translateY(-3px); /* lift effect */
+            box-shadow: 0 6px 15px rgba(255, 193, 7, 0.4);
+            transition: 0.25s ease;
         }
 
         /* HERO IMAGES HOVER ANIMATION */
@@ -445,7 +448,7 @@
         #reviews .review-card {
             background: #d9d9d9;
             padding: 40px 35px;
-            border-radius: 4px;
+            border-radius: 12px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -522,11 +525,25 @@
             max-width: 1271px;
             background-color: var(--color-primary-dark);
             padding: 50px 150px;
+            border-radius: 12px;
+            /* 🔑 MODIFIED: Center block horizontally */
+            margin: 70px auto 0 auto; 
+            /* 🔑 MODIFIED: Center text alignment for the whole block */
+            text-align: center;
         }
         .about-content p {
             font-size: 24px;
             line-height: 1.5;
             font-weight: 400;
+            /* 🔑 MODIFIED: Ensures body text is left-aligned and readable, centered within its container */
+            text-align: left; 
+            max-width: 900px;
+            margin: 0 auto; 
+        }
+        /* 🔑 MODIFIED: Target the strong tag wrapper to center the title line */
+        .about-content p strong:first-child {
+             display: block;
+             margin-bottom: 20px;
         }
         .about-content strong {
             font-weight: 700;
@@ -534,6 +551,19 @@
         @media (max-width: 768px) {
             .about-content p {
                 font-size: 20px;
+            }
+             /* 🔑 MODIFIED: Reduce padding on mobile */
+            .about-content {
+                 padding: 40px 30px;
+                 /* 🔑 MODIFIED: Center align text on mobile */
+                 text-align: center;
+            }
+            /* 🔑 NEW: Ensure nested text is centered when container is centered */
+            .about-content p {
+                text-align: center;
+            }
+            .about-content p strong:first-child {
+                margin-bottom: 10px; /* Adjust spacing */
             }
         }
 
@@ -544,16 +574,23 @@
             padding-top: 50px;
             padding-bottom:50px;
         }
+
         .footer-container {
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr;
             gap: 80px;
+            justify-items: center;
         }
         .footer-logo {
             font-size: 40px;
             font-weight: 700;
             margin-bottom: 32px;
         }
+
+        .footer-nav li a:hover {
+          color: #FFB919;;
+        }
+
         .logo-accent {
             color: var(--color-accent);
         }
@@ -611,6 +648,12 @@
             height: 18px;
             transform: translate(-50%, -50%);
             object-fit: cover;
+        }
+        /* 🔑 NEW: Copyright Text Styling */
+        .copyright-text {
+            font-size: 14px;
+            color: #aaa; /* Lighter color for standard copyright notice */
+            margin-top: 40px;
         }
         .footer-nav h3 {
             font-size: 24px;
@@ -918,8 +961,8 @@
         }
 
         @media (max-width: 768px) {
-             /* DEPRECATED: Removed old main-nav display none block */
-             /* DEPRECATED: Removed old hamburger display flex block */
+            /* DEPRECATED: Removed old main-nav display none block */
+            /* DEPRECATED: Removed old hamburger display flex block */
         }
 
         @media (max-width: 900px) {
@@ -939,7 +982,7 @@
                 width: 100% !important;
                 height: auto;
             }
-        }     
+        } 
         
         /* 🚀 IMPROVED MOBILE SIDEBAR STYLING */
         .side-nav {
@@ -1225,8 +1268,8 @@
             <div class="about-content">
                 <p>
                     <strong style="font-size: 60px;font-weight: 800;">About Us</strong><br><br>
-                    At <strong>StudyTrack</strong>, we believe that managing your studies and finances shouldn’t be stressful. Our mission is to empower students to stay organized, achieve their goals, and make smarter financial decisions—all in one intuitive app.<br>
-                    With features like study planners, exam reminders, expense tracking, and personalized insights, we help students take control of their time and money. We’re dedicated to creating a simple, powerful, and beautiful tool that makes student life easier and more productive.<br>
+                    At <strong>StudyTrack</strong>, we believe that managing your studies and finances shouldn’t be stressful. Our mission is to empower students to stay organized, achieve their goals, and make smarter financial decisions all in one intuitive app.<br>
+                    With features like study planners, exam reminders, expense tracking, and personalized insights, we help students take control of their time and money. We’re dedicated to creating a simple, powerful, and beautiful tool that makes student life easier and more productive.<br><br>
                     <strong>Our Vision:</strong> To be the go-to platform for students who want to study smarter, spend wiser, and live stress-free.
                 </p>
             </div>
@@ -1237,11 +1280,6 @@
         <div class="container footer-container">
             <div class="footer-col-1">
                 <div class="footer-logo">STUDY <span class="logo-accent">TRACK</span></div>
-                <p class="email-label">Email Address</p>
-                <div class="email-field">
-                    <hr>
-                    <button class="btn-copy">Copy</button>
-                </div>
                 <div class="social-links">
                     <a href="#" class="social-icon">
                         <img src="images_icons/fb.png" alt="Facebook icon" class="social-fg">
@@ -1256,6 +1294,7 @@
                         <img src="images_icons/insta.png" alt="Instagram icon" class="social-fg">
                     </a>
                 </div>
+
             </div>
             <div class="footer-col-2">
                 <nav class="footer-nav">
@@ -1266,6 +1305,9 @@
                         <li><a href="#">Contact</a></li>
                     </ul>
                 </nav>
+                <p class="copyright-text">
+                    &copy; 2025 StudyTrack. All rights reserved.
+                </p>
             </div>
             <div class="footer-col-3">
                 <nav class="footer-nav">
@@ -1296,10 +1338,9 @@
 
             <div id="privacyContent" class="quick-tab-content">
                 <h2>Privacy Policy</h2>
-                <p><strong>Last updated: December 2025</strong></p>
-                <p>At StudyTrack, we respect your privacy and are committed to protecting your personal data.</p>
+                <p>We collect Personal Information (Name, Email) and Usage Data (Class schedules, Assignment deadlines, Wallet records). We do not collect sensitive financial details or academic grades beyond what you explicitly enter.</p>
                 <h3>1. Information We Collect</h3>
-                <p>We collect only what’s necessary: email, study logs, and expenses — all stored securely.</p>
+                <p>We collect only what’s necessary: email, study logs, and expenses all stored securely.</p>
                 <h3>2. Data Security</h3>
                 <p>We use encryption and never sell your data.</p>
                 <h3>3. Your Rights</h3>
@@ -1308,20 +1349,35 @@
 
             <div id="termsContent" class="quick-tab-content">
                 <h2>Terms of Service</h2>
-                <p><strong>Effective: December 2025</strong></p>
-                <p>By using StudyTrack, you agree to these terms.</p>
-                <h3>1. Use of Service</h3>
-                <p>You must be 13+ years old.</p>
-                <h3>2. Account Responsibility</h3>
-                <p>Keep your account secure.</p>
-                <h3>3. Termination</h3>
-                <p>We may suspend accounts violating these terms.</p>
+                <h3>1. Acceptance of Terms</h3>
+                <p>By accessing or using the StudyTrack application, you agree to be bound by these Terms of Service (ToS). If you disagree with any part of the terms, you may not access the service.</p>
+                <h3>2. User Responsibilities</h3>
+                <p>You are responsible for maintaining the confidentiality of your account password. You are also responsible for all activities that occur under your account.</p>
+                <h3>3. Usage Restrictions</h3>
+                <p>You agree not to use the Service for any unlawful or prohibited activities, including unauthorized copying, distribution, or attempts to disrupt the integrity or security of the Service.</p>
+                <h3>4. Termination</h3>
+                <p>We may terminate or suspend your account immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the ToS.</p>
+            </div>
+            
+            <div id="aboutContent" class="quick-tab-content">
+                <h2>About Us</h2>
+                <p>
+                    At <strong>StudyTrack</strong>, we believe that managing your studies and finances shouldn’t be stressful. Our mission is to empower students to stay organized, achieve their goals, and make smarter financial decisions all in one intuitive app.
+                </p>
+                <p>
+                    With features like study planners, exam reminders, expense tracking, and personalized insights, we help students take control of their time and money. We’re dedicated to creating a simple, powerful, and beautiful tool that makes student life easier and more productive.
+                </p>
+                <h3>Our Vision</h3>
+                <p>
+                    To be the go-to platform for students who want to study smarter, spend wiser, and live stress-free.
+                </p>
             </div>
 
             <div class="quick-tabs">
                 <button data-tab="contactContent" class="quick-tab-btn active">Contact</button>
                 <button data-tab="privacyContent" class="quick-tab-btn">Privacy Policy</button>
                 <button data-tab="termsContent" class="quick-tab-btn">Terms of Service</button>
+                <button data-tab="aboutContent" class="quick-tab-btn">About Us</button>
             </div>
         </div>
     </div>
@@ -1335,20 +1391,36 @@
             const map = {
                 'Contact': 'contactContent',
                 'Privacy Policy': 'privacyContent',
-                'Terms of Service': 'termsContent'
+                'Terms of Service': 'termsContent',
+                'About Us': 'aboutContent', // 🔑 NEW: Added About Us to map
+                'Features': 'featuresContent' // Placeholder to prevent jump
             };
+            
+            // 🔑 NEW: Ensure all tab content is registered
+            // This is necessary because the footer has links to sections (like #about)
+            // that we also want to intercept for the modal if they match a tab name.
+            const tabContentDivs = document.querySelectorAll('.quick-tab-content');
+            tabContentDivs.forEach(div => {
+                if(div.id !== 'contactContent') div.classList.remove('active');
+            });
+
 
             document.querySelectorAll('.footer-nav a').forEach(a => {
                 a.addEventListener('click', e => {
-                    e.preventDefault();
                     const text = a.textContent.trim();
                     const target = map[text];
+                    
                     if (target) {
+                        e.preventDefault(); // Prevent page jump
                         modal.classList.add('active');
+                        
+                        // Handle Tab Switching inside modal
                         document.querySelectorAll('.quick-tab-content').forEach(c => c.classList.remove('active'));
                         document.querySelectorAll('.quick-tab-btn').forEach(b => b.classList.remove('active'));
+                        
+                        // Activate target tab and button
                         document.getElementById(target).classList.add('active');
-                        document.querySelector(`[data-tab="${target}"]`).classList.add('active');
+                        document.querySelector(`.quick-tab-btn[data-tab="${target}"]`).classList.add('active');
                     }
                 });
             });
@@ -1441,7 +1513,6 @@
                     // Force reflow so animation restarts
                     void entry.target.offsetWidth;
                     
-                    // Trigger animation after short delay
                     setTimeout(() => {
                         entry.target.classList.add('visible');
                     }, 600); 

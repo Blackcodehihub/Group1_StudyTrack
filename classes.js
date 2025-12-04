@@ -12,10 +12,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const startTimeInput = document.getElementById('start_time');
     const endTimeInput = document.getElementById('end_time');
     const dayButtons = document.querySelectorAll('.day-btn');
-    const formMessages = document.getElementById('form-messages');
+    // Removed old formMessages selector
     const classesListContainer = document.getElementById('classes-list-container'); 
 
-    // EDIT Modal Selectors (NEW)
+    // EDIT Modal Selectors
     const editClassModal = document.getElementById('editClassModal');
     const closeEditModalBtn = document.getElementById('closeEditModalBtn');
     const cancelEditBtn = document.getElementById('cancelEditBtn');
@@ -26,25 +26,72 @@ document.addEventListener('DOMContentLoaded', function() {
     const editStartTimeInput = document.getElementById('edit_start_time');
     const editEndTimeInput = document.getElementById('edit_end_time');
     const editDayButtons = document.querySelectorAll('#editClassModal .day-btn');
-    const editFormMessages = document.getElementById('edit-form-messages');
+    // Removed old editFormMessages selector
 
-    // Success Modal Elements
+    // Success Modals
     const successModal = document.getElementById('successModal');
-    const addAnotherClassBtn = document.getElementById('addAnotherClassBtn');
-    const viewClassBtn = document.getElementById('viewClassBtn'); // CRITICAL: Added selector
+    const deleteSuccessModal = document.getElementById('deleteSuccessModal'); // NEW
+    const validationModal = document.getElementById('validationModal');       // NEW
     
+    const addAnotherClassBtn = document.getElementById('addAnotherClassBtn');
+    const viewClassBtn = document.getElementById('viewClassBtn'); 
+    
+    // Validation Modal Elements
+    const validationErrorList = document.getElementById('validationErrorList'); // NEW
+
     // DELETE Modal Selectors
     const deleteConfirmationModal = document.getElementById('deleteConfirmationModal');
     const deleteCloseBtn = document.getElementById('deleteCloseBtn');
-    const cancelDeleteBtn = document.getElementById('cancelDeleteBtn'); // <-- This ID is critical
+    const cancelDeleteBtn = document.getElementById('cancelDeleteBtn'); 
     const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
     const classToDeleteName = document.getElementById('class-to-delete-name');
     
     // State to track the ID of the class pending deletion
     let currentClassIdToDelete = null; 
+    let currentClassToDeleteName = ''; // To show in the success modal
 
+    // --- NEW: Modal Helper Functions ---
 
-    // --- Helper Function: Time Formatting (24hr to 12hr AM/PM) ---
+    function openModal(modalToOpen) {
+        modalToOpen.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(modalToClose) {
+        modalToClose.style.display = 'none';
+        // Only reset overflow if no other modal is open
+        if (validationModal.style.display === 'none' && successModal.style.display === 'none' && deleteSuccessModal.style.display === 'none') {
+             document.body.style.overflow = 'auto';
+        }
+    }
+
+    // NEW: Function to show the validation error modal
+    function showValidationError(errorMessages, contextModalId) {
+        validationErrorList.innerHTML = '';
+        errorMessages.forEach(msg => {
+            const li = document.createElement('li');
+            li.innerHTML = `<i class="fa-solid fa-circle-xmark" style="color:#ff4d4f; margin-right: 8px;"></i>${msg}`;
+            validationErrorList.appendChild(li);
+        });
+
+        // Set the 'Try Again' button to focus on the correct input after closing
+        document.getElementById('tryAgainBtn').onclick = () => {
+             closeModal(validationModal);
+             document.getElementById(contextModalId).style.display = 'flex'; // Re-open original modal
+        };
+        
+        openModal(validationModal);
+    }
+
+    // NEW: Function to show the delete success modal
+    function showDeleteSuccess(name) {
+        document.getElementById('deleteSuccessTitle').textContent = 'Class Deleted';
+        document.getElementById('deleteSuccessMessage').innerHTML = `The class "<strong>${name}</strong>" has been permanently removed.`;
+        openModal(deleteSuccessModal);
+    }
+    
+    // --- Existing Helper Functions ---
+    
     function formatTime(time24) {
         if (!time24) return '';
         const [hour, minute] = time24.split(':');
@@ -54,8 +101,9 @@ document.addEventListener('DOMContentLoaded', function() {
         return `${formattedH}:${minute} ${ampm}`;
     }
 
-    // --- RENDERER Function: Creates the HTML for the Repeater ---
+    // --- RENDERER Function ---
     function renderClassItems(classes) {
+        // ... (Renderer logic remains the same) ...
         if (classes.length === 0) {
             classesListContainer.innerHTML = `
                 <div style="padding: 20px; text-align: center; color: var(--text-dim); border: 1px dashed var(--border); border-radius: 12px; margin-top: 20px;">
@@ -64,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
             return;
         }
-
+        // ... (Map and loop logic remains the same) ...
         const html = classes.map(cls => {
             const days = cls.repeat_days ? cls.repeat_days.split(',').join(' & ') : 'N/A';
             const locationText = cls.location ? `, ${cls.location}` : '';
@@ -98,11 +146,11 @@ document.addEventListener('DOMContentLoaded', function() {
         classesListContainer.innerHTML = html;
         
         attachDeleteListeners(); 
-        attachEditListeners(classes); // CRITICAL: Call new function
+        attachEditListeners(classes); 
     }
 
 
-    // --- FETCH Function: Calls PHP and Renders (No change) ---
+    // --- FETCH Function ---
     function fetchAndRenderClasses() {
         classesListContainer.innerHTML = '<p style="text-align: center; color: var(--text-dim); margin-top: 20px;">Loading classes...</p>';
         
@@ -121,55 +169,48 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
+    // --- 2. Modal Open/Close Logic & Handlers ---
 
-    // --- 2. Modal Open/Close Logic ---
-
-    function openModal(modalToOpen) {
-        modalToOpen.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeModal(modalToClose) {
-        modalToClose.style.display = 'none';
-        document.body.style.overflow = 'auto';
-    }
-
-    function resetForm() {
-        addClassForm.reset();
-        selectedDays.clear();
-        dayButtons.forEach(button => button.classList.remove('active'));
-        formMessages.textContent = '';
-        saveClassBtn.disabled = true; 
-        
+    function resetForm(form) {
+        form.reset();
+        if (form.id === 'add-class-form') {
+            selectedDays.clear();
+            dayButtons.forEach(button => button.classList.remove('active'));
+            // Removed formMessages usage
+            saveClassBtn.disabled = true; 
+            startTimeInput.value = "09:00";
+            endTimeInput.value = "10:15";
+        }
         closeModal(successModal);
-        
-        startTimeInput.value = "09:00";
-        endTimeInput.value = "10:15";
+        closeModal(deleteSuccessModal); // Close the new success modal too
+        closeModal(validationModal); // Close validation modal
     }
 
     // Attach listeners - ADD CLASS MODAL
     openModalBtn.addEventListener('click', function() {
         openModal(addClassModal);
-        resetForm();
+        resetForm(addClassForm);
         checkFormValidity();
     });
     closeModalBtn.addEventListener('click', () => closeModal(addClassModal));
     cancelModalBtn.addEventListener('click', () => closeModal(addClassModal));
 
-    // Attach listeners - EDIT CLASS MODAL (NEW)
+    // Attach listeners - EDIT CLASS MODAL
     closeEditModalBtn.addEventListener('click', () => closeModal(editClassModal));
     cancelEditBtn.addEventListener('click', () => closeModal(editClassModal));
 
-    // Attach listeners - DELETE CONFIRMATION MODAL (FIXED)
+    // Attach listeners - DELETE CONFIRMATION MODAL
     deleteCloseBtn.addEventListener('click', () => closeModal(deleteConfirmationModal));
-    cancelDeleteBtn.addEventListener('click', () => closeModal(deleteConfirmationModal)); // <--- FIXED/RE-VERIFIED
+    cancelDeleteBtn.addEventListener('click', () => closeModal(deleteConfirmationModal)); 
 
-    // Close on overlay click
-    addClassModal.addEventListener('click', function(event) {
-        if (event.target === addClassModal) {
-            closeModal(addClassModal);
-        }
+    // NEW: VALIDATION MODAL HANDLER (close button only)
+    document.getElementById('closeValidationModal').addEventListener('click', () => {
+        closeModal(validationModal);
     });
+    
+    // NEW: DELETE SUCCESS MODAL HANDLERS
+    document.getElementById('deleteSuccessCloseBtn').addEventListener('click', () => closeModal(deleteSuccessModal));
+    document.getElementById('deleteViewClassesBtn').addEventListener('click', () => closeModal(deleteSuccessModal));
 
 
     // Success Modal Handlers
@@ -185,16 +226,13 @@ document.addEventListener('DOMContentLoaded', function() {
         openModal(addClassModal);
     });
     
-    // FIX: Add click listener for 'View Class & Edit' button
     if (viewClassBtn) {
         viewClassBtn.addEventListener('click', function() {
             closeModal(successModal);
-            // Optionally, you might scroll to the newly added class here
-            // For now, it just closes the success modal and returns to the list view.
         });
     }
 
-    // --- 3. Client-side Validation ---
+    // --- 3. Client-side Validation (for Add Form) ---
 
     function checkFormValidity() {
         let isValid = true;
@@ -213,9 +251,10 @@ document.addEventListener('DOMContentLoaded', function() {
         return isValid;
     }
 
-    // --- 4. Repeat Days Toggle Logic (No change) ---
+    // --- 4. Repeat Days Toggle Logic ---
     let selectedDays = new Set(); 
 
+    // ... (day button logic remains the same) ...
     dayButtons.forEach(button => {
         button.addEventListener('click', function(e) {
             e.preventDefault(); 
@@ -231,25 +270,31 @@ document.addEventListener('DOMContentLoaded', function() {
             checkFormValidity(); 
         });
     });
-
-    // Attach listeners for live validation
+    // ... (input listeners for validation remain the same) ...
     subjectNameInput.addEventListener('input', checkFormValidity);
     startTimeInput.addEventListener('input', checkFormValidity);
     endTimeInput.addEventListener('input', checkFormValidity);
 
 
-    // --- 5. Add Class Form Submission (AJAX) (No change in submission logic) ---
+    // --- 5. Add Class Form Submission (AJAX) ---
     addClassForm.addEventListener('submit', function(event) {
         event.preventDefault();
 
+        // ❌ OLD: Removed inline form message logic
+
+        // 1. Client-side Validation check
         if (!checkFormValidity()) {
-            formMessages.textContent = 'Please fill in required fields and ensure End Time is after Start Time.';
-            formMessages.style.color = 'red';
+            const errors = [];
+            if (subjectNameInput.value.trim() === '') errors.push("Subject name is required.");
+            if (startTimeInput.value.trim() === '') errors.push("Start Time is required.");
+            if (endTimeInput.value.trim() === '') errors.push("End Time is required.");
+            if (startTimeInput.value && endTimeInput.value && startTimeInput.value >= endTimeInput.value) {
+                errors.push("End Time must be after Start Time.");
+            }
+            showValidationError(errors, 'addClassModal'); // Show validation modal
             return;
         }
-
-        formMessages.textContent = ''; 
-
+        
         const formData = new FormData(addClassForm);
         
         selectedDays.forEach(day => {
@@ -266,7 +311,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => {
             return response.json().then(data => {
                 if (!response.ok) {
-                    throw new Error(data.message || 'Server error occurred.');
+                    throw { status: response.status, data: data };
                 }
                 return data;
             });
@@ -274,20 +319,21 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             if (data.success) {
                 closeModal(addClassModal);
+                // Update success modal content for Add Class
+                document.getElementById('classSuccessTitle').textContent = 'Class Added!';
+                document.getElementById('classSuccessMessage').innerHTML = `The class "<strong>${subjectNameInput.value.trim()}</strong>" has been added to your schedule.`;
                 openModal(successModal);
                 fetchAndRenderClasses(); 
             } else {
-                formMessages.textContent = data.message || 'Failed to add class.';
-                if (data.errors) {
-                    formMessages.innerHTML += '<ul style="margin-left: 20px; text-align: left;">' + data.errors.map(err => `<li>${err}</li>`).join('') + '</ul>';
-                }
-                formMessages.style.color = 'red';
+                // If success: false is returned (e.g., failed server-side validation/logic)
+                const serverErrors = data.errors || [data.message || 'Failed to add class due to server issue.'];
+                showValidationError(serverErrors, 'addClassModal');
             }
         })
         .catch(error => {
             console.error('Fetch error:', error);
-            formMessages.textContent = `Error: ${error.message}`;
-            formMessages.style.color = 'red';
+            const errorMessages = error.data && error.data.errors ? error.data.errors : [(error.data && error.data.message) || 'Network error or unhandled exception.'];
+            showValidationError(errorMessages, 'addClassModal');
         });
     });
 
@@ -300,30 +346,24 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (isValid && editStartTimeInput.value && editEndTimeInput.value) {
-            if (startTimeInput.value >= endTimeInput.value) {
+            if (editStartTimeInput.value >= editEndTimeInput.value) { 
                 isValid = false;
             }
-        }
-        
-        // RECOMMENDED ADDITION: Check if at least one day is selected
-        if (editClassForm.editSelectedDays && editClassForm.editSelectedDays.size === 0) {
-            // You might want to handle this visually, but for basic validation:
-            // isValid = false; // Uncomment if a day is strictly required
         }
         
         saveEditClassBtn.disabled = !isValid;
         return isValid;
     }
 
-    // --- 7. EDIT WORKFLOW LISTENERS & FUNCTIONS (NEW) ---
+    // --- 7. EDIT WORKFLOW LISTENERS & FUNCTIONS ---
     
-    let currentEditClass = null; // State to hold the class data being edited
+    let currentEditClass = null; 
 
     function attachEditListeners(classes) {
         document.querySelectorAll('.edit-btn').forEach(button => {
             button.addEventListener('click', function() {
                 const id = this.getAttribute('data-class-id');
-                const classData = classes.find(c => c.class_id.toString() === id);
+                const classData = classes.find(c => c.class_id === id); 
                 
                 if (classData) {
                     openEditModal(classData);
@@ -331,8 +371,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
-
-    // classes.js (Locate and replace the entire openEditModal function)
 
     function openEditModal(cls) {
         currentEditClass = cls;
@@ -345,16 +383,15 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('edit_location').value = cls.location || '';
         editStartTimeInput.value = cls.start_time || '09:00';
         editEndTimeInput.value = cls.end_time || '10:15';
-        // Note: The reminder value needs to be an integer string or empty string
         document.getElementById('edit_reminder_time').value = cls.reminder_time_minutes ? String(cls.reminder_time_minutes) : ''; 
         
         // 2. Set Repeat Days buttons and initialize the state
         const daysArray = cls.repeat_days ? cls.repeat_days.split(',') : [];
-        // CRITICAL FIX: Initialize the Set with the existing days
         const editSelectedDays = new Set(daysArray); 
 
         editDayButtons.forEach(button => {
             const day = button.getAttribute('data-day');
+            
             // Reset/set the visual state based on existing days
             button.classList.remove('active');
             if (editSelectedDays.has(day)) {
@@ -371,13 +408,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     editSelectedDays.add(day);
                     this.classList.add('active');
                 }
-                // IMPORTANT: Day validation needs to be included here, or at least ensure 
-                // the form is valid based on required fields (handled below).
                 checkEditFormValidity(); 
             };
         });
         
-        // CRITICAL FIX: Ensure the form submission can access the selected days
         editClassForm.editSelectedDays = editSelectedDays; 
 
         // 3. Attach live validation listeners for edit fields
@@ -386,10 +420,8 @@ document.addEventListener('DOMContentLoaded', function() {
         editEndTimeInput.oninput = checkEditFormValidity;
         
         // 4. Validate and open
-        // IMPORTANT: The validation logic is missing a check for at least one selected day,
-        // but the required fields (subject_name, times) are checked. Let's ensure the initial validation passes.
         checkEditFormValidity();
-        editFormMessages.textContent = '';
+        // Removed inline message element usage
         openModal(editClassModal);
     }
     
@@ -399,22 +431,44 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleEditFormSubmission(event) {
         event.preventDefault();
 
+        // 1. Client-side Validation check
         if (!checkEditFormValidity()) {
-            editFormMessages.textContent = 'Please fill in required fields and ensure End Time is after Start Time.';
-            editFormMessages.style.color = 'red';
+            const errors = [];
+            if (editSubjectNameInput.value.trim() === '') errors.push("Subject name is required.");
+            if (editStartTimeInput.value.trim() === '') errors.push("Start Time is required.");
+            if (editEndTimeInput.value.trim() === '') errors.push("End Time is required.");
+            if (editStartTimeInput.value && editEndTimeInput.value && editStartTimeInput.value >= editEndTimeInput.value) {
+                errors.push("End Time must be after Start Time.");
+            }
+            showValidationError(errors, 'editClassModal'); // Show validation modal
             return;
         }
 
-        editFormMessages.textContent = ''; 
+        // --- CRITICAL TIME CLEANING FIX START ---
+        function cleanTimeValue(timeString) {
+            if (!timeString) return '';
+            const match = timeString.match(/(\d{1,2}:\d{2})/);
+            if (match) { return match[1]; }
+            return timeString.trim();
+        }
+
+        const currentStartTime = editStartTimeInput.value;
+        const currentEndTime = editEndTimeInput.value;
+
+        // Temporarily overwrite the input values with the cleaned 24hr version.
+        editStartTimeInput.value = cleanTimeValue(currentStartTime);
+        editEndTimeInput.value = cleanTimeValue(currentEndTime);
+        // --- CRITICAL TIME CLEANING FIX END ---
 
         const formData = new FormData(editClassForm);
         
-        // Add selected days from the temporary state
-        editClassForm.editSelectedDays.forEach(day => {
-            formData.append('repeat_days[]', day); 
-        });
-
-        fetch('update_class.php', { // CRITICAL: New PHP file
+        if (editClassForm.editSelectedDays) {
+            editClassForm.editSelectedDays.forEach(day => {
+                formData.append('repeat_days[]', day); 
+            });
+        }
+        
+        fetch('update_class.php', { 
             method: 'POST',
             body: formData,
             headers: {
@@ -422,9 +476,13 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .then(response => {
+            // Restore original, formatted values immediately after the fetch attempt.
+            editStartTimeInput.value = currentStartTime;
+            editEndTimeInput.value = currentEndTime;
+
             return response.json().then(data => {
                 if (!response.ok) {
-                    throw new Error(data.message || 'Server error occurred.');
+                    throw { status: response.status, data: data };
                 }
                 return data;
             });
@@ -432,27 +490,25 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             if (data.success) {
                 closeModal(editClassModal);
+                // Update success modal content for Edit Class
+                document.getElementById('classSuccessTitle').textContent = 'Changes Saved!';
+                document.getElementById('classSuccessMessage').innerHTML = `The class "<strong>${editSubjectNameInput.value.trim()}</strong>" has been successfully updated.`;
                 openModal(successModal); 
                 fetchAndRenderClasses(); 
             } else {
-                editFormMessages.textContent = data.message || 'Failed to update class.';
-                if (data.errors) {
-                    editFormMessages.innerHTML += '<ul style="margin-left: 20px; text-align: left;">' + data.errors.map(err => `<li>${err}</li>`).join('') + '</ul>';
-                }
-                editFormMessages.style.color = 'red';
+                // If success: false is returned (e.g., no changes detected)
+                const serverErrors = [data.message || 'Failed to update class.'];
+                showValidationError(serverErrors, 'editClassModal');
             }
         })
         .catch(error => {
             console.error('Fetch error:', error);
-            editFormMessages.textContent = `Error: ${error.message}`;
-            editFormMessages.style.color = 'red';
+            const errorMessages = error.data && error.data.errors ? error.data.errors : [(error.data && error.data.message) || 'Network error or unhandled exception.'];
+            showValidationError(errorMessages, 'editClassModal');
         });
     }
     
-    // --- 8. DELETE WORKFLOW LISTENERS (No change, but moved after new edit logic) ---
-    // ... (Existing attachDeleteListeners and confirmDeleteBtn.addEventListener remains here) ...
-
-    // --- 6. DELETE WORKFLOW LISTENERS ---
+    // --- 8. DELETE WORKFLOW LISTENERS ---
 
     function attachDeleteListeners() {
         document.querySelectorAll('.delete-btn').forEach(button => {
@@ -461,6 +517,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const name = this.getAttribute('data-subject-name');
                 
                 currentClassIdToDelete = id;
+                currentClassToDeleteName = name; // Store name for success modal
                 classToDeleteName.textContent = name;
 
                 openModal(deleteConfirmationModal);
@@ -482,24 +539,35 @@ document.addEventListener('DOMContentLoaded', function() {
             method: 'POST',
             body: formData,
         })
-        .then(response => response.json())
+        .then(response => {
+            return response.json().then(data => {
+                if (!response.ok) {
+                    throw { status: response.status, data: data };
+                }
+                return data;
+            });
+        })
         .then(data => {
             if (data.success) {
                 closeModal(deleteConfirmationModal);
+                showDeleteSuccess(currentClassToDeleteName); // Show NEW success modal
                 fetchAndRenderClasses(); 
             } else {
-                alert('Deletion Failed: ' + data.message);
-                closeModal(deleteConfirmationModal);
+                // Display the server message from PHP (e.g., 'Class not found' or 'Failed to delete')
+                const serverErrors = [data.message || 'Deletion failed.'];
+                showValidationError(serverErrors, 'deleteConfirmationModal');
             }
         })
         .catch(error => {
             console.error('Deletion error:', error);
-            alert('An unexpected network error occurred.');
+            const errorMessages = error.data && error.data.errors ? error.data.errors : [(error.data && error.data.message) || 'Network error or unhandled exception.'];
+            showValidationError(errorMessages, 'deleteConfirmationModal');
         })
         .finally(() => {
             confirmDeleteBtn.disabled = false;
             confirmDeleteBtn.textContent = 'Delete Permanently';
             currentClassIdToDelete = null;
+            currentClassToDeleteName = '';
         });
     });
     

@@ -58,6 +58,7 @@
         </div>
     </div>
 
+    <!-- 1. Add/Edit Class Modal (Existing structure) -->
     <div class="modal-overlay" id="addClassModal">
     <div class="modal">
         <div class="modal-header">
@@ -111,6 +112,7 @@
                 </div>
             </div>
             
+            <!-- Removed the old inline form messages -->
             <div id="form-messages" style="margin-top: 10px; color: red;"></div>
 
             <div class="modal-actions">
@@ -186,7 +188,7 @@
     </div>
 </div>
 
-<!-- Delete Confirmation Modal -->
+<!-- 2. Delete Confirmation Modal (Existing structure) -->
 <div class="modal-overlay" id="deleteConfirmationModal" style="display: none;">
     <div class="modal success-modal delete-modal">
         <button class="close-modal success-close" id="deleteCloseBtn" aria-label="Close">X</button>
@@ -221,6 +223,7 @@
     </div>
 </div>  
 
+<!-- 3. SUCCESS MODAL (Used for Add/Edit Class Success) -->
 <div class="modal-overlay" id="successModal" style="display: none;">
     <div class="modal success-modal">
         <button class="close-modal success-close" id="successCloseBtn" aria-label="Close">X</button>
@@ -232,8 +235,8 @@
                 </svg>
             </div>
             
-            <h3>Class Saved</h3>
-            <p>
+            <h3 id="classSuccessTitle">Class Saved</h3>
+            <p id="classSuccessMessage">
                 Class Saved added to your schedule<br>
                 Your timetable and reminders have been updated for this class
             </p>
@@ -243,17 +246,57 @@
                     + Add Class
                 </button>
                 <button class="btn-primary" id="viewClassBtn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
-  <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
-  <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
-</svg>
-                    View Class & Edit
+                
+                    View All
                 </button>
             </div>
         </div>
     </div>
 </div>  
 
+
+<!-- 4. CLASS DELETION SUCCESS MODAL (New: Copy from Reminder) -->
+<div class="modal-overlay" id="deleteSuccessModal" style="display: none;">
+    <div class="modal success-modal">
+        <button class="close-modal success-close" id="deleteSuccessCloseBtn">X</button>
+        <div class="success-content">
+            <div class="success-icon" style="background: #e53935;">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 6L6 18M6 6l12 12"></path>
+                </svg>
+            </div>
+            <h3 id="deleteSuccessTitle">Class Deleted</h3>
+            <p id="deleteSuccessMessage">The class has been permanently removed from your schedule.</p>
+            <div class="success-actions">
+                <button class="btn-primary" id="deleteViewClassesBtn">View All Classes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 5. VALIDATION ERROR MODAL (New: Copy from Reminder) -->
+<div class="modal-overlay" id="validationModal" style="display: none;">
+    <div class="modal validation-modal">
+        <div class="modal-header">
+            <button class="close-modal" id="closeValidationModal">✕</button>
+        </div>
+        <div class="error-icon" style="background: #ff4d4f;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+        </div>
+        <h3>Validation Error</h3>
+        <p id="validationMessage">Please fix the highlighted issues and try again.</p>
+        <ul id="validationErrorList" style="list-style: none; padding: 0; text-align: left; color: var(--text); margin-bottom: 20px;">
+            <!-- Errors will be populated here -->
+        </ul>
+        <div class="modal-actions">
+            <button class="btn-save" id="tryAgainBtn">Try Again</button>
+        </div>
+    </div>
+</div>
 
         <!-- LOGOUT CONFIRMATION MODAL -->
     <div id="logoutModal" class="modal-logout">

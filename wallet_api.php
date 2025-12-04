@@ -8,7 +8,7 @@ header("Access-Control-Allow-Headers: Content-Type");
 
 // ================== CONFIG ==================
 $host = 'localhost';
-$dbname = 'studytrack_db'; // ← CHANGE if your DB is named differently
+$dbname = 'studytrack'; // ← CHANGE if your DB is named differently
 $username = 'root';        // ← CHANGE if needed
 $password = '';            // ← CHANGE if needed
 
