@@ -80,6 +80,18 @@ body {
     padding: 45px; /* Base Desktop Padding */
 }
 
+/* 🔑 NEW: Logo Link Wrapper Styling (applies centering and hover) */
+.logo-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex; /* Makes the entire link act as a flex container */
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
 /* LOGO */
 .logo {
     display: flex;
