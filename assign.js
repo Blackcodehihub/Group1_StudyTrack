@@ -1,34 +1,36 @@
 // ==============================
-// ASSIGN.JS — Assignment Manager (v2.0)
+// ASSIGN.JS — Assignment Manager (v2.2)
+// ✅ Fully uniform with Reminder.html (flat buttons, validation modal, etc.)
 // ==============================
 
 // Global state
-let assignmentsList, emptyState, addModal, editModal, deleteModal, errorModal;
+let assignmentsList, emptyState;
+let addModal, editModal, deleteModal, validationModal;
 let assignmentTitle, assignmentClass, assignmentDueDate, assignmentDueTime, assignmentNotes, saveAssignmentBtn;
 let editAssignmentId, editAssignmentTitle, editAssignmentClass, editAssignmentDueDate, editAssignmentDueTime, editAssignmentNotes, saveEditAssignmentBtn;
-let deleteAssignmentTitle, cancelDeleteBtn, confirmDeleteBtn;
-let errorMessageEl, errorCloseBtn;
-let currentDeleteId = null;
+let deleteAssignmentTitle, deleteModalMessage;
+let validationMessageEl;
+let pendingDeleteId = null;
 
 // ======================
-// INITIALIZATION (Safe DOM Access)
+// INITIALIZATION
 // ======================
 document.addEventListener('DOMContentLoaded', () => {
     requestAnimationFrame(() => {
-        initializeModals();
+        initializeElements();
     });
 });
 
-function initializeModals() {
-    // Re-get all elements
+function initializeElements() {
+    // DOM elements
     assignmentsList = document.getElementById('assignmentsList');
     emptyState = document.getElementById('emptyState');
     addModal = document.getElementById('addAssignmentModal');
     editModal = document.getElementById('editAssignmentModal');
     deleteModal = document.getElementById('deleteConfirmationModal');
-    errorModal = document.getElementById('errorModal');
+    validationModal = document.getElementById('validationModal');
 
-    // Form fields (Add)
+    // Add form
     assignmentTitle = document.getElementById('assignmentTitle');
     assignmentClass = document.getElementById('assignmentClass');
     assignmentDueDate = document.getElementById('assignmentDueDate');
@@ -36,7 +38,7 @@ function initializeModals() {
     assignmentNotes = document.getElementById('assignmentNotes');
     saveAssignmentBtn = document.getElementById('saveAssignmentBtn');
 
-    // Form fields (Edit)
+    // Edit form
     editAssignmentId = document.getElementById('editAssignmentId');
     editAssignmentTitle = document.getElementById('editAssignmentTitle');
     editAssignmentClass = document.getElementById('editAssignmentClass');
@@ -45,19 +47,17 @@ function initializeModals() {
     editAssignmentNotes = document.getElementById('editAssignmentNotes');
     saveEditAssignmentBtn = document.getElementById('saveEditAssignmentBtn');
 
-    // Delete modal fields
+    // Delete modal
     deleteAssignmentTitle = document.getElementById('deleteAssignmentTitle');
-    cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
-    confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+    deleteModalMessage = document.getElementById('deleteModalMessage');
 
-    // Error modal
-    errorMessageEl = document.getElementById('errorMessage');
-    errorCloseBtn = document.getElementById('errorCloseBtn');
+    // Validation modal
+    validationMessageEl = document.getElementById('validationMessage');
 
     // Validate critical elements
-    if (!editAssignmentId || !deleteAssignmentTitle || !errorMessageEl) {
+    if (!deleteAssignmentTitle || !validationMessageEl) {
         console.error('❌ Critical elements missing. Retrying in 500ms...');
-        setTimeout(initializeModals, 500);
+        setTimeout(initializeElements, 500);
         return;
     }
 
@@ -66,11 +66,7 @@ function initializeModals() {
     const today = now.toISOString().split('T')[0];
     assignmentDueDate.value = today;
     assignmentDueTime.value = '23:59';
-
-    // Set min time for today
     updateMinTimeForToday();
-
-    // Event listeners
     assignmentDueDate.addEventListener('change', updateMinTimeForToday);
 
     loadAssignments();
@@ -78,15 +74,14 @@ function initializeModals() {
     setupButtonGroups();
 }
 
-// Auto-set min time when "today" is selected
+// Auto-set min time for today
 function updateMinTimeForToday() {
     const now = new Date();
     const today = now.toISOString().split('T')[0];
     if (assignmentDueDate.value === today) {
-        now.setMinutes(now.getMinutes() + 1); // +1 min for safety
-        const minTime = now.toTimeString().slice(0, 5);
-        assignmentDueTime.value = minTime;
-        assignmentDueTime.min = minTime;
+        now.setMinutes(now.getMinutes() + 1);
+        assignmentDueTime.value = now.toTimeString().slice(0, 5);
+        assignmentDueTime.min = now.toTimeString().slice(0, 5);
     } else {
         assignmentDueTime.min = '';
     }
@@ -96,49 +91,37 @@ function updateMinTimeForToday() {
 // EVENT LISTENERS
 // ======================
 function setupEventListeners() {
-    // === Add Modal ===
+    // Add modal
     saveAssignmentBtn.addEventListener('click', handleSaveAssignment);
-    document.getElementById('closeModalBtn').addEventListener('click', () => addModal.style.display = 'none');
-    document.getElementById('cancelBtn').addEventListener('click', () => addModal.style.display = 'none');
+    document.getElementById('closeModalBtn').addEventListener('click', () => closeAddModal());
+    document.getElementById('cancelBtn').addEventListener('click', () => closeAddModal());
 
-    // === Edit Modal ===
+    // Edit modal
     saveEditAssignmentBtn.addEventListener('click', handleSaveEdit);
     document.getElementById('closeEditModalBtn').addEventListener('click', () => editModal.style.display = 'none');
     document.getElementById('cancelEditBtn').addEventListener('click', () => editModal.style.display = 'none');
 
-    // === Delete Modal ===
-    // Close via Cancel button
-    cancelDeleteBtn?.addEventListener('click', () => {
-        deleteModal.style.display = 'none';
-        currentDeleteId = null;
-    });
+    // Delete modal
+    document.getElementById('deleteCloseBtn').addEventListener('click', closeDeleteModal);
+    document.getElementById('cancelDeleteBtn').addEventListener('click', closeDeleteModal);
+    document.getElementById('confirmDeleteBtn').addEventListener('click', handleConfirmDelete);
 
-    // Close via × button (new!)
-    const deleteCloseBtn = document.getElementById('deleteCloseBtn');
-    deleteCloseBtn?.addEventListener('click', () => {
-        deleteModal.style.display = 'none';
-        currentDeleteId = null;
-    });
+    // Validation modal
+    document.getElementById('closeValidationModal').addEventListener('click', closeValidationModal);
+    document.getElementById('cancelValidationBtn').addEventListener('click', closeValidationModal);
+    document.getElementById('tryAgainBtn').addEventListener('click', closeValidationModal);
 
-    // Confirm deletion
-    confirmDeleteBtn?.addEventListener('click', handleConfirmDelete);
-    
-
-    // === Error Modal ===
-    errorCloseBtn.addEventListener('click', hideError);
-    errorModal.addEventListener('click', e => { if (e.target === errorModal) hideError(); });
-
-    // Close modals on overlay click
-    addModal.addEventListener('click', e => { if (e.target === addModal) addModal.style.display = 'none'; });
+    // Close on overlay
+    addModal.addEventListener('click', e => { if (e.target === addModal) closeAddModal(); });
     editModal.addEventListener('click', e => { if (e.target === editModal) editModal.style.display = 'none'; });
-    deleteModal.addEventListener('click', e => { if (e.target === deleteModal) deleteModal.style.display = 'none'; });
+    deleteModal.addEventListener('click', e => { if (e.target === deleteModal) closeDeleteModal(); });
+    validationModal.addEventListener('click', e => { if (e.target === validationModal) closeValidationModal(); });
 }
 
 // ======================
-// BUTTON GROUPS (Priority & Reminder)
+// BUTTON GROUPS
 // ======================
 function setupButtonGroups() {
-    // Priority buttons
     document.querySelectorAll('.priority-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const container = this.closest('.priority-row');
@@ -147,7 +130,6 @@ function setupButtonGroups() {
         });
     });
 
-    // Reminder buttons
     document.querySelectorAll('.reminder-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const container = this.closest('.reminder-row');
@@ -158,17 +140,60 @@ function setupButtonGroups() {
 }
 
 // ======================
-// ERROR MODAL
+// MODAL CONTROLS (MATCH Reminder.html)
 // ======================
-function showError(message) {
-    errorMessageEl.textContent = message;
-    errorModal.style.display = 'flex';
+function openAddModal() {
+    resetAddForm();
+    addModal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
 }
 
-function hideError() {
-    errorModal.style.display = 'none';
+function closeAddModal() {
+    addModal.style.display = 'none';
     document.body.style.overflow = 'auto';
+}
+
+function closeDeleteModal() {
+    deleteModal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+    pendingDeleteId = null;
+}
+
+function closeValidationModal() {
+    validationModal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// ✅ RESET FORM — LIKE Reminder.html
+function resetAddForm() {
+    assignmentTitle.value = '';
+    assignmentClass.value = '';
+    const now = new Date();
+    assignmentDueDate.value = now.toISOString().split('T')[0];
+    assignmentDueTime.value = '23:59';
+    
+    document.querySelectorAll('#addAssignmentModal .priority-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('#addAssignmentModal .priority-btn[data-priority="low"]').classList.add('active');
+    
+    document.querySelectorAll('#addAssignmentModal .reminder-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('#addAssignmentModal .reminder-btn[data-reminder="1_day"]').classList.add('active');
+    
+    assignmentNotes.value = '';
+}
+
+// ✅ SHOW VALIDATION ERROR — LIKE Reminder.html
+function showValidationError(message) {
+    validationMessageEl.textContent = message;
+    validationModal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+// ✅ SHOW SUCCESS — LIKE Reminder.html
+function showSuccess(title, message) {
+    document.getElementById('successTitle').textContent = title;
+    document.getElementById('successMessage').textContent = message;
+    document.getElementById('successModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
 }
 
 // ======================
@@ -180,18 +205,12 @@ function validateAssignment(title, className, dueDate, dueTime) {
     const inputDate = new Date(dueDate);
     const inputDateTime = new Date(dueDate + 'T' + (dueTime || '00:00'));
 
-    // Required fields
     if (!title.trim()) return 'Title cannot be empty.';
     if (!className.trim()) return 'Class name cannot be empty.';
     if (!dueDate) return 'Due date is required.';
-
-    // Invalid date
     if (isNaN(inputDate.getTime())) return 'Invalid due date format.';
-
-    // Past date
     if (inputDate < today) return 'Due date cannot be in the past.';
 
-    // Same day: time must be future
     if (inputDate.toDateString() === today.toDateString()) {
         if (!dueTime) return 'Due time is required for today’s assignments.';
         if (inputDateTime <= now) {
@@ -200,35 +219,19 @@ function validateAssignment(title, className, dueDate, dueTime) {
         }
     }
 
-    return null; // ✅ Valid
-}
-
-function focusFirstInvalidField(title, className, dueDate, dueTime) {
-    if (!title.trim()) return assignmentTitle.focus();
-    if (!className.trim()) return assignmentClass.focus();
-    if (!dueDate) return assignmentDueDate.focus();
-    const now = new Date();
-    const today = now.toDateString();
-    if (new Date(dueDate).toDateString() === today && (!dueTime || new Date(dueDate + 'T' + dueTime) <= now)) {
-        return assignmentDueTime.focus();
-    }
+    return null;
 }
 
 // ======================
-// DATA LOADING & RENDERING
+// DATA & RENDER
 // ======================
 function loadAssignments() {
     fetch('assign.php?action=list')
-        .then(res => {
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
-            return res.json();
-        })
-        .then(assignments => {
-            renderAssignments(assignments);
-        })
+        .then(res => res.json())
+        .then(assignments => renderAssignments(assignments))
         .catch(err => {
-            console.error('❌ Failed to load assignments:', err);
-            assignmentsList.innerHTML = `<div style="color: #ff4d4f; padding:20px; text-align:center;">Error loading assignments. Check console.</div>`;
+            console.error('❌ Load failed:', err);
+            assignmentsList.innerHTML = `<div style="color:#ff4d4f;padding:20px;text-align:center;">Error loading assignments.</div>`;
             assignmentsList.style.display = 'block';
             emptyState.style.display = 'none';
         });
@@ -243,7 +246,6 @@ function renderAssignments(assignments) {
 
     assignmentsList.style.display = 'block';
     emptyState.style.display = 'none';
-
     assignmentsList.innerHTML = '';
 
     assignments.forEach(ass => {
@@ -252,8 +254,12 @@ function renderAssignments(assignments) {
     });
 }
 
+function escapeHtml(str) {
+    if (typeof str !== 'string') return '';
+    return str.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+}
+
 function createAssignmentItem(ass) {
-    // Format due display
     const dueDateObj = new Date(ass.DueDate);
     const today = new Date();
     today.setHours(0,0,0,0);
@@ -281,7 +287,7 @@ function createAssignmentItem(ass) {
         dueStr += `, ${timeStr}`;
     }
 
-    // Priority styling (dynamic)
+    // ✅ Priority label class — MATCHES Reminder.html
     let priorityClass = 'medium';
     if (ass.Priority === 'High') priorityClass = 'high';
     else if (ass.Priority === 'Low') priorityClass = 'low';
@@ -293,48 +299,29 @@ function createAssignmentItem(ass) {
             <img src="book.png" alt="Book">
             <div>
                 <h4>${escapeHtml(ass.Title)}</h4>
-                <p>${escapeHtml(ass.ClassName)}</p>
+                <!-- Updated: Show Class and Notes separated by a bullet -->
+                <p>${escapeHtml(ass.ClassName)} • ${escapeHtml(ass.Notes || 'No notes')}</p>
             </div>
         </div>
         <div class="due-time">
             <h3>${escapeHtml(dueStr)}</h3> 
-            <span class="priority-level ${priorityClass}">${ass.Priority} Priority</span>
+            <span class="priority-label ${priorityClass}">${ass.Priority} Priority</span>
         </div>
         <button class="edit-btn" title="Edit Assignment" data-id="${ass.AssignmentID}">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 20h9"></path>
-                <path d="M16.5 3.5l4 4L7 21l-4 1 1-4L16.5 3.5z"></path>
-            </svg>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 20h9"/><path d="M16.5 3.5l4 4L7 21l-4 1 1-4L16.5 3.5z"/>
+                    </svg>
         </button>
         <button class="delete-btn" data-id="${ass.AssignmentID}">×</button>
     `;
 
-    // Attach listeners
     div.querySelector('.edit-btn').addEventListener('click', () => openEditModal(ass));
     div.querySelector('.delete-btn').addEventListener('click', () => openDeleteModal(ass));
 
     return div;
 }
 
-function escapeHtml(str) {
-    if (typeof str !== 'string') return '';
-    return str.replace(/[&<>"']/g, (m) => ({
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;'
-    })[m]);
-}
-
-// ======================
-// MODAL HANDLERS
-// ======================
 function openEditModal(ass) {
-    if (!editAssignmentId) {
-        console.error('❌ editAssignmentId not found!');
-        return;
-    }
     editAssignmentId.value = ass.AssignmentID;
     editAssignmentTitle.value = ass.Title || '';
     editAssignmentClass.value = ass.ClassName || '';
@@ -342,42 +329,30 @@ function openEditModal(ass) {
     editAssignmentDueTime.value = ass.DueTime || '23:59';
     editAssignmentNotes.value = ass.Notes || '';
 
-    // Clear active states
-    document.querySelectorAll('#editAssignmentModal .priority-btn').forEach(btn => btn.classList.remove('active'));
-    document.querySelectorAll('#editAssignmentModal .reminder-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('#editAssignmentModal .priority-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('#editAssignmentModal .reminder-btn').forEach(b => b.classList.remove('active'));
 
-    // Set priority
-    const priorityBtn = document.querySelector(`#editAssignmentModal .priority-btn[data-priority="${ass.Priority}"]`);
-    if (priorityBtn) priorityBtn.classList.add('active');
-    else document.querySelector('#editAssignmentModal .priority-btn[data-priority="Medium"]').classList.add('active');
+    // ✅ Use lowercase for data-priority matching
+    const priorityBtn = document.querySelector(`#editAssignmentModal .priority-btn[data-priority="${ass.Priority.toLowerCase()}"]`);
+    (priorityBtn || document.querySelector('#editAssignmentModal .priority-btn[data-priority="medium"]')).classList.add('active');
 
-    // Set reminder
-    if (ass.Reminder) {
-        const reminderBtn = document.querySelector(`#editAssignmentModal .reminder-btn[data-reminder="${ass.Reminder}"]`);
-        if (reminderBtn) reminderBtn.classList.add('active');
-    } else {
-        document.querySelector('#editAssignmentModal .reminder-btn[data-reminder="1_day"]').classList.add('active');
-    }
+    const reminderBtn = document.querySelector(`#editAssignmentModal .reminder-btn[data-reminder="${ass.Reminder}"]`);
+    (reminderBtn || document.querySelector('#editAssignmentModal .reminder-btn[data-reminder="1_day"]')).classList.add('active');
 
     editModal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
 }
 
 function openDeleteModal(ass) {
-    const titleEl = document.getElementById('deleteAssignmentTitle');
-    if (!titleEl) {
-        console.error('❌ deleteAssignmentTitle element not found');
-        return;
-    }
-
-    currentDeleteId = ass.AssignmentID;
-    titleEl.textContent = ass.Title;
+    pendingDeleteId = ass.AssignmentID;
+    deleteAssignmentTitle.textContent = ass.Title;
+    deleteModalMessage.innerHTML = `Are you sure you want to delete the assignment: <strong>${escapeHtml(ass.Title)}</strong>?<br>This action cannot be undone.`;
     deleteModal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
 }
 
 // ======================
-// FORM SUBMISSIONS
+// FORM HANDLERS
 // ======================
 function handleSaveAssignment(e) {
     e.preventDefault();
@@ -390,26 +365,19 @@ function handleSaveAssignment(e) {
 
     const priorityBtn = document.querySelector('#addAssignmentModal .priority-btn.active');
     const reminderBtn = document.querySelector('#addAssignmentModal .reminder-btn.active');
-    const priority = priorityBtn ? priorityBtn.dataset.priority : 'Medium';
+    // ✅ Backend expects "Low", "Medium", "High"
+    const priority = priorityBtn 
+        ? priorityBtn.dataset.priority.charAt(0).toUpperCase() + priorityBtn.dataset.priority.slice(1) 
+        : 'Medium';
     const reminder = reminderBtn ? reminderBtn.dataset.reminder : null;
 
-    // ✅ VALIDATE
     const error = validateAssignment(title, className, dueDate, dueTime);
     if (error) {
-        showError(error);
-        focusFirstInvalidField(title, className, dueDate, dueTime);
+        showValidationError(error);
         return;
     }
 
-    const data = {
-        Title: title,
-        ClassName: className,
-        DueDate: dueDate,
-        DueTime: dueTime,
-        Priority: priority,
-        Notes: notes,
-        Reminder: reminder
-    };
+    const data = { Title: title, ClassName: className, DueDate: dueDate, DueTime: dueTime, Priority: priority, Notes: notes, Reminder: reminder };
 
     fetch('assign.php', {
         method: 'POST',
@@ -418,30 +386,14 @@ function handleSaveAssignment(e) {
     })
     .then(res => res.json())
     .then(result => {
-        if (result.error) {
-            showError(result.error);
-            return;
-        }
-
-        addModal.style.display = 'none';
-        document.body.style.overflow = 'auto';
-        document.getElementById('successModal').style.display = 'flex';
+        if (result.error) throw new Error(result.error);
+        closeAddModal();
+        showSuccess('Assignment Saved!', 'Your timetable and reminders have been updated for this assignment.');
         loadAssignments();
-
-        // Reset form
-        assignmentTitle.value = '';
-        assignmentClass.value = '';
-        const now = new Date();
-        assignmentDueDate.value = now.toISOString().split('T')[0];
-        assignmentDueTime.value = '23:59';
-        document.querySelectorAll('#addAssignmentModal .priority-btn').forEach(b => b.classList.remove('active'));
-        document.querySelector('#addAssignmentModal .priority-btn[data-priority="Medium"]').classList.add('active');
-        document.querySelectorAll('#addAssignmentModal .reminder-btn').forEach(b => b.classList.remove('active'));
-        document.querySelector('#addAssignmentModal .reminder-btn[data-reminder="1_day"]').classList.add('active');
     })
     .catch(err => {
         console.error('❌ Save failed:', err);
-        showError('Failed to save. Check your internet connection.');
+        showValidationError(err.message || 'Failed to save. Check your internet connection.');
     });
 }
 
@@ -449,6 +401,11 @@ function handleSaveEdit(e) {
     e.preventDefault();
 
     const id = editAssignmentId.value;
+    if (!id) {
+        showValidationError('Invalid assignment ID.');
+        return;
+    }
+
     const title = editAssignmentTitle.value.trim();
     const className = editAssignmentClass.value.trim();
     const dueDate = editAssignmentDueDate.value;
@@ -457,31 +414,18 @@ function handleSaveEdit(e) {
 
     const priorityBtn = document.querySelector('#editAssignmentModal .priority-btn.active');
     const reminderBtn = document.querySelector('#editAssignmentModal .reminder-btn.active');
-    const priority = priorityBtn ? priorityBtn.dataset.priority : 'Medium';
+    const priority = priorityBtn 
+        ? priorityBtn.dataset.priority.charAt(0).toUpperCase() + priorityBtn.dataset.priority.slice(1) 
+        : 'Medium';
     const reminder = reminderBtn ? reminderBtn.dataset.reminder : null;
 
-    // ✅ VALIDATE
     const error = validateAssignment(title, className, dueDate, dueTime);
     if (error) {
-        showError(error);
-        focusFirstInvalidField(title, className, dueDate, dueTime);
+        showValidationError(error);
         return;
     }
 
-    if (!id) {
-        showError('Invalid assignment ID.');
-        return;
-    }
-
-    const data = {
-        Title: title,
-        ClassName: className,
-        DueDate: dueDate,
-        DueTime: dueTime,
-        Priority: priority,
-        Notes: notes,
-        Reminder: reminder
-    };
+    const data = { Title: title, ClassName: className, DueDate: dueDate, DueTime: dueTime, Priority: priority, Notes: notes, Reminder: reminder };
 
     fetch(`assign.php?id=${id}`, {
         method: 'PUT',
@@ -490,39 +434,31 @@ function handleSaveEdit(e) {
     })
     .then(res => res.json())
     .then(result => {
-        if (result.error) {
-            showError(result.error);
-            return;
-        }
-
+        if (result.error) throw new Error(result.error);
         editModal.style.display = 'none';
-        document.body.style.overflow = 'auto';
-        document.getElementById('successModal').style.display = 'flex';
+        showSuccess('Assignment Updated!', 'Changes have been saved.');
         loadAssignments();
     })
     .catch(err => {
         console.error('❌ Update failed:', err);
-        showError('Failed to update. Check your internet connection.');
+        showValidationError(err.message || 'Failed to update.');
     });
 }
 
 function handleConfirmDelete() {
-    if (!currentDeleteId) return;
+    if (!pendingDeleteId) return;
 
-    fetch(`assign.php?id=${currentDeleteId}`, { method: 'DELETE' })
+    fetch(`assign.php?id=${pendingDeleteId}`, { method: 'DELETE' })
         .then(res => res.json())
         .then(result => {
-            if (result.success) {
-                deleteModal.style.display = 'none';
-                document.body.style.overflow = 'auto';
-                currentDeleteId = null;
-                loadAssignments();
-            } else {
-                showError(result.error || 'Failed to delete assignment.');
-            }
+            if (!result.success) throw new Error(result.error || 'Failed to delete.');
+            closeDeleteModal();
+            showSuccess('Deleted', `Assignment has been permanently removed.`);
+            loadAssignments();
         })
         .catch(err => {
-            console.error('❌ Delete error:', err);
-            showError('Network error. Check your connection.');
+            console.error('❌ Delete failed:', err);
+            showValidationError(err.message || 'Network error. Try again.');
+            closeDeleteModal();
         });
 }

@@ -140,17 +140,19 @@
         .assignment-info h4 { margin:0; font-size:16px; font-weight:600; }
         .assignment-info p { margin:4px 0 0; font-size:13px; color:var(--text-dim); }
         .due-time { text-align:center; font-weight:600; font-size:15px; }
-        .priority-level {
+
+        /* ✅ Priority label — MATCHES Reminder.html */
+        .priority-label {
+            display: inline-block;
+            margin-top: 6px;
             padding: 4px 10px;
             font-size: 12px;
             font-weight: 600;
             border-radius: 12px;
-            display: inline-block;
-            margin-top: 6px;
         }
-        .priority-level.high { background: #ff4d4f; color: white; }
-        .priority-level.medium { background: var(--accent); color: #000; }
-        .priority-level.low { background: #4caf50; color: white; }
+        .priority-label.high { background: #ff4d4f; color: white; }
+        .priority-label.medium { background: var(--accent); color: #000; }
+        .priority-label.low { background: #4caf50; color: white; }
 
         .delete-btn {
             position: absolute;
@@ -196,6 +198,11 @@
             width: 15px;
             height: 15px;
         }
+        .btn-save:hover,
+        .btn-primary:hover {
+            background: #e0b020;
+            color: #000;
+        }
 
         /* ==================== MODALS ==================== */
         .modal-overlay {
@@ -220,8 +227,8 @@
             position: relative;
             border: 1px solid var(--border);
             box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-            max-height: 90vh;
-            overflow-y: auto;
+            max-height: 92vh;
+            overflow-y: hidden;
         }
 
         .modal-header {
@@ -229,7 +236,6 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 18px;
-            margin-top: -12px;
         }
         .modal-header h3 {
             font-size: 20px;
@@ -291,12 +297,11 @@
             filter: none;
         }
 
-        /* ==================== MODERN PRIORITY & REMINDER BUTTONS ==================== */
+        /* ==================== PRIORITY & REMINDER BUTTONS ==================== */
         .priority-row {
             display: flex;
             gap: 12px;
             margin-bottom: 18px;
-            flex-wrap: wrap;
         }
 
         .priority-btn {
@@ -307,30 +312,22 @@
             color: var(--text);
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.25s ease;
+            transition: all 0.2s;
             font-size: 14px;
         }
 
-        .priority-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            border-color: var(--accent);
-        }
-
-        .priority-btn.active[data-priority="Low"] {
+        /* ✅ LOWERCASE data-priority — MATCHES Reminder.html */
+        .priority-btn.active[data-priority="low"] {
             background: #4caf50;
             color: white;
-            border-color: #4caf50;
         }
-        .priority-btn.active[data-priority="Medium"] {
+        .priority-btn.active[data-priority="medium"] {
             background: var(--accent);
             color: #000;
-            border-color: var(--accent);
         }
-        .priority-btn.active[data-priority="High"] {
+        .priority-btn.active[data-priority="high"] {
             background: #ff4d4f;
             color: white;
-            border-color: #ff4d4f;
         }
 
         .reminder-row {
@@ -348,14 +345,8 @@
             color: var(--text);
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.25s ease;
+            transition: all 0.2s;
             font-size: 14px;
-        }
-
-        .reminder-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            border-color: var(--accent);
         }
 
         .reminder-btn.active {
@@ -373,7 +364,6 @@
             flex: 1;
             padding: 14px 20px;
             border-radius: 30px;
-            transition: all 0.3s ease;        
             font-size: 15px;
             font-weight: 600;
             cursor: pointer;
@@ -384,21 +374,10 @@
             border: 1px solid var(--border);
             color: var(--text-dim);
         }
-        .btn-cancel:hover {
-            background: var(--accent);
-            color: #000;
-            border-color: var(--accent);
-            transform: translateY(-2px);
-        }
         .btn-save {
             background: var(--accent);
             border: none;
             color: #000;
-        }
-        .btn-save:hover {
-            background: #e0b020;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(243, 194, 41, 0.5);
         }
 
         textarea {
@@ -406,7 +385,7 @@
             resize: none;
         }
 
-        /* ==================== SUCCESS MODAL ==================== */
+        /* ==================== SUCCESS MODAL (IDENTICAL TO Reminder.html) ==================== */
         .success-modal {
             max-width: 500px;
             width: 90%;
@@ -495,56 +474,203 @@
             color: var(--text);
             border: 1.5px solid var(--border);
         }
+
+        /* ✅ ONLY success-modal buttons have lift + glow (as in Reminder.html) */
         .btn-secondary:hover {
             background: var(--accent);
             color: #000;
             border-color: var(--accent);
             transform: translateY(-2px);
         }
+
         .btn-primary {
             background: var(--accent);
             color: #000;
             border: none;
             box-shadow: 0 4px 15px rgba(243, 194, 41, 0.4);
         }
+
         .btn-primary:hover {
             background: #e0b020;
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(243, 194, 41, 0.5);
         }
 
-        /* ==================== DELETE MODAL OVERRIDE (Classes-style) ==================== */
+        /* ✅ DELETE MODAL — IDENTICAL TO Reminder.html */
         .delete-modal {
-            max-width: 500px !important;
-            padding: 40px 32px !important;
-            border-radius: 24px !important;
-            animation: modalPop 0.4s ease-out;
+            background: #121212;
+            border: none;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+            max-width: 450px;
+            padding: 32px 28px;
+            border-radius: 16px;
         }
-        .delete-modal .success-icon {
-            width: 90px;
-            height: 90px;
-            margin: 0 auto 28px;
-            box-shadow: 0 8px 25px rgba(243, 194, 41, 0.4);
+        .delete-modal .modal-header {
+            justify-content: flex-end;
+        }
+        .delete-modal .close-modal {
+            color: #b5b5b5;
+            font-size: 20px;
+            width: 25px;
+            height: 25px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        .delete-modal .warning-icon {
+            width: 60px;
+            height: 60px;
+            background: #ffd700;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 10px rgba(255,215,0,0.5);
+        }
+        .delete-modal .warning-icon svg {
+            stroke: #000;
+            width: 48px;
+            height: 48px;
+            display: block;
         }
         .delete-modal h3 {
-            font-size: 26px;
+            font-size: 20px;
             font-weight: 700;
-            margin-bottom: 14px;
-            line-height: 1.2;
+            color: #ffffff;
+            text-align: center;
+            margin: 0 0 16px 0;
         }
         .delete-modal p {
-            color: var(--text-dim);
+            color: #b5b5b5;
             font-size: 15px;
-            line-height: 1.6;
-            margin-bottom: 32px;
-            padding: 0 10px;
+            line-height: 1.5;
+            text-align: center;
+            margin: 0 0 28px 0;
+        }
+        .delete-modal .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 0;
+            justify-content: center;
+        }
+        .delete-modal .btn-cancel {
+            background: #2a2a2a;
+            border: 1px solid #333333;
+            color: #b5b5b5;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .delete-modal .btn-cancel:hover {
+            background: #333333;
+            color: #ffffff;
+        }
+        .delete-modal .btn-save {
+            background: #ff4d4f;
+            border: none;
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+            box-shadow: 0 4px 10px rgba(255,77,79,0.3);
+        }
+        .delete-modal .btn-save:hover {
+            background: #ff1f1f;
+            box-shadow: 0 6px 15px rgba(255,77,79,0.4);
         }
 
-        /* ==================== ERROR MODAL ==================== */
-        .error-modal {
-            max-width: 480px !important;
-            border-radius: 20px !important;
-            padding: 28px 24px !important;
+        /* ✅ VALIDATION MODAL — IDENTICAL TO Reminder.html */
+        .validation-modal {
+            background: var(--card);
+            border: 1px solid var(--border);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+            max-width: 450px;
+            padding: 32px 28px;
+            border-radius: 16px;
+            text-align: center;
+        }
+        .validation-modal .modal-header {
+            justify-content: flex-end;
+        }
+        .validation-modal .close-modal {
+            color: var(--text-dim);
+            font-size: 20px;
+            width: 25px;
+            height: 25px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        .validation-modal .error-icon {
+            width: 60px;
+            height: 60px;
+            background: #ff4d4f;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 10px rgba(255,77,79,0.5);
+        }
+        .validation-modal .error-icon svg {
+            stroke: #ffffff;
+            width: 48px;
+            height: 48px;
+            display: block;
+        }
+        .validation-modal h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+            text-align: center;
+            margin: 0 0 16px 0;
+        }
+        .validation-modal p {
+            color: var(--text-dim);
+            font-size: 15px;
+            line-height: 1.5;
+            text-align: center;
+            margin: 0 0 28px 0;
+        }
+        .validation-modal .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 0;
+            justify-content: center;
+        }
+        .validation-modal .btn-cancel {
+            background: #2a2a2a;
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .validation-modal .btn-cancel:hover {
+            background: #333333;
+            color: var(--text);
+        }
+        .validation-modal .btn-save {
+            background: #ff4d4f;
+            border: none;
+            color: var(--text);
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+            box-shadow: 0 4px 10px rgba(255,77,79,0.3);
+        }
+        .validation-modal .btn-save:hover {
+            background: #ff1f1f;
+            box-shadow: 0 6px 15px rgba(255,77,79,0.4);
         }
 
         /* ==================== RESPONSIVE ==================== */
@@ -601,13 +727,14 @@
             }
             .success-modal,
             .delete-modal,
-            .error-modal {
+            .validation-modal {
                 padding: 32px 24px !important;
                 margin: 15px;
                 border-radius: 20px !important;
             }
             .success-actions,
-            .delete-modal .success-actions {
+            .delete-modal .modal-actions,
+            .validation-modal .modal-actions {
                 flex-direction: column;
                 gap: 12px;
             }
@@ -703,18 +830,18 @@
                 </div>
             </div>
 
-            <!-- ✅ PRIORITY (Modern Reminder-style) -->
+            <!-- ✅ PRIORITY (MATCHES Reminder.html — LOWERCASE) -->
             <label style="margin-top: 10px;">Priority</label>
             <div class="priority-row">
-                <button type="button" class="priority-btn active" data-priority="Low">Low</button>
-                <button type="button" class="priority-btn" data-priority="Medium">Medium</button>
-                <button type="button" class="priority-btn" data-priority="High">High</button>
+                <button type="button" class="priority-btn active" data-priority="low">Low</button>
+                <button type="button" class="priority-btn" data-priority="medium">Medium</button>
+                <button type="button" class="priority-btn" data-priority="high">High</button>
             </div>
 
             <label>Notes</label>
             <textarea id="assignmentNotes" placeholder="Any extra details..."></textarea>
 
-            <!-- ✅ REMINDER (Modern Reminder-style) -->
+            <!-- ✅ REMINDER -->
             <label>Reminder</label>
             <div class="reminder-row">
                 <button type="button" class="reminder-btn active" data-reminder="1_day">1 day before</button>
@@ -725,26 +852,6 @@
             <div class="modal-actions">
                 <button class="btn-cancel" id="cancelBtn">Cancel</button>
                 <button class="btn-save" id="saveAssignmentBtn">Save Assignment</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Success Modal -->
-    <div class="modal-overlay" id="successModal">
-        <div class="modal success-modal">
-            <button class="close-modal success-close" id="successCloseBtn" aria-label="Close">✕</button>
-            <div class="success-content">
-                <div class="success-icon">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4">
-                        <path d="M20 6 L9 17 L4 12"></path>
-                    </svg>
-                </div>
-                <h3>Assignment Saved!</h3>
-                <p>Your timetable and reminders have been updated for this assignment.</p>
-                <div class="success-actions">
-                    <button class="btn-secondary" id="addAnotherBtn">+ Add Another</button>
-                    <button class="btn-primary" id="viewAssignmentsBtn">View All</button>
-                </div>
             </div>
         </div>
     </div>
@@ -776,21 +883,21 @@
                 </div>
             </div>
 
-            <!-- ✅ PRIORITY (Modern Reminder-style) -->
+            <!-- ✅ PRIORITY (MATCHES Reminder.html — LOWERCASE) -->
             <label style="margin-top: 10px;">Priority</label>
             <div class="priority-row">
-                <button type="button" class="priority-btn" data-priority="Low">Low</button>
-                <button type="button" class="priority-btn" data-priority="Medium">Medium</button>
-                <button type="button" class="priority-btn" data-priority="High">High</button>
+                <button type="button" class="priority-btn" data-priority="low">Low</button>
+                <button type="button" class="priority-btn active" data-priority="medium">Medium</button>
+                <button type="button" class="priority-btn" data-priority="high">High</button>
             </div>
 
             <label>Notes</label>
             <textarea id="editAssignmentNotes" placeholder="Any extra details..."></textarea>
 
-            <!-- ✅ REMINDER (Modern Reminder-style) -->
+            <!-- ✅ REMINDER -->
             <label>Reminder</label>
             <div class="reminder-row">
-                <button type="button" class="reminder-btn" data-reminder="1_day">1 day before</button>
+                <button type="button" class="reminder-btn active" data-reminder="1_day">1 day before</button>
                 <button type="button" class="reminder-btn" data-reminder="3_days">3 days before</button>
                 <button type="button" class="reminder-btn" data-reminder="1_week">1 week before</button>
             </div>
@@ -802,63 +909,76 @@
         </div>
     </div>
 
-    <!-- ==================== DELETE CONFIRMATION MODAL (Classes-style) ==================== -->
-    <div class="modal-overlay" id="deleteConfirmationModal">
-        <div class="modal success-modal delete-modal">
-            <button class="close-modal success-close" id="deleteCloseBtn" aria-label="Close">✕</button>
-            
+    <!-- ✅ SUCCESS MODAL (IDENTICAL) -->
+    <div class="modal-overlay" id="successModal">
+        <div class="modal success-modal">
+            <button class="close-modal success-close" id="successCloseBtn" aria-label="Close">✕</button>
             <div class="success-content">
-                <!-- ⚠️ Yellow Warning Icon (like Classes.html) -->
-                <div class="success-icon" style="background: var(--accent);">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" 
-                         stroke="#000" stroke-width="2" stroke-linecap="round" 
-                         stroke-linejoin="round" viewBox="0 0 24 24">
-                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                        <line x1="12" y1="9" x2="12" y2="13"></line>
-                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                <div class="success-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4">
+                        <path d="M20 6 L9 17 L4 12"></path>
                     </svg>
                 </div>
-                
-                <h3>Confirm Deletion</h3>
-                <p>
-                    Are you sure you want to delete the assignment: 
-                    <strong id="deleteAssignmentTitle">[Assignment Name]</strong>?<br>
-                    This action cannot be undone.
+                <h3 id="successTitle">Assignment Saved!</h3>
+                <p id="successMessage">
+                    Your timetable and reminders have been updated for this assignment.
                 </p>
-
-                <!-- Action Buttons (Matching Classes.html) -->
                 <div class="success-actions">
-                    <button class="btn-secondary" id="cancelDeleteBtn">
-                        Cancel
-                    </button>
-                    <button class="btn-primary" id="confirmDeleteBtn" 
-                            style="background: #ff4d4f; border: 1px solid #ff4d4f; color: white;">
-                        Delete Permanently
-                    </button>
+                    <button class="btn-secondary" id="addAnotherBtn">+ Add Another</button>
+                    <button class="btn-primary" id="viewAssignmentsBtn">View All</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ==================== ERROR MODAL ==================== -->
-    <div class="modal-overlay" id="errorModal">
-        <div class="modal error-modal">
-            <div style="height: 6px; background: #ff4d4f; border-radius: 4px 4px 0 0; margin: -28px -24px 20px -24px;"></div>
-            <div style="text-align: center;">
-                <div style="width: 72px; height: 72px; background: #ff4d4f; border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 20px rgba(255, 77, 79, 0.4);">
-                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="12" y1="8" x2="12" y2="12"></line>
-                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                    </svg>
-                </div>
-                <h3 style="font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 12px;">Validation Error</h3>
-                <p id="errorMessage" style="color: var(--text-dim); font-size: 15px; line-height: 1.5; margin-bottom: 28px;">
-                    Please correct the highlighted fields.
-                </p>
-                <button class="btn-save" id="errorCloseBtn" style="width: 100%; background: #ff4d4f; color: white;">
-                    Try Again
-                </button>
+    <!-- ✅ DELETE MODAL (IDENTICAL TO Reminder.html) -->
+    <div class="modal-overlay" id="deleteConfirmationModal">
+        <div class="modal delete-modal">
+            <div class="modal-header">
+                <button class="close-modal" id="deleteCloseBtn">✕</button>
+            </div>
+            <div class="warning-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" 
+                     stroke="#000" stroke-width="2" stroke-linecap="round" 
+                     stroke-linejoin="round" viewBox="0 0 24 24">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+            </div>
+            <h3>Confirm Deletion</h3>
+            <p id="deleteModalMessage">
+                Are you sure you want to delete the assignment: 
+                <strong id="deleteAssignmentTitle">[Assignment Name]</strong>?<br>
+                This action cannot be undone.
+            </p>
+            <div class="modal-actions">
+                <button class="btn-cancel" id="cancelDeleteBtn">Cancel</button>
+                <button class="btn-save" id="confirmDeleteBtn">Delete Permanently</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ VALIDATION MODAL (IDENTICAL TO Reminder.html) -->
+    <div class="modal-overlay" id="validationModal">
+        <div class="modal validation-modal">
+            <div class="modal-header">
+                <button class="close-modal" id="closeValidationModal">✕</button>
+            </div>
+            <div class="error-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" 
+                     stroke="#ffffff" stroke-width="2" stroke-linecap="round" 
+                     stroke-linejoin="round" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+            </div>
+            <h3>Validation Error</h3>
+            <p id="validationMessage">Please correct the highlighted fields.</p>
+            <div class="modal-actions">
+                <button class="btn-cancel" id="cancelValidationBtn">Cancel</button>
+                <button class="btn-save" id="tryAgainBtn">Try Again</button>
             </div>
         </div>
     </div>
@@ -872,8 +992,6 @@
         if (localStorage.getItem('theme') === 'light') {
             document.body.classList.add('light-theme');
             themeIcon.src = 'moon.png';
-        } else {
-            themeIcon.src = 'sun.png';
         }
 
         themeToggle.addEventListener('click', () => {
@@ -939,7 +1057,7 @@
             document.body.style.overflow = 'auto';
         });
 
-        // Close modals when clicking overlay
+        // Close modals on overlay click
         addAssignmentModal.addEventListener('click', (e) => {
             if (e.target === addAssignmentModal) closeAddModal();
         });
@@ -972,14 +1090,7 @@
         }
 
         setupButtonGroups();
-
-        // Save Button (handled by assign.js)
-        document.getElementById('saveAssignmentBtn')?.addEventListener('click', function(e) {
-            e.preventDefault();
-            // assign.js will handle this
-        });
     </script>
-
     <!-- Backend Integration -->
     <script src="assign.js"></script>
 </body>
