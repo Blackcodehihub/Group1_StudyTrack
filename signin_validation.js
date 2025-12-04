@@ -1,3 +1,34 @@
+// Generate falling golden dots
+document.addEventListener("DOMContentLoaded", function () {
+    const container = document.getElementById("fallingDots");
+    const dotCount = 40; // Adjust for more/less density
+
+    const sizes = ["small", "medium", "large"];
+    const drifts = ["", "drift-left", "drift-right"];
+
+    for (let i = 0; i < dotCount; i++) {
+        const dot = document.createElement("div");
+        dot.classList.add("dot");
+
+        // Random size
+        dot.classList.add(sizes[Math.floor(Math.random() * sizes.length)]);
+
+        // Random drift (30% chance)
+        if (Math.random() < 0.3) {
+            dot.classList.add(drifts[Math.floor(Math.random() * drifts.length + 1)]);
+        }
+
+        // Random horizontal position
+        dot.style.left = Math.random() * 100 + "vw";
+
+        // Random delay so they don't all fall at once
+        dot.style.animationDelay = Math.random() * 20 + "s";
+
+        container.appendChild(dot);
+    }
+});
+
+
 document.addEventListener('DOMContentLoaded', function () {
     // ====================== LOGIN FORM ======================
     const loginForm = document.getElementById('loginForm');
