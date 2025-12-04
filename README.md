@@ -1,172 +1,83 @@
-# Group1_StudyTrack
+# Group1_StudyTrack: Student Productivity System
 
-StudyTrack is a student productivity system that centralizes class schedules, assignments, reminders, habits with streaks, and allowance tracking.
+StudyTrack is a centralized student productivity system designed to help users manage their academic and personal commitments efficiently. It integrates essential tools for tracking:
 
-Steps how to navigate the system:
+* [cite_start]Classes and detailed schedules [cite: 1]
+* [cite_start]Assignments and deadlines [cite: 1]
+* [cite_start]Reminders (personal and academic) [cite: 1]
+* [cite_start]Habits with streak monitoring [cite: 1]
+* [cite_start]Personal Wallet for allowance and expense tracking [cite: 1]
 
-1. Open XAMPP 
-    - start apache
-    - start mysql
+---
 
-2. Open the Web App in browser
-    - In browser type "localhost/Group1_StudyTrack/LandingPage.html".
+## 🚀 Getting Started
 
-3. Landing Page Interface
-    - Browse the Page 
-    - Click Get Started or Sign up button
+[cite_start]To run the StudyTrack application, you need a local server environment (like XAMPP) with PHP and MySQL running[cite: 1].
 
-4. Sign Up Interface
-    - Click Sign in button if you already have an account
-    - Must input all the fields before the Create Account button can be clickable
-        - Example inputs:
-            - First Name: Jodell 
-            - Last Name: Doños
-            - Email: jodelldoños101@gmail.com
-            - Password & Confirm Password: Jodell@123
+### Prerequisites
 
-    - After that it will proceed to Sign In Page
+1.  [cite_start]**Web Server**: XAMPP (or similar) installed[cite: 1].
+2.  [cite_start]**Database**: MySQL/MariaDB[cite: 1].
+3.  [cite_start]**Application Structure**: The application files must be placed within a folder named `Group1_StudyTrack` inside your web server's root directory (e.g., `htdocs`)[cite: 1].
 
-5. Sign In Interface
-    - Click Sign up button if you don't have an account
-    - Input all the fields before clicking Sign in button
-        - Example inputs:
-            - Email: jodelldoños101@gmail.com
-            - Password: Jodell@123
-    
-    - If forgot your password, just click Forgot Password button
-        - Forgot Password Modal:
-            - Enter your email address and we’ll send you a verification code
-                - Example input:
-                    - Email: jodelldoños101@gmail.com
-            - Enter Verification Code, check inbox of your email for the PIN Code
-                - Example input:
-                    - PIN: 1 4 3 2
-            - Enter New Password and Confirm Password
-                - Example input:
-                    - New Password: jodellgwapo123
-                    - Confirm Password: jodellgwapo123
+### Step-by-Step Usage Guide
 
-6. Home Interface 
-    - Change theme (Optional)
-    - Select Date Picker if want to view past classes
-    - Browse the Page
+### 1. Server Initialization
 
-7. Classes Interface
-    - Change theme (Optional)
-    - Click + Add Class 
-    - In Add Class Modal
-        - Input all fields  before clicking  Save Class button
-            - Example inputs:
-                - Subject name: CS 201, Data Structure
-                - Instructor: Prof. Jane
-                - Location: BSIT Department CL 2
-                - Start Time: 09:00 am
-                - End Time: 10:30 am
-                - Schedule: Monday Tuesday
-                - Reminder Time: 5 minutes before
-    
-    - After clicking Save Class button it's either you want to Add another Class or want to View Classes &  Edit
-    - Edit Class (Click pen button) if want to edit existing class
-    - Delete Class (Click x button) if want to delete existing class, this action cannot be undone
+1.  [cite_start]Open the **XAMPP Control Panel**[cite: 1].
+2.  [cite_start]Click **Start** for the Apache module[cite: 1].
+3.  [cite_start]Click **Start** for the MySQL module[cite: 1].
 
-8. Assignment Interface
-    - Change theme (Optional)
-    - Click + Add Assigment
-    - In Add Assignment Modal:
-        - Input all fields before clicking Save Assignment button
-            - Example inputs:
-                - Title: Linked List Homework
-                - Class: CS 201, Data Structure
-                - Due Date: 04/12/2025
-                - Due Time: 11:00 am
-                - Priority: Low
-                - Notes: (Optional for extra details)
-                - Reminder: 1 day before
+### 2. Accessing the System
 
-    - After clicking Save Assignment button it's either you want to Add another Assignment or want to View Assignments
-    - Edit Assignment (Click pen button) if want to edit existing assignment
-    - Delete Assignment (Click x button) if want to delete existing assignment, this action cannot be undone 
+1.  [cite_start]Open your web browser[cite: 1].
+2.  [cite_start]In the address bar, type the local path: `localhost/Group1_StudyTrack/LandingPage.html`[cite: 1].
 
-9. Reminder Interface
-    - Change theme (Optional)
-    - Click + Add Reminder
-    - In Add Reminder Modal:
-        - Input all fields before clicking Save Reminder button
-            - Example inputs:
-                - Title: Code Draft for programming
-                - Due Date:  04/12/2025
-                - Time: 12:00 pm
-                - Remind me: 1 hour before
-                - Priority: Medium
-                - Notes: (Optional for extra)
-    
-    - After clicking Save Reminder button it's either you want to Add another Reminder or want to View Reminders
-    - Edit Reminder (Click pen button) if want to edit existing reminder
-    - Delete Reminder (Click x button) if want to delete existing reminder, this action cannot be undone
+### 3. Authentication Flow
 
-10. Wallet Interface
-    - Change theme (Optional)
-    - Click + Add Record
-    - In Add Record Modal:
-        - Example input:
-            - Expense Tab:
-                - Enter Amount: 100
-                - Catergory: Food
-            - Income Tab:
-                - Enter Amount: 100
-                - Category: Salary
-    
-    - Browse the Page
+| Step | Interface | Action / Required Input |
+| :-------------: | :---------------: | :--------------------------------------------------------------------------------------------------------------------------: |
+| Landing Page | N/A | [cite_start]Browse the page and click **Get Started** or **Sign Up**[cite: 1]. |
+| Sign Up | Registration Form | [cite_start]Input all required fields[cite: 1]. [cite_start]The **Create Account** button is only enabled when the password policy is met and terms are accepted[cite: 1]. |
+| | | [cite_start]Example Password: `Jodell@123` (Must include 8+ chars, uppercase, number, and special character)[cite: 1]. |
+| Sign In | Login Form | [cite_start]Input your registered **Email** and **Password**[cite: 1]. |
+| Forgot Password | Modal Sequence | Follow the steps: 1. Verify email. 2. Enter PIN from inbox. 3. [cite_start]Set a new password[cite: 1]. |
 
-11. Habit Interface
-    - Change theme (Optional)
-    - Click + Add Habit
-    - In Add Habit Modal:
-        - Input all fields before clicking Save Habit button
-        - Example input:
-            - Habit Name: Morning Reading
-            - Repeat: Mon Wed Fri
-            - Start Time: 09:00 am
-            - End Time: 09:30 am
-            - Remind me: 15 mins before
+### 4. Home Dashboard Interface
 
-    - After clicking Save Habit button it's either you want to Add another Habbit or want to View Habits
-    - Edit Habit (Click pen button) if want to edit existing habit
-    - Confirm Habit (Click check button) if the habit is you already done
-    - Delete Habit (Click x button) if want to delete existing habit in history, this action cannot be undone
+* [cite_start]**Personalization**: The greeting ("Good afternoon, Jodell") dynamically changes based on the time of day and the currently logged-in user's name[cite: 1].
+* [cite_start]**Today's Classes**: This section automatically filters and displays only the classes scheduled for the selected day that belong to the current user[cite: 1].
+* [cite_start]**Theme Toggle**: Use the Sun/Moon icon to toggle between Light and Dark modes[cite: 1].
 
-12. Settings Interface
-    - Change theme (Optional)
-    - Browse the Page, can change password, can update profile avatar, and can Delete Account
-    - In Change Password Modal:
-        - It first verify your email
-            - Example input:
-                - Jodell.Doños@ctu.com
-        
-        - Then you can change your password(Must be atleast 8 character long):
-           - Example input:
-               - New Password: Jodell@123
-                - Confirm Password: Jodell@123
+### 5. Module Interfaces (CRUD Operations)
 
-        - Click Save then Press OK
- 
-    - For update profile avatar is you need to click the camera icon then choose a file  then click open
+| Module | Action Type | Details & Key Features |
+| :--------: | :-----------------------------: | :------------------------------------------------------------------------------------------------------------------------------------------: |
+| Classes | Add, Edit, Delete | [cite_start]Schedule repeated classes[cite: 1]. [cite_start]Set Start Time must be before End Time[cite: 1]. [cite_start]Uses modal validation for missing fields[cite: 1]. |
+| Assignment | Add, Edit, Delete | [cite_start]Track homework with Due Date/Time, Priority (Low/Medium/High), and Reminder options[cite: 1]. |
+| Reminder | Add, Edit, Delete | [cite_start]Set personal or academic alerts using date, time, and priority[cite: 1]. [cite_start]Uses modern modal validation[cite: 1]. |
+| Wallet | Add Income, Add Expense, Delete | [cite_start]Track personal allowance/spending[cite: 1]. [cite_start]Records are categorized and instantly update the Total Balance dashboard[cite: 1]. |
+| Habit | Add, Edit, Delete, Confirm | [cite_start]Define a recurring habit[cite: 1]. [cite_start]Click the **Green Checkmark** button to confirm completion for the current day, which updates the Current Streak stat[cite: 1]. |
 
-    - Delete Account button this will delete all your data, this action cannot be undone
+### 6. Settings Interface
 
-13. Logout Button
-    - will be back to login
-    
+* [cite_start]**Change Password**: Use the modal to securely change your password after verifying your identity[cite: 1].
+* [cite_start]**Update Profile Avatar**: Click the Camera icon to choose and upload a profile picture[cite: 1].
+* [cite_start]**Delete Account**: This button performs a destructive action, permanently deleting the user and all associated records (classes, habits, wallet data)[cite: 1].
 
+### 7. Logout
 
-Meet the Team:
-- Cariliman, Alkem Boi - Leader / HCI & QA Lead
-- Cuizon, Dexter - Back-end Developer
-- Doños, Jodell - Back-end Developer
-- Lisondra, Jade - Front-end Developer
-- Saquilon, Jhon Loyd - Database Designer
-- Velasco, Dale Emmanuel - Front-end Developer
+* [cite_start]Click the **Log out** link in the sidebar to return to the login screen[cite: 1].
 
-    
+---
 
+## 👥 Meet the Team (Group 1)
 
+| Name | Primary Role |
+| :--------------------: | :--------------------: |
+| Cariliman, Alkem Boi | [cite_start]Leader / HCI & QA Lead [cite: 1] |
+| Cuizon, Dexter | [cite_start]Back-end Developer [cite: 1] |
+| Doños, Jodell | [cite_start]Back-end Developer [cite: 1] |
+| Lisondra, Jade | [cite_start]Front-end Developer [cite: 1] |
+| Saquilon, Jhon Loyd | [cite_start]Database Designer [cite: 1] |
+| Velasco, Dale Emmanuel | [cite_start]Front-end Developer [cite: 1] |
