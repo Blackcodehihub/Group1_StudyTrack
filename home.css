@@ -153,8 +153,14 @@
         .day.active { background:var(--day-active-bg); color:var(--day-active-text); font-weight:bold; }
 
         .class-box {
-            display:flex; gap:15px; padding:18px; background:var(--card); border-radius:14px;
-            border:1px solid var(--border); line-height: 1.5;
+            display: flex;
+            gap: 15px;
+            padding: 20px; /* Increased padding from 18px to 20px */
+            background: var(--card);
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            line-height: 1.5;
+            margin-bottom: 12px; /* Added margin-bottom for extra space */
         }
         .class-box p { font-size: 13px; }
         .class-box img { width:40px; height:40px; filter: invert(1); }
@@ -169,6 +175,12 @@
             border:1px solid var(--border); 
             text-align:center; 
             letter-spacing: 0.8px;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-dim);
+            font-size: 14px;
         }
 
         .overview-list {
@@ -510,4 +522,71 @@
 
 .modal-logout-btn:hover {
     background: #c62828;
+}
+/* CLASS BOX CONTAINER — scrollable & themed */
+.class-box-container {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-top: 12px;
+    padding: 0 8px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb, #555) var(--scrollbar-track, transparent);
+}
+
+.class-box-container::-webkit-scrollbar {
+    width: 6px;
+}
+.class-box-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+.class-box-container::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb, #555);
+    border-radius: 3px;
+}
+.class-box-container::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover, #777);
+}
+
+/* CLASS ITEM */
+.class-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-color, #333);
+}
+.class-item:last-child {
+    border-bottom: none;
+}
+.class-item img {
+    width: 24px;
+    height: 24px;
+    opacity: 0.8;
+}
+.class-item h4 {
+    margin: 0 0 4px;
+    font-size: 16px;
+    font-weight: 600;
+}
+.class-item p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--text-dim, #aaa);
+}
+
+/* NO CLASSES / ERROR */
+.no-classes, .error-message, .loading {
+    text-align: center;
+    padding: 20px;
+    color: var(--text-dim, #aaa);
+    font-size: 14px;
+}
+.no-classes img {
+    display: block;
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 10px;
+    opacity: 0.5;
+}
+.error-message {
+    color: var(--error, #ff6b6b);
 }

@@ -5,10 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StudyTrack - Dashboard</title>
     <link rel="icon" href="images_icons/fav logo.png" type="image/png">
+    <!-- Include the Inter font as requested -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="home.css">
+    <link rel="stylesheet" href="home.css"> <!-- Link to the provided CSS -->
 </head>
 <body>
+    <!-- Hamburger button for mobile -->
+    <button class="hamburger" id="hamburgerBtn">☰</button>
+
     <aside class="sidebar" id="sidebar">
         <div class="logo">
             <a href="HomeF.html"><img src="images_icons/logo.png" alt="StudyTrack"></a>
@@ -24,15 +28,15 @@
             </div>
             <div class="bot-nav">
                 <a href="Settings.html"><img src="images_icons/settings.png" alt=""> Settings</a>
-                <a href="#"><img src="images_icons/logout.png" alt=""> Log out</a>
+                <!-- Added ID to the logout link for JS targeting -->
+                <a href="#" id="logoutTrigger"><img src="images_icons/logout.png" alt=""> Log out</a>
             </div>
         </div>
     </aside>
 
-    <div class="main-content">
+    <main class="main-content">
         <div class="container">
-            <div class="header">
-                <button class="hamburger" id="hamburgerBtn"> ☰ </button>
+            <header class="header">
                 <div class="user-icon">
                     <img src="images_icons/user.png" alt="User">
                 </div>
@@ -43,39 +47,35 @@
                 <button class="theme-toggle" id="themeToggle">
                     <img src="images_icons/Sun.png" alt="Toggle Theme" id="themeIcon">
                 </button>
-            </div>
+            </header>
 
-            <div class="card">
+            <section class="card">
                 <div class="classes-header-row">
                     <h3>Today's Classes</h3>
                     <input type="date" id="classDate" class="class-date-picker">
                     <div class="days" id="daysContainer"></div>
                 </div>
-                <div class="class-box">
-                    <img src="images_icons/book.png" alt="">
-                    <div>
-                        <h4>CS 201, Data Structures</h4>
-                        <p>9:00 AM - 10:15 AM, BSIT Department CL 2</p>
-                    </div>
+                <div class="class-box-container" id="classBoxContainer">
+                    <!-- Classes will be dynamically loaded here -->
                 </div>
-            </div>
+            </section>
 
             <div class="row">
-                <div class="habit-card">
+                <section class="habit-card">
                     <h3>Habit Summary</h3>
                     <div class="habit-row">
                         <div class="habit-line">
-                            <img src="images_icons/active-habit.png" alt="Active"> 
+                            <img src="images_icons/active-habit.png" alt="Active">
                             <span>Active habit</span>
                             <strong id="active-habits-count">0</strong>
                         </div>
                         <div class="habit-line">
-                            <img src="images_icons/complete.png" alt="Completed"> 
+                            <img src="images_icons/complete.png" alt="Completed">
                             <span>Completed today</span>
                             <strong id="completed-today">0</strong>
                         </div>
                         <div class="habit-line">
-                            <img src="images_icons/missed.png" alt="Missed"> 
+                            <img src="images_icons/missed.png" alt="Missed">
                             <span>Missed today</span>
                             <strong id="missed-today">0</strong>
                         </div>
@@ -92,26 +92,26 @@
                             <p class="completion-label">Today's completion</p>
                         </div>
                     </div>
-                </div>
+                </section>
 
-                <div class="streak-card">
+                <section class="streak-card">
                     <h3>Streak Stats</h3>
                     <div class="streak-item">
-                        <img src="images_icons/gold_fire.png" alt="Current"> Current Streak: 
-                        <span><strong id="current-streak" style=" margin-left: 10px;"> 0 days</strong></span>
+                        <img src="images_icons/gold_fire.png" alt="Current"> Current Streak:
+                        <span><strong id="current-streak" style="margin-left: 10px;">0 days</strong></span>
                     </div>
                     <div class="streak-item">
-                        <img src="images_icons/trophy.png" alt="Best"> Best Streak: 
+                        <img src="images_icons/trophy.png" alt="Best"> Best Streak:
                         <span style="color: var(--text-dim); margin-left: 10px;" id="best-streak">0 days</span>
                     </div>
                     <div class="progress-bar">
                         <div class="progress-fill" id="streak-progress-fill"></div>
                     </div>
-                </div>
+                </section>
             </div>
 
             <div class="row">
-                <div class="wallet-card">
+                <section class="wallet-card">
                     <h3><strong>Wallet Balance</strong></h3>
                     <div class="amount" id="wallet-balance" style="text-align: left;font-size: 30px; font-weight: 800;">₱ 0.00</div>
                     <div style="display:flex; justify-content:space-between; margin:20px 0;">
@@ -127,9 +127,9 @@
                     <div class="spending-bar">
                         <div class="spending-fill" id="spending-fill-bar"></div>
                     </div>
-                </div>
+                </section>
 
-                <div class="overview-card">
+                <section class="overview-card">
                     <h3><strong>Income & Spending Overview</strong></h3>
                     <div class="overview-row">
                         <div class="overview-center">
@@ -145,10 +145,10 @@
                             </ul>
                         </div>
                     </div>
-                </div>
+                </section>
             </div>
         </div>
-    </div>
+    </main>
 
     <!-- LOGOUT CONFIRMATION MODAL -->
     <div id="logoutModal" class="modal-logout">
@@ -164,221 +164,6 @@
         </div>
     </div>
 
-    <script>
-     //Logout Modal
-    const logoutTrigger = document.querySelector('.bot-nav a[href="#"]');
-
-   
-    const logoutModal = document.getElementById('logoutModal');
-    const cancelLogoutBtn = document.getElementById('cancelLogout');
-    const confirmLogoutBtn = document.getElementById('confirmLogout');
-
- 
-    logoutTrigger.addEventListener('click', (e) => {
-        e.preventDefault();
-        logoutModal.style.display = "flex";
-    });
-
-
-    cancelLogoutBtn.addEventListener('click', () => {
-        logoutModal.style.display = "none";
-    });
-
-  
-    confirmLogoutBtn.addEventListener('click', () => {
-        window.location.href = "Sign-in.html"; 
-    });
-
-  
-    window.addEventListener('click', (e) => {
-        if (e.target === logoutModal) {
-            logoutModal.style.display = "none";
-        }
-    });
-
-        // =============== API ===============
-        const API_URL = 'wallet_api.php';
-
-        async function apiGet(endpoint) {
-            try {
-                const res = await fetch(`${API_URL}?${endpoint}`);
-                if (!res.ok) throw new Error('Network error: ' + res.status);
-                return await res.json();
-            } catch (e) {
-                console.warn('API GET failed:', e);
-                return null;
-            }
-        }
-
-        // =============== DYNAMIC UPDATE ===============
-        function updateWalletUI(wallet) {
-            document.getElementById('wallet-balance').textContent = `₱ ${wallet.balance.toFixed(2)}`;
-            document.getElementById('income-this-month').textContent = `₱ ${wallet.totalIncome.toFixed(2)}`;
-            document.getElementById('expense-this-month').textContent = `₱ ${wallet.totalExpense.toFixed(2)}`;
-
-            // Spending bar (% of income spent)
-            const spendRatio = wallet.totalIncome > 0 ? wallet.totalExpense / wallet.totalIncome : 0;
-            const spendPct = Math.min(100, spendRatio * 100);
-            document.getElementById('spending-fill-bar').style.width = `${spendPct.toFixed(1)}%`;
-
-            // Income list
-            const incomeList = document.getElementById('income-list');
-            if (wallet.incomeRecords.length === 0) {
-                incomeList.innerHTML = '<li>No income records yet</li>';
-            } else {
-                incomeList.innerHTML = wallet.incomeRecords
-                    .map(r => `<li>₱ ${r.amount.toFixed(2)} — ${r.category}</li>`)
-                    .join('');
-            }
-
-            // Expense list
-            const expenseList = document.getElementById('expense-list');
-            if (wallet.expenseRecords.length === 0) {
-                expenseList.innerHTML = '<li>No expense records yet</li>';
-            } else {
-                expenseList.innerHTML = wallet.expenseRecords
-                    .map(r => `<li>₱ ${r.amount.toFixed(2)} — ${r.category}</li>`)
-                    .join('');
-            }
-        }
-
-        // Fetch habit data from database
-async function updateHabitUI() {
-    try {
-        const response = await fetch('habit.php?action=list');
-        const data = await response.json();
-        
-        if (data.today && data.streak) {
-            // Calculate active habits (total habits in database)
-            const activeHabits = data.history.length;
-            
-            // Count completed and missed from today's habits
-            let completedToday = 0;
-            let missedToday = 0;
-            
-            data.today.forEach(habit => {
-                if (habit.completed_today) {
-                    completedToday++;
-                } else {
-                    missedToday++;
-                }
-            });
-            
-            // Update the DOM elements with actual data
-            document.getElementById('active-habits-count').textContent = activeHabits;
-            document.getElementById('completed-today').textContent = completedToday;
-            document.getElementById('missed-today').textContent = missedToday;
-            document.getElementById('current-streak').textContent = `${data.streak.current} days`;
-            document.getElementById('best-streak').textContent = `${data.streak.best} days`;
-
-            // Habit circle: completion % = completed / (completed + missed)
-            const total = completedToday + missedToday;
-            const pct = total > 0 ? (completedToday / total) * 100 : 0;
-            const dashOffset = 345.4 * (1 - pct / 100);
-            document.getElementById('habit-fill-circle').style.strokeDashoffset = dashOffset;
-            document.getElementById('habit-completion-text').textContent = `${Math.round(pct)}%`;
-
-            // Streak progress
-            const streakPct = data.streak.best > 0 ? (data.streak.current / data.streak.best) * 100 : 0;
-            document.getElementById('streak-progress-fill').style.width = `${Math.min(100, streakPct)}%`;
-        }
-    } catch (error) {
-        console.error('Error fetching habit data:', error);
-        // Keep the default values or show error state if needed
-    }
-}
-
-        // =============== INITIAL LOAD ===============
-        async function loadDashboardData() {
-            // Set current date
-            const now = new Date();
-            document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', {
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric'
-            });
-
-            // Fetch wallet data
-            const walletData = await apiGet('get=wallet');
-            if (walletData && walletData.wallet) {
-                updateWalletUI(walletData.wallet);
-            } else {
-                updateWalletUI({ balance: 0, totalIncome: 0, totalExpense: 0, incomeRecords: [], expenseRecords: [] });
-            }
-
-            // Update habits (simulated)
-            await updateHabitUI();
-        }
-
-        // =============== EXISTING LOGIC (UNCHANGED) ===============
-        const hamburgerBtn = document.getElementById('hamburgerBtn');
-        const sidebar = document.getElementById('sidebar');
-        const mainContent = document.querySelector('.main-content');
-
-        hamburgerBtn.addEventListener('click', (event) => {
-            event.stopPropagation();
-            sidebar.classList.toggle('active');
-            mainContent.classList.toggle('shift');
-        });
-
-        document.addEventListener('click', (event) => {
-            const clickedInsideSidebar = sidebar.contains(event.target);
-            const clickedHamburger = hamburgerBtn.contains(event.target);
-            if (sidebar.classList.contains('active') && !clickedInsideSidebar && !clickedHamburger) {
-                sidebar.classList.remove('active');
-                mainContent.classList.remove('shift');
-            }
-        });
-
-        const themeToggle = document.getElementById('themeToggle');
-        const themeIcon = document.getElementById('themeIcon');
-
-        if (localStorage.getItem('theme') === 'light') {
-            document.body.classList.add('light-theme');
-            themeIcon.src = 'images_icons/moon.png';
-        } else {
-            themeIcon.src = 'images_icons/sun.png';
-        }
-
-        themeToggle.addEventListener('click', () => {
-            document.body.classList.toggle('light-theme');
-            const isLight = document.body.classList.contains('light-theme');
-            localStorage.setItem('theme', isLight ? 'light' : 'dark');
-            themeIcon.src = isLight ? 'images_icons/moon.png' : 'images_icons/sun.png';
-        });
-
-        const classDateInput = document.getElementById('classDate');
-        const daysContainer = document.getElementById('daysContainer');
-        classDateInput.valueAsDate = new Date();
-
-        function generateWeekDays(startFrom) {
-            daysContainer.innerHTML = '';
-            const weekDays = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-            const today = new Date();
-            const startDate = new Date(startFrom);
-
-            for (let i = 0; i < 7; i++) {
-                const dayDate = new Date(startDate);
-                dayDate.setDate(startDate.getDate() + i);
-                const btn = document.createElement('button');
-                btn.className = 'day';
-                btn.textContent = `${weekDays[dayDate.getDay()]} ${dayDate.getDate()}`;
-                if (dayDate.toDateString() === today.toDateString()) {
-                    btn.classList.add('active');
-                    setTimeout(() => btn.scrollIntoView({behavior:'smooth', inline:'center'}), 100);
-                }
-                daysContainer.appendChild(btn);
-            }
-        }
-
-        generateWeekDays(new Date());
-        classDateInput.addEventListener('change', () => generateWeekDays(classDateInput.value));
-
-        // INIT
-        document.addEventListener("DOMContentLoaded", () => {
-            setTimeout(() => window.scrollTo(0, 0), 100);
-            loadDashboardData();
-        });
-    </script>
+    <script src="home.js"></script> <!-- Link to the separated JS file -->
 </body>
 </html>
