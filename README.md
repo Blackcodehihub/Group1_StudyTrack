@@ -113,7 +113,7 @@ Steps how to navigate the system:
     - After clicking Save Habit button it's either you want to Add another Habbit or want to View Habits
     - Edit Habit (Click pen button) if want to edit existing habit
     - Confirm Habit (Click check button) if the habit is you already done
-    - Delete Habit (Click x button) if want to edit existing habit in history, this action cannot be undone
+    - Delete Habit (Click x button) if want to delete existing habit in history, this action cannot be undone
 
 11. Settings Interface
     - Change theme (Optional)
