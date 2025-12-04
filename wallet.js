@@ -170,12 +170,14 @@
                                 <p>${date}</p>
                             </div>
                         </div>
-                        <div class="transaction-amount ${type === 'income' ? 'amount-income' : 'amount-expense'}">
-                            <i class="fa-solid fa-${type === 'income' ? 'plus' : 'minus'}"></i>₱ ${record.amount.toLocaleString()}
-                        </div>
-                        <button class="delete-btn" data-id="${record.id}" data-type="${type}" title="Delete record">
-                            <i class="fas fa-trash"></i>
-                        </button>
+                        <div class="transaction-actions"> <!-- NEW WRAPPER -->
+                            <div class="transaction-amount ${type === 'income' ? 'amount-income' : 'amount-expense'}">
+                                <i class="fa-solid fa-${type === 'income' ? 'plus' : 'minus'}"></i>₱ ${record.amount.toLocaleString()}
+                            </div>
+                            <button class="delete-btn" data-id="${record.id}" data-type="${type}" title="Delete record">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div> <!-- END NEW WRAPPER -->
                     `;
                     fragment.appendChild(item);
                 });
