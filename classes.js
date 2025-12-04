@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const startTimeInput = document.getElementById('start_time');
     const endTimeInput = document.getElementById('end_time');
     const dayButtons = document.querySelectorAll('.day-btn');
-    const formMessages = document.getElementById('form-messages');
+    // Removed old formMessages selector
     const classesListContainer = document.getElementById('classes-list-container'); 
 
     // EDIT Modal Selectors
@@ -26,13 +26,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const editStartTimeInput = document.getElementById('edit_start_time');
     const editEndTimeInput = document.getElementById('edit_end_time');
     const editDayButtons = document.querySelectorAll('#editClassModal .day-btn');
-    const editFormMessages = document.getElementById('edit-form-messages');
+    // Removed old editFormMessages selector
 
-    // Success Modal Elements
+    // Success Modals
     const successModal = document.getElementById('successModal');
+    const deleteSuccessModal = document.getElementById('deleteSuccessModal'); // NEW
+    const validationModal = document.getElementById('validationModal');       // NEW
+    
     const addAnotherClassBtn = document.getElementById('addAnotherClassBtn');
     const viewClassBtn = document.getElementById('viewClassBtn'); 
     
+    // Validation Modal Elements
+    const validationErrorList = document.getElementById('validationErrorList'); // NEW
+
     // DELETE Modal Selectors
     const deleteConfirmationModal = document.getElementById('deleteConfirmationModal');
     const deleteCloseBtn = document.getElementById('deleteCloseBtn');
@@ -42,9 +48,50 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // State to track the ID of the class pending deletion
     let currentClassIdToDelete = null; 
+    let currentClassToDeleteName = ''; // To show in the success modal
 
+    // --- NEW: Modal Helper Functions ---
 
-    // --- Helper Function: Time Formatting (24hr to 12hr AM/PM) ---
+    function openModal(modalToOpen) {
+        modalToOpen.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(modalToClose) {
+        modalToClose.style.display = 'none';
+        // Only reset overflow if no other modal is open
+        if (validationModal.style.display === 'none' && successModal.style.display === 'none' && deleteSuccessModal.style.display === 'none') {
+             document.body.style.overflow = 'auto';
+        }
+    }
+
+    // NEW: Function to show the validation error modal
+    function showValidationError(errorMessages, contextModalId) {
+        validationErrorList.innerHTML = '';
+        errorMessages.forEach(msg => {
+            const li = document.createElement('li');
+            li.innerHTML = `<i class="fa-solid fa-circle-xmark" style="color:#ff4d4f; margin-right: 8px;"></i>${msg}`;
+            validationErrorList.appendChild(li);
+        });
+
+        // Set the 'Try Again' button to focus on the correct input after closing
+        document.getElementById('tryAgainBtn').onclick = () => {
+             closeModal(validationModal);
+             document.getElementById(contextModalId).style.display = 'flex'; // Re-open original modal
+        };
+        
+        openModal(validationModal);
+    }
+
+    // NEW: Function to show the delete success modal
+    function showDeleteSuccess(name) {
+        document.getElementById('deleteSuccessTitle').textContent = 'Class Deleted';
+        document.getElementById('deleteSuccessMessage').innerHTML = `The class "<strong>${name}</strong>" has been permanently removed.`;
+        openModal(deleteSuccessModal);
+    }
+    
+    // --- Existing Helper Functions ---
+    
     function formatTime(time24) {
         if (!time24) return '';
         const [hour, minute] = time24.split(':');
@@ -54,8 +101,9 @@ document.addEventListener('DOMContentLoaded', function() {
         return `${formattedH}:${minute} ${ampm}`;
     }
 
-    // --- RENDERER Function: Creates the HTML for the Repeater ---
+    // --- RENDERER Function ---
     function renderClassItems(classes) {
+        // ... (Renderer logic remains the same) ...
         if (classes.length === 0) {
             classesListContainer.innerHTML = `
                 <div style="padding: 20px; text-align: center; color: var(--text-dim); border: 1px dashed var(--border); border-radius: 12px; margin-top: 20px;">
@@ -64,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
             return;
         }
-
+        // ... (Map and loop logic remains the same) ...
         const html = classes.map(cls => {
             const days = cls.repeat_days ? cls.repeat_days.split(',').join(' & ') : 'N/A';
             const locationText = cls.location ? `, ${cls.location}` : '';
@@ -102,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 
-    // --- FETCH Function: Calls PHP and Renders ---
+    // --- FETCH Function ---
     function fetchAndRenderClasses() {
         classesListContainer.innerHTML = '<p style="text-align: center; color: var(--text-dim); margin-top: 20px;">Loading classes...</p>';
         
@@ -121,36 +169,27 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
+    // --- 2. Modal Open/Close Logic & Handlers ---
 
-    // --- 2. Modal Open/Close Logic ---
-
-    function openModal(modalToOpen) {
-        modalToOpen.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeModal(modalToClose) {
-        modalToClose.style.display = 'none';
-        document.body.style.overflow = 'auto';
-    }
-
-    function resetForm() {
-        addClassForm.reset();
-        selectedDays.clear();
-        dayButtons.forEach(button => button.classList.remove('active'));
-        formMessages.textContent = '';
-        saveClassBtn.disabled = true; 
-        
+    function resetForm(form) {
+        form.reset();
+        if (form.id === 'add-class-form') {
+            selectedDays.clear();
+            dayButtons.forEach(button => button.classList.remove('active'));
+            // Removed formMessages usage
+            saveClassBtn.disabled = true; 
+            startTimeInput.value = "09:00";
+            endTimeInput.value = "10:15";
+        }
         closeModal(successModal);
-        
-        startTimeInput.value = "09:00";
-        endTimeInput.value = "10:15";
+        closeModal(deleteSuccessModal); // Close the new success modal too
+        closeModal(validationModal); // Close validation modal
     }
 
     // Attach listeners - ADD CLASS MODAL
     openModalBtn.addEventListener('click', function() {
         openModal(addClassModal);
-        resetForm();
+        resetForm(addClassForm);
         checkFormValidity();
     });
     closeModalBtn.addEventListener('click', () => closeModal(addClassModal));
@@ -164,12 +203,14 @@ document.addEventListener('DOMContentLoaded', function() {
     deleteCloseBtn.addEventListener('click', () => closeModal(deleteConfirmationModal));
     cancelDeleteBtn.addEventListener('click', () => closeModal(deleteConfirmationModal)); 
 
-    // Close on overlay click
-    addClassModal.addEventListener('click', function(event) {
-        if (event.target === addClassModal) {
-            closeModal(addClassModal);
-        }
+    // NEW: VALIDATION MODAL HANDLER (close button only)
+    document.getElementById('closeValidationModal').addEventListener('click', () => {
+        closeModal(validationModal);
     });
+    
+    // NEW: DELETE SUCCESS MODAL HANDLERS
+    document.getElementById('deleteSuccessCloseBtn').addEventListener('click', () => closeModal(deleteSuccessModal));
+    document.getElementById('deleteViewClassesBtn').addEventListener('click', () => closeModal(deleteSuccessModal));
 
 
     // Success Modal Handlers
@@ -191,7 +232,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // --- 3. Client-side Validation ---
+    // --- 3. Client-side Validation (for Add Form) ---
 
     function checkFormValidity() {
         let isValid = true;
@@ -213,6 +254,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- 4. Repeat Days Toggle Logic ---
     let selectedDays = new Set(); 
 
+    // ... (day button logic remains the same) ...
     dayButtons.forEach(button => {
         button.addEventListener('click', function(e) {
             e.preventDefault(); 
@@ -228,8 +270,7 @@ document.addEventListener('DOMContentLoaded', function() {
             checkFormValidity(); 
         });
     });
-
-    // Attach listeners for live validation
+    // ... (input listeners for validation remain the same) ...
     subjectNameInput.addEventListener('input', checkFormValidity);
     startTimeInput.addEventListener('input', checkFormValidity);
     endTimeInput.addEventListener('input', checkFormValidity);
@@ -239,14 +280,21 @@ document.addEventListener('DOMContentLoaded', function() {
     addClassForm.addEventListener('submit', function(event) {
         event.preventDefault();
 
+        // ❌ OLD: Removed inline form message logic
+
+        // 1. Client-side Validation check
         if (!checkFormValidity()) {
-            formMessages.textContent = 'Please fill in required fields and ensure End Time is after Start Time.';
-            formMessages.style.color = 'red';
+            const errors = [];
+            if (subjectNameInput.value.trim() === '') errors.push("Subject name is required.");
+            if (startTimeInput.value.trim() === '') errors.push("Start Time is required.");
+            if (endTimeInput.value.trim() === '') errors.push("End Time is required.");
+            if (startTimeInput.value && endTimeInput.value && startTimeInput.value >= endTimeInput.value) {
+                errors.push("End Time must be after Start Time.");
+            }
+            showValidationError(errors, 'addClassModal'); // Show validation modal
             return;
         }
-
-        formMessages.textContent = ''; 
-
+        
         const formData = new FormData(addClassForm);
         
         selectedDays.forEach(day => {
@@ -263,7 +311,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => {
             return response.json().then(data => {
                 if (!response.ok) {
-                    throw new Error(data.message || 'Server error occurred.');
+                    throw { status: response.status, data: data };
                 }
                 return data;
             });
@@ -271,20 +319,21 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             if (data.success) {
                 closeModal(addClassModal);
+                // Update success modal content for Add Class
+                document.getElementById('classSuccessTitle').textContent = 'Class Added!';
+                document.getElementById('classSuccessMessage').innerHTML = `The class "<strong>${subjectNameInput.value.trim()}</strong>" has been added to your schedule.`;
                 openModal(successModal);
                 fetchAndRenderClasses(); 
             } else {
-                formMessages.textContent = data.message || 'Failed to add class.';
-                if (data.errors) {
-                    formMessages.innerHTML += '<ul style="margin-left: 20px; text-align: left;">' + data.errors.map(err => `<li>${err}</li>`).join('') + '</ul>';
-                }
-                formMessages.style.color = 'red';
+                // If success: false is returned (e.g., failed server-side validation/logic)
+                const serverErrors = data.errors || [data.message || 'Failed to add class due to server issue.'];
+                showValidationError(serverErrors, 'addClassModal');
             }
         })
         .catch(error => {
             console.error('Fetch error:', error);
-            formMessages.textContent = `Error: ${error.message}`;
-            formMessages.style.color = 'red';
+            const errorMessages = error.data && error.data.errors ? error.data.errors : [(error.data && error.data.message) || 'Network error or unhandled exception.'];
+            showValidationError(errorMessages, 'addClassModal');
         });
     });
 
@@ -363,7 +412,6 @@ document.addEventListener('DOMContentLoaded', function() {
             };
         });
         
-        // CRITICAL FIX: Store the Set directly on the form element for easy access in the submit handler
         editClassForm.editSelectedDays = editSelectedDays; 
 
         // 3. Attach live validation listeners for edit fields
@@ -373,7 +421,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // 4. Validate and open
         checkEditFormValidity();
-        editFormMessages.textContent = '';
+        // Removed inline message element usage
         openModal(editClassModal);
     }
     
@@ -383,48 +431,37 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleEditFormSubmission(event) {
         event.preventDefault();
 
+        // 1. Client-side Validation check
         if (!checkEditFormValidity()) {
-            editFormMessages.textContent = 'Please fill in required fields and ensure End Time is after Start Time.';
-            editFormMessages.style.color = 'red';
+            const errors = [];
+            if (editSubjectNameInput.value.trim() === '') errors.push("Subject name is required.");
+            if (editStartTimeInput.value.trim() === '') errors.push("Start Time is required.");
+            if (editEndTimeInput.value.trim() === '') errors.push("End Time is required.");
+            if (editStartTimeInput.value && editEndTimeInput.value && editStartTimeInput.value >= editEndTimeInput.value) {
+                errors.push("End Time must be after Start Time.");
+            }
+            showValidationError(errors, 'editClassModal'); // Show validation modal
             return;
         }
 
-        editFormMessages.textContent = ''; 
-
-        // --- CRITICAL FIX START: Defensive Time Cleaning ---
-        
-        // Helper function to extract ONLY HH:MM using a robust regex.
+        // --- CRITICAL TIME CLEANING FIX START ---
         function cleanTimeValue(timeString) {
             if (!timeString) return '';
-            
-            // Regex to find and capture HH:MM, even if followed by AM/PM or other text.
-            // (\d{1,2}:\d{2}) captures the time format.
             const match = timeString.match(/(\d{1,2}:\d{2})/);
-            
-            // If the time is found, return the captured group (HH:MM).
-            if (match) {
-                return match[1];
-            }
-            
-            // If the time string is already clean (e.g., '13:00'), return it.
-            // If it's empty or invalid, this ensures we don't send extra text.
+            if (match) { return match[1]; }
             return timeString.trim();
         }
 
-        // Get the current values from the inputs
         const currentStartTime = editStartTimeInput.value;
         const currentEndTime = editEndTimeInput.value;
 
         // Temporarily overwrite the input values with the cleaned 24hr version.
-        // This ensures FormData captures the correct HH:MM format for *both* fields.
         editStartTimeInput.value = cleanTimeValue(currentStartTime);
         editEndTimeInput.value = cleanTimeValue(currentEndTime);
-        
-        // --- CRITICAL FIX END ---
+        // --- CRITICAL TIME CLEANING FIX END ---
 
         const formData = new FormData(editClassForm);
         
-        // CRITICAL FIX: Check the state stored in openEditModal and append days
         if (editClassForm.editSelectedDays) {
             editClassForm.editSelectedDays.forEach(day => {
                 formData.append('repeat_days[]', day); 
@@ -440,14 +477,12 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => {
             // Restore original, formatted values immediately after the fetch attempt.
-            // This is crucial for the UI display if the update fails or the modal remains open.
             editStartTimeInput.value = currentStartTime;
             editEndTimeInput.value = currentEndTime;
 
-            // Check the HTTP status first
             return response.json().then(data => {
                 if (!response.ok) {
-                    throw new Error(data.message || 'Server error occurred.');
+                    throw { status: response.status, data: data };
                 }
                 return data;
             });
@@ -455,20 +490,21 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             if (data.success) {
                 closeModal(editClassModal);
+                // Update success modal content for Edit Class
+                document.getElementById('classSuccessTitle').textContent = 'Changes Saved!';
+                document.getElementById('classSuccessMessage').innerHTML = `The class "<strong>${editSubjectNameInput.value.trim()}</strong>" has been successfully updated.`;
                 openModal(successModal); 
                 fetchAndRenderClasses(); 
             } else {
-                editFormMessages.textContent = data.message || 'Failed to update class.';
-                if (data.errors) {
-                    editFormMessages.innerHTML += '<ul style="margin-left: 20px; text-align: left;">' + data.errors.map(err => `<li>${err}</li>`).join('') + '</ul>';
-                }
-                editFormMessages.style.color = 'red';
+                // If success: false is returned (e.g., no changes detected)
+                const serverErrors = [data.message || 'Failed to update class.'];
+                showValidationError(serverErrors, 'editClassModal');
             }
         })
         .catch(error => {
             console.error('Fetch error:', error);
-            editFormMessages.textContent = `Error: ${error.message}`;
-            editFormMessages.style.color = 'red';
+            const errorMessages = error.data && error.data.errors ? error.data.errors : [(error.data && error.data.message) || 'Network error or unhandled exception.'];
+            showValidationError(errorMessages, 'editClassModal');
         });
     }
     
@@ -481,6 +517,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const name = this.getAttribute('data-subject-name');
                 
                 currentClassIdToDelete = id;
+                currentClassToDeleteName = name; // Store name for success modal
                 classToDeleteName.textContent = name;
 
                 openModal(deleteConfirmationModal);
@@ -502,26 +539,35 @@ document.addEventListener('DOMContentLoaded', function() {
             method: 'POST',
             body: formData,
         })
-        .then(response => response.json())
+        .then(response => {
+            return response.json().then(data => {
+                if (!response.ok) {
+                    throw { status: response.status, data: data };
+                }
+                return data;
+            });
+        })
         .then(data => {
             if (data.success) {
                 closeModal(deleteConfirmationModal);
+                showDeleteSuccess(currentClassToDeleteName); // Show NEW success modal
                 fetchAndRenderClasses(); 
             } else {
-                // Display the server message from PHP 
-                alert('Deletion Failed: ' + data.message);
-                closeModal(deleteConfirmationModal);
+                // Display the server message from PHP (e.g., 'Class not found' or 'Failed to delete')
+                const serverErrors = [data.message || 'Deletion failed.'];
+                showValidationError(serverErrors, 'deleteConfirmationModal');
             }
         })
         .catch(error => {
             console.error('Deletion error:', error);
-            alert('An unexpected network error or server error occurred. Please check server logs.'); 
-            closeModal(deleteConfirmationModal); 
+            const errorMessages = error.data && error.data.errors ? error.data.errors : [(error.data && error.data.message) || 'Network error or unhandled exception.'];
+            showValidationError(errorMessages, 'deleteConfirmationModal');
         })
         .finally(() => {
             confirmDeleteBtn.disabled = false;
             confirmDeleteBtn.textContent = 'Delete Permanently';
             currentClassIdToDelete = null;
+            currentClassToDeleteName = '';
         });
     });
     
