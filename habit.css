@@ -65,199 +65,26 @@
         .nav-menu a:hover img, .nav-menu a.active img { opacity:1; }
 
         /* Inactive links = white icons (dark theme) */
-    .nav-menu a:not(.active) img {
-        filter: brightness(0) invert(1);
-    }
+.nav-menu a:not(.active) img {
+    filter: brightness(0) invert(1);
+}
 
-    /* Inactive links = black icons (light theme) */
-    .light-theme .nav-menu a:not(.active) img {
-        filter: none;
-    }
+/* Inactive links = black icons (light theme) */
+.light-theme .nav-menu a:not(.active) img {
+    filter: none;
+}
 
-    /* Active link – your existing look */
+/* Active link – your existing look */
 
-    .nav-menu a.active img {
-        filter: brightness(0) invert(1);
-    }
+.nav-menu a.active img {
+    filter: brightness(0) invert(1);
+}
 
-    .light-theme .nav-menu a.active img {
-        filter: invert(0);
-    }
-   /* ✅ VALIDATION ERROR MODAL (EXACT COPY FROM REMINDER CODE) */
-    .validation-modal {
-        background: var(--card);
-        border: 1px solid var(--border);
-        box-shadow: 0 15px 40px rgba(0,0,0,0.8);
-        max-width: 450px;
-        padding: 32px 28px;
-        border-radius: 16px;
-        text-align: center;
-    }
-    .validation-modal .modal-header {
-        justify-content: flex-end;
-    }
-    .validation-modal .close-modal {
-        color: var(--text-dim);
-        font-size: 20px;
-        width: 25px;
-        height: 25px;
-        background: none;
-        border: none;
-        cursor: pointer;
-    }
-    .validation-modal .error-icon {
-        width: 60px;
-        height: 60px;
-        background: #ff4d4f;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 20px;
-        box-shadow: 0 0 10px rgba(255,77,79,0.5);
-    }
-    .validation-modal .error-icon svg {
-        stroke: #ffffff;
-        width: 48px;
-        height: 48px;
-        display: block;
-    }
-    .validation-modal h3 {
-        font-size: 20px;
-        font-weight: 700;
-        color: var(--text);
-        text-align: center;
-        margin: 0 0 16px 0;
-    }
-    .validation-modal p {
-        color: var(--text-dim);
-        font-size: 15px;
-        line-height: 1.5;
-        text-align: center;
-        margin: 0 0 28px 0;
-    }
-    .validation-modal .modal-actions {
-        display: flex;
-        gap: 12px;
-        margin-top: 0;
-        justify-content: center;
-    }
-    .validation-modal .btn-cancel {
-        background: #2a2a2a;
-        border: 1px solid var(--border);
-        color: var(--text-dim);
-        padding: 12px 24px;
-        border-radius: 30px;
-        font-size: 14px;
-        font-weight: 600;
-        transition: all 0.2s;
-    }
-    .validation-modal .btn-cancel:hover {
-        background: #333333;
-        color: var(--text);
-    }
-    .validation-modal .btn-save {
-        background: #ff4d4f;
-        border: none;
-        color: var(--text);
-        padding: 12px 24px;
-        border-radius: 30px;
-        font-size: 14px;
-        font-weight: 600;
-        transition: all 0.2s;
-        box-shadow: 0 4px 10px rgba(255,77,79,0.3);
-    }
-    .validation-modal .btn-save:hover {
-        background: #ff1f1f;
-        box-shadow: 0 6px 15px rgba(255,77,79,0.4);
-    }
-    /* ✅ DELETE MODAL (EXACT COPY FROM REMINDER CODE) */
-    .delete-modal {
-        background: var(--bg);
-        border: none;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.8);
-        max-width: 450px;
-        padding: 32px 28px;
-        border-radius: 16px;
-    }
-    .delete-modal .modal-header {
-        justify-content: flex-end;
-    }
-    .delete-modal .close-modal {
-        color: var(--text-dim);
-        font-size: 20px;
-        width: 25px;
-        height: 25px;
-        background: none;
-        border: none;
-        cursor: pointer;
-    }
-    .delete-modal .warning-icon {
-        width: 60px;
-        height: 60px;
-        background: #ffd700;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 20px;
-        box-shadow: 0 0 10px rgba(255,215,0,0.5);
-    }
-    .delete-modal .warning-icon svg {
-        stroke: #000;
-        width: 48px;
-        height: 48px;
-        display: block;
-    }
-    .delete-modal h3 {
-        font-size: 20px;
-        font-weight: 700;
-        color: var(--text);
-        text-align: center;
-        margin: 0 0 16px 0;
-    }
-    .delete-modal p {
-        color: var(--text-dim);
-        font-size: 15px;
-        line-height: 1.5;
-        text-align: center;
-        margin: 0 0 28px 0;
-    }
-    .delete-modal .modal-actions {
-        display: flex;
-        gap: 12px;
-        margin-top: 0;
-        justify-content: center;
-    }
-    .delete-modal .btn-cancel {
-        background: #2a2a2a;
-        border: 1px solid var(--border);
-        color: var(--text-dim);
-        padding: 12px 24px;
-        border-radius: 30px;
-        font-size: 14px;
-        font-weight: 600;
-        transition: all 0.2s;
-    }
-    .delete-modal .btn-cancel:hover {
-        background: #333333;
-        color: var(--text);
-    }
-    .delete-modal .btn-save {
-        background: #ff4d4f;
-        border: none;
-        color: var(--text);
-        padding: 12px 24px;
-        border-radius: 30px;
-        font-size: 14px;
-        font-weight: 600;
-        transition: all 0.2s;
-        box-shadow: 0 4px 10px rgba(255,77,79,0.3);
-    }
-    .delete-modal .btn-save:hover {
-        background: #ff1f1f;
-        box-shadow: 0 6px 15px rgba(255,77,79,0.4);
-    }
+.light-theme .nav-menu a.active img {
+    filter: invert(0);
+}
+
+
 
     /* ==================== MAIN CONTENT ==================== */
     .main-content {
@@ -313,8 +140,19 @@
     .class-info p { margin:4px 0 0; font-size:13px; color:var(--text-dim); }
     .class-time { text-align:right; font-weight:600; font-size:15px; }
 
+    .delete-btn {
+        position:absolute; top:-5px; right:-2px;
+        background:#ff4d4f; color:white; border:none; border-radius:50%;
+        width:24px; height:24px; cursor:pointer; font-size:16px;
+        display:flex; align-items:center; justify-content:center;
+        transition:background .3s;
+    }
+    .delete-btn:hover { background:#ff1f1f; }
+
     /* ==================== RESPONSIVE ==================== */
     @media (max-width: 900px) {
+        .add-class-btn {position: absolute; right: 0; margin-right: 40px;}
+        .class-item{margin-top: 30px;}
         .hamburger { display:block; }
         .theme-toggle {
          position: absolute;
@@ -335,8 +173,8 @@
    
 }
         .sidebar {
-            position:fixed; height:100%; left:-260px; top:0; margin-top:0;
-            border-radius:0; transition:left .3s ease; z-index:1000;
+            left:-260px;
+            
         }
         .sidebar.active { left:0; }
         .main-content {
@@ -387,58 +225,7 @@
     .priority-label svg{
         color: var(--text);
     }
-/* Add these styles to your existing CSS */
-.day-btn.active {
-    background: var(--accent) !important;
-    color: #000 !important;
-    border-color: var(--accent) !important;
-}
 
-/* Fix for repeat buttons in edit modal */
-#editRepeatDays .day-btn {
-    background: var(--border);
-    color: var(--text);
-    border: 1px solid var(--border);
-    border-radius: 35%;
-    min-width: 50px;
-    height: 48px;
-    font-weight: 600;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-#editRepeatDays .day-btn.active {
-    background: var(--accent);
-    color: #000;
-    border-color: var(--accent);
-}
-
-/* Position check button next to edit button */
-.today-habit-buttons {
-    position: relative;
-    display: flex;
-    gap: 8px;
-}
-
-.priority-label {
-    background: #777777; /* Gray when inactive */
-    border-radius: 50%;
-    padding: 5px;
-    text-align: center;
-    align-content: center;
-    width: 30px;
-    height: 30px;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.priority-label.active {
-    background: #28a745; /* Green when active */
-}
     /* ==================== RESPONSIVE ADD CLASS MODAL ==================== */
 .modal-overlay {
     display: none;
@@ -568,7 +355,7 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     border-color: var(--accent);
 }
 
-.-row {
+.reminder-row {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -576,11 +363,11 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 }
 
 
-.light-theme .-row select {
+.light-theme .reminder-row select {
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23000000' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
 }
 
-.-row select option:hover {
+.reminder-row select option:hover {
     background: var(--accent) !important;
     color: var(--text) !important;
 }
@@ -630,13 +417,13 @@ input[type="time"]::-webkit-calendar-picker-indicator {
         height: 44px;
         font-size: 13px;
     }
-    .-row {
+    .reminder-row {
         flex-direction: column;
         align-items: stretch;
         padding-right: 10x !important;
        width: 100% !important;
     }
-    .-row a {
+    .reminder-row a {
         text-align: center;
         margin-top: 8px;
     }
@@ -807,7 +594,7 @@ input[type="time"]::-webkit-calendar-picker-indicator {
         font-size: 14px;
     }
 }
-.-row select {
+.reminder-row select {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23b5b5b5' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
     flex: 1;
     width: 100%;     /* FIXED */
@@ -819,7 +606,7 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     background-size: 18px !important;
     appearance: none;
 }
-.light-theme .-row select {
+.light-theme .reminder-row select {
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23000000' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
 }
 
@@ -970,80 +757,91 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     .streak-mini-card, .weekly-activity-card { min-width: auto; max-width: 100%; }
 }
 
-/* Style for repeat days buttons to match your image */
-.repeat-days .day-btn {
-    background: var(--border);
-    color: var(--text);
+           /* Logout Modal Styles */
+.modal-logout {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(3px);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-logout-content {
+    background: var(--card);
+    padding: 25px;
+    width: 90%;
+    max-width: 380px;
+    border-radius: 18px;
+    text-align: center;
     border: 1px solid var(--border);
-    border-radius: 35%;
-    min-width: 50px;
-    height: 48px;
+    animation: popScale 0.25s ease;
+}
+
+@keyframes popScale {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.modal-logout-icon {
+    font-size: 50px;
+    margin-bottom: 10px;
+}
+
+.close-modal-logout {
+    position: absolute;
+    margin-left: 310px;
+    margin-top: -10px;
+    font-size: 26px;
+    cursor: pointer;
+}
+
+.modal-logout h2 {
+    margin: 10px 0;
+    font-size: 20px;
+}
+
+.modal-logout p {
+    color: var(--text-dim);
+    margin-bottom: 20px;
+}
+
+.modal-logout-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.modal-logout-cancel-btn, .modal-logout-btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 15px;
     font-weight: 600;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.repeat-days .day-btn.active {
-    background: var(--accent);
-    color: #000;
-    border-color: var(--accent);
-}
-
-/* Style for edit and delete buttons - only darken on hover, no floating effect */
-.edit-btn {
-    background: #007efd;
     border: none;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.25s ease;
-    color: white;
+    transition: 0.2s;
 }
 
-.edit-btn:hover {
-    background: #0057ad;
-    /* No transform or box-shadow - just darken */
+.modal-logout-cancel-btn {
+    background: #444;
+    color: #fff;
 }
 
-.delete-btn {
-    background: #ff4d4f;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
+.modal-logout-cancel-btn:hover {
+    background: #555;
 }
 
-.delete-btn:hover {
-    background: #ff1f1f;
-    /* No transform or box-shadow - just darken */
+.modal-logout-btn {
+    background: #e53935;
+    color: #fff;
 }
 
-.btn-save:hover {
-    background: #e0b020;
-    /* No transform or box-shadow - just change color */
-}
-
-/* Add subtle hover effect to delete permanently button */
-#confirmDeleteBtn:hover {
-    background: #e04747 !important;
-    /* No transform or box-shadow - just change color */
-}
-
-/* Remove any floating effects from all buttons */
-.edit-btn, .delete-btn, .btn-primary, .btn-secondary, .add-class-btn, .btn-cancel, .btn-save, .day-btn {
-    transition: all 0.3s ease;
-    transform: none !important;
-    box-shadow: none !important;
+.modal-logout-btn:hover {
+    background: #c62828;
 }
