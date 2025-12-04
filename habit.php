@@ -1,9 +1,9 @@
 <?php
-// Enable detailed error logging
+/*Enable detailed error logging
 error_reporting(E_ALL);
 ini_set('display_errors', 0); // Prevent broken JSON
 ini_set('log_errors', 1);
-ini_set('error_log', 'php_errors.log');
+ini_set('error_log', 'php_errors.log'); */
 
 ob_start(); // Prevent accidental output
 
