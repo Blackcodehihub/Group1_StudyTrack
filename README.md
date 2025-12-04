@@ -127,9 +127,9 @@ Steps how to navigate the system:
            - Example input:
                - New Password: Jodell@123
                 - Confirm Password: Jodell@123
-    
-        -Click Save then press Ok 
 
+        - Click Save then Press OK
+ 
     - For update profile avatar is you need to click the camera icon then choose a file  then click open
 
     - Delete Account button this will delete all your data, this action cannot be undone
