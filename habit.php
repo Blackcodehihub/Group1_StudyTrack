@@ -99,7 +99,6 @@ $USER_ID = 1;
 try {
     switch ($method) {
         // ✅ GET /habit.php?action=list
-      
         case 'GET':
             if ($action === 'list') {
                 $stmt = $mysqli->prepare("SELECT * FROM habits WHERE user_id = ? ORDER BY start_time ASC");
@@ -417,3 +416,4 @@ function calculateStreak($mysqli, $user_id) {
         'days' => $dayStatus
     ];
 }
+?>
