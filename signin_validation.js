@@ -28,7 +28,14 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-
+document.addEventListener("DOMContentLoaded", function () {
+    const dragons = document.querySelectorAll('.flying-dragon');
+    dragons.forEach(dragon => {
+        // Random start delay so they don’t always begin at the same spot
+        const randomDelay = Math.random() * 40;
+        dragon.style.animationDelay = randomDelay + 's';
+    });
+});
 document.addEventListener('DOMContentLoaded', function () {
     // ====================== LOGIN FORM ======================
     const loginForm = document.getElementById('loginForm');
