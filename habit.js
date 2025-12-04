@@ -1,5 +1,5 @@
 // ==============================
-// habit.js – FIXED: Habits move to history when marked done
+// habit.js – FULLY RESTORED + COMPLETION LOGIC + ERROR HANDLING
 // ==============================
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -11,16 +11,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (localStorage.getItem('theme') === 'light') {
         document.body.classList.add('light-theme');
-        themeIcon.src = 'moon.png';
+        themeIcon.src = 'images_icons/moon.png';
     } else {
-        themeIcon.src = 'sun.png';
+        themeIcon.src = 'images_icons/sun.png';
     }
 
     themeToggle?.addEventListener('click', () => {
         document.body.classList.toggle('light-theme');
         const isLight = document.body.classList.contains('light-theme');
         localStorage.setItem('theme', isLight ? 'light' : 'dark');
-        themeIcon.src = isLight ? 'moon.png' : 'sun.png';
+        themeIcon.src = isLight ? 'images_icons/moon.png' : 'images_icons/Sun.png';
     });
 
     // HAMBURGER MENU
@@ -35,9 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.addEventListener('click', (e) => {
-        if (sidebar.classList.contains('active') && 
-            !sidebar.contains(e.target) && 
-            e.target !== hamburgerBtn) {
+        if (sidebar.classList.contains('active') && !sidebar.contains(e.target) && e.target !== hamburgerBtn) {
             sidebar.classList.remove('active');
             mainContent.classList.remove('shift');
         }
@@ -698,7 +696,7 @@ function renderTodayHabits(habits) {
     container.innerHTML = habits.map(h => `
         <div class="class-item" data-habit-id="${h.habit_id}">
             <div class="class-info">
-                <img src="book.png" alt="book">
+                <img src="images_icons/book.png" alt="book">
                 <div>
                     <h4>${escapeHtml(h.habit_name)}</h4>
                     <p>${h.repeat_days.replace(/,/g, ', ')} • ${formatTime(h.start_time)}</p>
@@ -774,8 +772,7 @@ function renderTodayHabits(habits) {
                         
                         console.log('Habit marked as completed successfully');
                         
-                        // Reload to get fresh data from server
-                        // This will ensure the habit doesn't reappear in "today" if the server logic is correct
+                        // Reload streak dashboard to update stats
                         loadHabits();
                     } catch (err) {
                         console.error('Complete failed:', err);
@@ -807,7 +804,7 @@ function renderTodayHabits(habits) {
                     
                     console.log('Habit marked as incomplete successfully');
                     
-                    // Reload to get fresh data from server
+                    // Reload streak dashboard to update stats
                     loadHabits();
                 } catch (err) {
                     console.error('Uncomplete failed:', err);
@@ -837,7 +834,7 @@ function addToHistorySection(habitData) {
     historyHabitElement.setAttribute('data-habit-id', habitData.habit_id);
     historyHabitElement.innerHTML = `
         <div class="class-info">
-            <img src="book.png" alt="book">
+            <img src="images_icons/book.png" alt="book">
             <div>
                 <h4>${escapeHtml(habitData.habit_name)}</h4>
                 <p>${habitData.repeat_days.replace(/,/g, ', ')} • ${formatTime(habitData.start_time)}</p>
@@ -870,14 +867,14 @@ function renderHistoryHabits(habits) {
     if (!container) return;
 
     if (habits.length === 0) {
-        container.innerHTML = '<div style="text-align:center;padding:30px 20px;color:var(--text-dim);font-size:15px;">No completed habits yet</div>';
+        container.innerHTML = '<div style="text-align:center;padding:30px 20px;color:var(--text-dim);font-size:15px;">No habits completed yet</div>';
         return;
     }
 
     container.innerHTML = habits.map(h => `
         <div class="class-item" data-habit-id="${h.habit_id}">
             <div class="class-info">
-                <img src="book.png" alt="book">
+                <img src="images_icons/book.png" alt="book">
                 <div>
                     <h4>${escapeHtml(h.habit_name)}</h4>
                     <p>${h.repeat_days.replace(/,/g, ', ')} • ${formatTime(h.start_time)}</p>
@@ -915,3 +912,33 @@ function formatTime(timeStr) {
     const period = hour >= 12 ? 'PM' : 'AM';
     return `${displayHour}:${m} ${period}`;
 }
+//Logout Modal
+    const logoutTrigger = document.querySelector('.bot-nav a[href="#"]');
+
+   
+    const logoutModal = document.getElementById('logoutModal');
+    const cancelLogoutBtn = document.getElementById('cancelLogout');
+    const confirmLogoutBtn = document.getElementById('confirmLogout');
+
+ 
+    logoutTrigger.addEventListener('click', (e) => {
+        e.preventDefault();
+        logoutModal.style.display = "flex";
+    });
+
+
+    cancelLogoutBtn.addEventListener('click', () => {
+        logoutModal.style.display = "none";
+    });
+
+  
+    confirmLogoutBtn.addEventListener('click', () => {
+        window.location.href = "Sign-in.html"; 
+    });
+
+  
+    window.addEventListener('click', (e) => {
+        if (e.target === logoutModal) {
+            logoutModal.style.display = "none";
+        }
+    });
