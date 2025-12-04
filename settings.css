@@ -210,37 +210,116 @@
         z-index: 10;
     }
 
-    .info-section {
-        display: flex;
-        flex-direction: column;
-        gap: 24px;
-    }
-    .name-email-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
-        
-    }
-    .password-row { display: flex; align-items: flex-end; gap: 20px; }
-    .password-group { flex: 1; }
-    .password-input-wrapper { position: relative; }
-    .form-group input,.password-input-wrapper input {
-        width: 100%; padding: 14px 50px 14px 16px;
-        background: var(--input-bg); border:1px solid var(--border);
-        border-radius:12px; color:var(--text); font-size:15px; cursor: default;
-    }
-    
-    .eye-icon {
-        position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
-        cursor: pointer; opacity: 0.6;
+    /* ==================== PROFILE INFO SECTION - PERFECT ALIGNMENT ==================== */
+.info-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;  /* Two equal columns */
+    gap: 20px;
+    width: 100%;
+}
+
+/* Full Name & Email Address - span both columns on small screens */
+.name-email-row {
+    grid-column: 1 / -1; /* Full width on all screens */
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* Password Row - Password field spans first column, button goes in second */
+.password-row {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;  /* Same width as name/email */
+    gap: 20px;
+    align-items: end; /* Aligns button perfectly with inputs above */
+}
+
+.password-group {
+    grid-column: 1; /* Takes first column (same as Full Name & Email) */
+}
+
+.change-pw-btn {
+    grid-column: 2; /* Takes second column - perfectly aligned under Email Address */
+    justify-self: start; /* Left-align the button in its cell */
+    background: transparent;
+    border: 1.5px solid var(--border);
+    color: var(--text-dim);
+    padding: 12px 28px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
+    margin: 0; /* Remove old margin hacks */
+}
+
+.change-pw-btn:hover {
+    background: var(--accent);
+    color: #000;
+    border-color: var(--accent);
+}
+
+
+.info-section {
+    width: 100%;
+    display: grid;
+    gap: 24px;
+}
+
+.name-email-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.password-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+    gap: 20px;
+    align-items: end; 
+}
+
+.password-group {
+    margin: 0;
+}
+
+.change-pw-btn {
+    justify-self: start;         
+    align-self: end;              
+    background: transparent;
+    border: 1.5px solid var(--border);
+    color: var(--text-dim);
+    padding: 12px 28px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    height: fit-content;
+}
+
+.change-pw-btn:hover {
+    background: var(--accent);
+    color: #000;
+    border-color: var(--accent);
+    transform: translateY(-1px);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .name-email-row,
+    .password-row {
+        grid-template-columns: 1fr !important;
     }
     .change-pw-btn {
-        background: transparent; border: 1px solid var(--border);
-        color: var(--text-dim); padding: 10px 24px;
-        border-radius: 30px; font-size: 14px; cursor:pointer;
-        white-space: nowrap; transition: all 0.3s; margin-bottom:8px;
+        justify-self: stretch;
+        text-align: center;
+        margin-top: 12px;
     }
-    .change-pw-btn:hover { background: var(--accent); color:#000; border-color: var(--accent); }
+}
 
     .profile-actions {
         display: flex; justify-content: flex-end; gap: 16px; margin-top: 32px;
@@ -252,7 +331,7 @@
     }
     .btn-save {
         background: var(--accent); color:#000; border:none;
-        padding:12px 32px; border-radius:30px; font-weight:600; cursor:pointer;
+        padding:12px 32px; border-radius:30px; font-weight:600; cursor:pointer; position: absolute; 
     }
     .form-group label {
     display: block;
@@ -447,6 +526,7 @@
         border-radius: 12px;
         color: var(--text);
         font-size: 15px;
+
     }
     .eye-icon {
         position: absolute;
@@ -560,3 +640,4 @@
 .modal-logout-btn:hover {
     background: #c62828;
 }
+
