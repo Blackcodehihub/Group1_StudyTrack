@@ -36,9 +36,9 @@ try {
             'last_name'  => $user['last_name'] ?? '',
             'email'      => $user['email'] ?? '',
             // CORRECT AVATAR PATH + DEFAULT
-            'avatar'     => !empty($user['profile_pic']) && $user['profile_pic'] !== 'default.png'
-                           ? 'uploads/avatars/' . $user['profile_pic']
-                           : 'images_icons/user.png',
+            'avatar' => !empty($user['profile_pic']) 
+    ? 'data:image/png;base64,' . base64_encode($user['profile_pic'])
+    : 'images_icons/user.png',
             'plain_password' => $_SESSION['plain_password'] ?? ''
         ]
     ]);
