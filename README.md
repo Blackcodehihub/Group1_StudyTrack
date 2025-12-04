@@ -24,7 +24,8 @@ To run the StudyTrack application, you need a local server environment (like XAM
 
 ### 1. Server Initialization
 
-1.  Open the **XAMPP Control Panel**. 2.  Click **Start** for the Apache module.
+1.  Open the **XAMPP Control Panel**.
+2.  Click **Start** for the Apache module.
 3.  Click **Start** for the MySQL module.
 
 ### 2. Accessing the System
