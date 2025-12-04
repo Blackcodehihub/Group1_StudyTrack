@@ -300,7 +300,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (isValid && editStartTimeInput.value && editEndTimeInput.value) {
-            if (startTimeInput.value >= endTimeInput.value) {
+            if (editStartTimeInput.value >= editEndTimeInput.value) { // ← FIX: was startTimeInput
                 isValid = false;
             }
         }

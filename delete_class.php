@@ -19,6 +19,8 @@ $options = [
 try {
      $pdo = new PDO($dsn, $user, $pass, $options);
 } catch (\PDOException $e) {
+     // Log the error for backend diagnostics
+     error_log("Database connection error: " . $e->getMessage());
      http_response_code(500);
      echo json_encode(['success' => false, 'message' => 'Database connection failed.']);
      exit();
@@ -35,7 +37,8 @@ if (empty($current_user_id)) {
 }
 
 // 3. GET CLASS ID FROM POST DATA
-$class_id = filter_input(INPUT_POST, 'class_id', FILTER_SANITIZE_NUMBER_INT);
+// *** CRITICAL FIX: class_id is now VARCHAR (e.g., 'CLASS1'), so we must use a string-safe filter. ***
+$class_id = filter_input(INPUT_POST, 'class_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
 // CRITICAL CHECK 2: Data validation
 if (empty($class_id)) {
@@ -47,10 +50,10 @@ if (empty($class_id)) {
 // 4. SECURE DELETE OPERATION
 try {
     // IMPORTANT: Delete WHERE class_id = ? AND user_id = ?
-    // This prevents a logged-in user from deleting classes belonging to other users.
     $sql = "DELETE FROM classes WHERE class_id = ? AND user_id = ?";
             
     $stmt = $pdo->prepare($sql);
+    // Execute expects $class_id to be a string (VARCHAR)
     $stmt->execute([$class_id, $current_user_id]);
 
     // Check if any row was affected
@@ -64,6 +67,7 @@ try {
     }
 
 } catch (\PDOException $e) {
+    // Log the error for backend diagnostics
     error_log("Class deletion error: " . $e->getMessage());
     http_response_code(500); 
     echo json_encode(['success' => false, 'message' => 'Failed to delete class due to a server error.']);

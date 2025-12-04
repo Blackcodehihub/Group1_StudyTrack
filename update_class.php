@@ -36,7 +36,8 @@ if (empty($current_user_id)) {
 }
 
 // 3. RETRIEVE AND SANITIZE INPUTS
-$class_id          = filter_input(INPUT_POST, 'class_id', FILTER_SANITIZE_NUMBER_INT);
+// CRITICAL CHANGE: Use FILTER_SANITIZE_FULL_SPECIAL_CHARS since class_id is now VARCHAR (e.g., 'CLASS1')
+$class_id          = filter_input(INPUT_POST, 'class_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 $subject_name      = filter_input(INPUT_POST, 'subject_name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 $instructor        = filter_input(INPUT_POST, 'instructor', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 $location          = filter_input(INPUT_POST, 'location', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -50,7 +51,8 @@ $reminder_time_minutes = !empty($reminder_time_val) ? (int)$reminder_time_val : 
 
 // 4. SERVER-SIDE VALIDATION
 $errors = [];
-if (empty($class_id)) { $errors[] = "Class ID is missing for update."; }
+// CRITICAL: Ensure class_id is present and valid (e.g., starting with CLASS)
+if (empty($class_id) || !preg_match("/^CLASS[0-9]+$/", $class_id)) { $errors[] = "Invalid Class ID for update."; }
 if (empty($subject_name)) { $errors[] = "Subject name is required."; }
 if (empty($start_time) || empty($end_time)) { $errors[] = "Start and End times are required."; }
 if (!preg_match("/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/", $start_time)) { $errors[] = "Invalid Start Time format. Use HH:MM."; }
@@ -78,8 +80,8 @@ try {
         $end_time,
         $repeat_days_string,
         $reminder_time_minutes,
-        $class_id,
-        $current_user_id
+        $class_id,            // VARCHAR ID
+        $current_user_id      // VARCHAR ID
     ]);
 
     if ($stmt->rowCount() > 0) {

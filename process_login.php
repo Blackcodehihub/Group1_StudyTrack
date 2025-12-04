@@ -44,7 +44,7 @@ if (empty($email_input) || empty($password_input)) {
 
 // 4. FIND USER BY EMAIL AND GET HASH
 try {
-    // Select the user_id and password_hash for verification
+    // Select the user_id (which is now VARCHAR) and password_hash for verification
     $stmt = $pdo->prepare("SELECT user_id, password_hash, first_name FROM users WHERE email = ?");
     $stmt->execute([$email_input]);
     $user = $stmt->fetch();
@@ -69,7 +69,8 @@ try {
 if (password_verify($password_input, $stored_hash)) {
     
     // --- SUCCESS: START SESSION AND STORE ID ---
-    // This makes the user_id globally accessible across PHP scripts.
+    // CRITICAL: The value stored here MUST be the VARCHAR format (e.g., 'USER1') 
+    // retrieved from the database column.
     $_SESSION['user_id'] = $user['user_id'];
     $_SESSION['first_name'] = $user['first_name'];
     

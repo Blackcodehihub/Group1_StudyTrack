@@ -25,7 +25,7 @@ try {
      exit();
 }
 
-// 2. DEFINE USER ID (NOW FROM SESSION)
+// 2. DEFINE USER ID (NOW FROM SESSION - VARCHAR ID)
 $current_user_id = $_SESSION['user_id'] ?? null; 
 
 // CRITICAL CHECK: If not logged in, return an empty list or error
@@ -39,14 +39,14 @@ if (empty($current_user_id)) {
 
 // 3. FETCH CLASSES FOR THE USER
 try {
-    // Fetch the class_id now, so we can use it for the delete button in the future!
+    // The query remains the same, as the PDO handles the VARCHAR user_id correctly.
     $sql = "SELECT class_id, subject_name, instructor, location, start_time, end_time, repeat_days, reminder_time_minutes
             FROM classes
             WHERE user_id = ?
             ORDER BY start_time ASC";
             
     $stmt = $pdo->prepare($sql);
-    $stmt->execute([$current_user_id]);
+    $stmt->execute([$current_user_id]); // $current_user_id is now VARCHAR (e.g., 'USER1')
     $classes = $stmt->fetchAll();
 
     echo json_encode(['success' => true, 'classes' => $classes]);
