@@ -4,6 +4,38 @@
 session_start();
 // **********************************************
 
+// --- 0. ID GENERATION FUNCTION ---
+/**
+ * Finds the highest numeric suffix for user IDs (e.g., from USER10 extracts 10),
+ * increments it, and returns the next sequential ID (e.g., USER11).
+ */
+function generateNextUserId(PDO $pdo): string {
+    try {
+        // Use REGEXP to filter only IDs starting with 'USER' and containing numbers
+        $sql = "SELECT user_id FROM users 
+                WHERE user_id REGEXP '^USER[0-9]+$'
+                ORDER BY CAST(SUBSTRING(user_id, 5) AS UNSIGNED) DESC
+                LIMIT 1";
+
+        $stmt = $pdo->query($sql);
+        $lastId = $stmt->fetchColumn();
+
+        $nextNumber = 1;
+
+        if ($lastId) {
+            // Extract the numeric part (e.g., 'USER10' -> '10')
+            // SUBSTRING starts at index 5 (1-based: U-S-E-R-X)
+            $numberPart = (int) substr($lastId, 4); 
+            $nextNumber = $numberPart + 1;
+        }
+
+        return 'USER' . $nextNumber;
+    } catch (\PDOException $e) {
+        error_log("User ID generation error: " . $e->getMessage());
+        throw $e;
+    }
+}
+
 
 // 2. DATABASE CONFIGURATION (No change)
 $host = 'localhost';
@@ -92,11 +124,16 @@ try {
 $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
 try {
-    $sql = "INSERT INTO users (first_name, last_name, email, password_hash)
-            VALUES (?, ?, ?, ?)";
+    // CRITICAL: Generate the next VARCHAR User ID
+    $new_user_id = generateNextUserId($pdo);
+
+    // CRITICAL: Include user_id in the INSERT statement
+    $sql = "INSERT INTO users (user_id, first_name, last_name, email, password_hash)
+            VALUES (?, ?, ?, ?, ?)";
             
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
+        $new_user_id,            // <-- The generated VARCHAR ID
         $first_name,
         $last_name,
         $email,
@@ -104,9 +141,8 @@ try {
     ]);
 
     // **********************************************
-    // NEW: Retrieve the last inserted ID and store it in the session
-    $last_id = $pdo->lastInsertId();
-    $_SESSION['user_id'] = $last_id;
+    // NEW: Use the generated ID for the session
+    $_SESSION['user_id'] = $new_user_id;
 
     // Optional: Store other useful session data
     $_SESSION['user_first_name'] = $first_name;

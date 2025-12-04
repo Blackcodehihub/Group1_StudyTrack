@@ -80,11 +80,39 @@ if (empty($errors) && !empty($start_time) && !empty($end_time)) {
 }
 
 
-if (!empty($errors)) {
+/* if (!empty($errors)) {
     http_response_code(400); 
     echo json_encode(['success' => false, 'message' => 'Validation failed.', 'errors' => $errors]);
     exit();
-}
+} */
+
+    // TEMPORARY DEBUG BLOCK: Check what data passed validation
+    if (!empty($errors)) {
+        // The validation failed, return the errors as usual
+        http_response_code(400); 
+        echo json_encode(['success' => false, 'message' => 'Validation failed.', 'errors' => $errors]);
+        exit();
+    }
+
+    // --- START DEBUG HERE ---
+    if (isset($_GET['debug'])) {
+        http_response_code(200);
+        echo json_encode([
+            'success' => true, 
+            'message' => 'DEBUG SUCCESS: Validation Passed. Data Received:', 
+            'received' => [
+                'class_id' => $class_id,
+                'subject_name' => $subject_name,
+                'start_time' => $start_time,
+                'end_time' => $end_time,
+                'repeat_days' => $repeat_days,
+                'reminder_time_minutes' => $reminder_time_minutes,
+                'user_id' => $current_user_id
+            ]
+        ]);
+        exit();
+    }
+    // --- END DEBUG HERE ---
 
 // 5. UPDATE DATA IN DATABASE (Secured by user_id)
 try {
@@ -105,11 +133,26 @@ try {
         $current_user_id      // VARCHAR ID from session
     ]);
 
+    // CRITICAL FIX: If rowCount > 0, we updated successfully.
     if ($stmt->rowCount() > 0) {
         echo json_encode(['success' => true, 'message' => 'Class updated successfully!']);
     } else {
-        // Class not found or no changes were made
-        echo json_encode(['success' => false, 'message' => 'Class found, but no changes were detected, or you do not have permission.']);
+        // If rowCount is 0, we assume the class exists and no changes were made.
+        // We still return true to prevent the client from displaying an error.
+        
+        // OPTIONAL: Better check if the row truly exists to ensure it's not a 404.
+        $check_sql = "SELECT class_id FROM classes WHERE class_id = ? AND user_id = ?";
+        $check_stmt = $pdo->prepare($check_sql);
+        $check_stmt->execute([$class_id, $current_user_id]);
+
+        if ($check_stmt->fetch()) {
+             // Class found, but no changes made -> Treat as success.
+             echo json_encode(['success' => true, 'message' => 'Class found. No new changes were applied as the data was identical.']);
+        } else {
+             // Class not found or access denied.
+             http_response_code(404);
+             echo json_encode(['success' => false, 'message' => 'Class not found or access denied.']);
+        }
     }
 
 } catch (\PDOException $e) {

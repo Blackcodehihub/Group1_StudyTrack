@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const formMessages = document.getElementById('form-messages');
     const classesListContainer = document.getElementById('classes-list-container'); 
 
-    // EDIT Modal Selectors (NEW)
+    // EDIT Modal Selectors
     const editClassModal = document.getElementById('editClassModal');
     const closeEditModalBtn = document.getElementById('closeEditModalBtn');
     const cancelEditBtn = document.getElementById('cancelEditBtn');
@@ -31,12 +31,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Success Modal Elements
     const successModal = document.getElementById('successModal');
     const addAnotherClassBtn = document.getElementById('addAnotherClassBtn');
-    const viewClassBtn = document.getElementById('viewClassBtn'); // CRITICAL: Added selector
+    const viewClassBtn = document.getElementById('viewClassBtn'); 
     
     // DELETE Modal Selectors
     const deleteConfirmationModal = document.getElementById('deleteConfirmationModal');
     const deleteCloseBtn = document.getElementById('deleteCloseBtn');
-    const cancelDeleteBtn = document.getElementById('cancelDeleteBtn'); // <-- This ID is critical
+    const cancelDeleteBtn = document.getElementById('cancelDeleteBtn'); 
     const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
     const classToDeleteName = document.getElementById('class-to-delete-name');
     
@@ -98,11 +98,11 @@ document.addEventListener('DOMContentLoaded', function() {
         classesListContainer.innerHTML = html;
         
         attachDeleteListeners(); 
-        attachEditListeners(classes); // CRITICAL: Call new function
+        attachEditListeners(classes); 
     }
 
 
-    // --- FETCH Function: Calls PHP and Renders (No change) ---
+    // --- FETCH Function: Calls PHP and Renders ---
     function fetchAndRenderClasses() {
         classesListContainer.innerHTML = '<p style="text-align: center; color: var(--text-dim); margin-top: 20px;">Loading classes...</p>';
         
@@ -156,13 +156,13 @@ document.addEventListener('DOMContentLoaded', function() {
     closeModalBtn.addEventListener('click', () => closeModal(addClassModal));
     cancelModalBtn.addEventListener('click', () => closeModal(addClassModal));
 
-    // Attach listeners - EDIT CLASS MODAL (NEW)
+    // Attach listeners - EDIT CLASS MODAL
     closeEditModalBtn.addEventListener('click', () => closeModal(editClassModal));
     cancelEditBtn.addEventListener('click', () => closeModal(editClassModal));
 
-    // Attach listeners - DELETE CONFIRMATION MODAL (FIXED)
+    // Attach listeners - DELETE CONFIRMATION MODAL
     deleteCloseBtn.addEventListener('click', () => closeModal(deleteConfirmationModal));
-    cancelDeleteBtn.addEventListener('click', () => closeModal(deleteConfirmationModal)); // <--- FIXED/RE-VERIFIED
+    cancelDeleteBtn.addEventListener('click', () => closeModal(deleteConfirmationModal)); 
 
     // Close on overlay click
     addClassModal.addEventListener('click', function(event) {
@@ -185,12 +185,9 @@ document.addEventListener('DOMContentLoaded', function() {
         openModal(addClassModal);
     });
     
-    // FIX: Add click listener for 'View Class & Edit' button
     if (viewClassBtn) {
         viewClassBtn.addEventListener('click', function() {
             closeModal(successModal);
-            // Optionally, you might scroll to the newly added class here
-            // For now, it just closes the success modal and returns to the list view.
         });
     }
 
@@ -213,7 +210,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return isValid;
     }
 
-    // --- 4. Repeat Days Toggle Logic (No change) ---
+    // --- 4. Repeat Days Toggle Logic ---
     let selectedDays = new Set(); 
 
     dayButtons.forEach(button => {
@@ -238,7 +235,7 @@ document.addEventListener('DOMContentLoaded', function() {
     endTimeInput.addEventListener('input', checkFormValidity);
 
 
-    // --- 5. Add Class Form Submission (AJAX) (No change in submission logic) ---
+    // --- 5. Add Class Form Submission (AJAX) ---
     addClassForm.addEventListener('submit', function(event) {
         event.preventDefault();
 
@@ -300,30 +297,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (isValid && editStartTimeInput.value && editEndTimeInput.value) {
-            if (editStartTimeInput.value >= editEndTimeInput.value) { // ← FIX: was startTimeInput
+            if (editStartTimeInput.value >= editEndTimeInput.value) { 
                 isValid = false;
             }
-        }
-        
-        // RECOMMENDED ADDITION: Check if at least one day is selected
-        if (editClassForm.editSelectedDays && editClassForm.editSelectedDays.size === 0) {
-            // You might want to handle this visually, but for basic validation:
-            // isValid = false; // Uncomment if a day is strictly required
         }
         
         saveEditClassBtn.disabled = !isValid;
         return isValid;
     }
 
-    // --- 7. EDIT WORKFLOW LISTENERS & FUNCTIONS (NEW) ---
+    // --- 7. EDIT WORKFLOW LISTENERS & FUNCTIONS ---
     
-    let currentEditClass = null; // State to hold the class data being edited
+    let currentEditClass = null; 
 
     function attachEditListeners(classes) {
         document.querySelectorAll('.edit-btn').forEach(button => {
             button.addEventListener('click', function() {
                 const id = this.getAttribute('data-class-id');
-                // CRITICAL FIX: Ensure comparison is robust since both are strings
                 const classData = classes.find(c => c.class_id === id); 
                 
                 if (classData) {
@@ -332,8 +322,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
-
-    // classes.js (Locate and replace the entire openEditModal function)
 
     function openEditModal(cls) {
         currentEditClass = cls;
@@ -346,16 +334,15 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('edit_location').value = cls.location || '';
         editStartTimeInput.value = cls.start_time || '09:00';
         editEndTimeInput.value = cls.end_time || '10:15';
-        // Note: The reminder value needs to be an integer string or empty string
         document.getElementById('edit_reminder_time').value = cls.reminder_time_minutes ? String(cls.reminder_time_minutes) : ''; 
         
         // 2. Set Repeat Days buttons and initialize the state
         const daysArray = cls.repeat_days ? cls.repeat_days.split(',') : [];
-        // CRITICAL FIX: Initialize the Set with the existing days
         const editSelectedDays = new Set(daysArray); 
 
         editDayButtons.forEach(button => {
             const day = button.getAttribute('data-day');
+            
             // Reset/set the visual state based on existing days
             button.classList.remove('active');
             if (editSelectedDays.has(day)) {
@@ -404,6 +391,37 @@ document.addEventListener('DOMContentLoaded', function() {
 
         editFormMessages.textContent = ''; 
 
+        // --- CRITICAL FIX START: Defensive Time Cleaning ---
+        
+        // Helper function to extract ONLY HH:MM using a robust regex.
+        function cleanTimeValue(timeString) {
+            if (!timeString) return '';
+            
+            // Regex to find and capture HH:MM, even if followed by AM/PM or other text.
+            // (\d{1,2}:\d{2}) captures the time format.
+            const match = timeString.match(/(\d{1,2}:\d{2})/);
+            
+            // If the time is found, return the captured group (HH:MM).
+            if (match) {
+                return match[1];
+            }
+            
+            // If the time string is already clean (e.g., '13:00'), return it.
+            // If it's empty or invalid, this ensures we don't send extra text.
+            return timeString.trim();
+        }
+
+        // Get the current values from the inputs
+        const currentStartTime = editStartTimeInput.value;
+        const currentEndTime = editEndTimeInput.value;
+
+        // Temporarily overwrite the input values with the cleaned 24hr version.
+        // This ensures FormData captures the correct HH:MM format for *both* fields.
+        editStartTimeInput.value = cleanTimeValue(currentStartTime);
+        editEndTimeInput.value = cleanTimeValue(currentEndTime);
+        
+        // --- CRITICAL FIX END ---
+
         const formData = new FormData(editClassForm);
         
         // CRITICAL FIX: Check the state stored in openEditModal and append days
@@ -413,10 +431,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
         
-        // Note: If no days are selected, 'repeat_days[]' will not be added, which is handled 
-        // correctly by the PHP side (it defaults to NULL).
-
-        fetch('update_class.php', { // CRITICAL: New PHP file
+        fetch('update_class.php', { 
             method: 'POST',
             body: formData,
             headers: {
@@ -424,9 +439,14 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .then(response => {
+            // Restore original, formatted values immediately after the fetch attempt.
+            // This is crucial for the UI display if the update fails or the modal remains open.
+            editStartTimeInput.value = currentStartTime;
+            editEndTimeInput.value = currentEndTime;
+
+            // Check the HTTP status first
             return response.json().then(data => {
                 if (!response.ok) {
-                    // This handles server-side validation errors (400)
                     throw new Error(data.message || 'Server error occurred.');
                 }
                 return data;
@@ -440,7 +460,6 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 editFormMessages.textContent = data.message || 'Failed to update class.';
                 if (data.errors) {
-                    // Display specific PHP validation errors
                     editFormMessages.innerHTML += '<ul style="margin-left: 20px; text-align: left;">' + data.errors.map(err => `<li>${err}</li>`).join('') + '</ul>';
                 }
                 editFormMessages.style.color = 'red';
@@ -448,16 +467,12 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => {
             console.error('Fetch error:', error);
-            // This catches network errors or the error thrown from the response.ok check
             editFormMessages.textContent = `Error: ${error.message}`;
             editFormMessages.style.color = 'red';
         });
     }
     
-    // --- 8. DELETE WORKFLOW LISTENERS (No change, but moved after new edit logic) ---
-    // ... (Existing attachDeleteListeners and confirmDeleteBtn.addEventListener remains here) ...
-
-    // --- 6. DELETE WORKFLOW LISTENERS ---
+    // --- 8. DELETE WORKFLOW LISTENERS ---
 
     function attachDeleteListeners() {
         document.querySelectorAll('.delete-btn').forEach(button => {
@@ -493,21 +508,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 closeModal(deleteConfirmationModal);
                 fetchAndRenderClasses(); 
             } else {
-                // Display the server message from PHP (e.g., 'Class not found' or 'Failed to delete')
-                // This line triggers the alert you saw: "Deletion Failed: ..."
+                // Display the server message from PHP 
                 alert('Deletion Failed: ' + data.message);
                 closeModal(deleteConfirmationModal);
             }
         })
         .catch(error => {
-            // CRITICAL FIX: Ensure alert is triggered and modal closes on network/parsing error
             console.error('Deletion error:', error);
-            // Show the user a network error
             alert('An unexpected network error or server error occurred. Please check server logs.'); 
-            closeModal(deleteConfirmationModal); // Close the modal to unblock the UI
+            closeModal(deleteConfirmationModal); 
         })
         .finally(() => {
-            // IMPORTANT: Reset button state regardless of success or failure
             confirmDeleteBtn.disabled = false;
             confirmDeleteBtn.textContent = 'Delete Permanently';
             currentClassIdToDelete = null;
