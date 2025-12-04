@@ -488,15 +488,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 closeModal(deleteConfirmationModal);
                 fetchAndRenderClasses(); 
             } else {
+                // Display the server message from PHP (e.g., 'Class not found' or 'Failed to delete')
+                // This line triggers the alert you saw: "Deletion Failed: ..."
                 alert('Deletion Failed: ' + data.message);
                 closeModal(deleteConfirmationModal);
             }
         })
         .catch(error => {
+            // CRITICAL FIX: Ensure alert is triggered and modal closes on network/parsing error
             console.error('Deletion error:', error);
-            alert('An unexpected network error occurred.');
+            // Show the user a network error
+            alert('An unexpected network error or server error occurred. Please check server logs.'); 
+            closeModal(deleteConfirmationModal); // Close the modal to unblock the UI
         })
         .finally(() => {
+            // IMPORTANT: Reset button state regardless of success or failure
             confirmDeleteBtn.disabled = false;
             confirmDeleteBtn.textContent = 'Delete Permanently';
             currentClassIdToDelete = null;

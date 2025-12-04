@@ -37,6 +37,30 @@ function generateNextClassId(PDO $pdo): string {
     }
 }
 
+function generateNextLogId(PDO $pdo): string {
+    try {
+        $sql = "SELECT log_id FROM logs 
+                WHERE log_id REGEXP '^LOG[0-9]+$'
+                ORDER BY CAST(SUBSTRING(log_id, 4) AS UNSIGNED) DESC
+                LIMIT 1";
+
+        $stmt = $pdo->query($sql);
+        $lastId = $stmt->fetchColumn();
+
+        $nextNumber = 1;
+
+        if ($lastId) {
+            $numberPart = (int) substr($lastId, 3); // LOG[X] starts at index 4 (1-based), 3 (0-based)
+            $nextNumber = $numberPart + 1;
+        }
+
+        return 'LOG' . $nextNumber;
+    } catch (\PDOException $e) {
+        error_log("Log ID generation error: " . $e->getMessage());
+        throw $e;
+    }
+}
+
 
 // 1. DATABASE CONFIGURATION
 $host = 'localhost';

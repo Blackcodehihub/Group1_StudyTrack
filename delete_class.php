@@ -37,7 +37,7 @@ if (empty($current_user_id)) {
 }
 
 // 3. GET CLASS ID FROM POST DATA
-// *** CRITICAL FIX: class_id is now VARCHAR (e.g., 'CLASS1'), so we must use a string-safe filter. ***
+// class_id is now VARCHAR (e.g., 'CLASS1')
 $class_id = filter_input(INPUT_POST, 'class_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
 // CRITICAL CHECK 2: Data validation
@@ -47,9 +47,10 @@ if (empty($class_id)) {
     exit();
 }
 
-// 4. SECURE DELETE OPERATION
+// 4. SECURE DELETE OPERATION (ON DELETE CASCADE handles dependencies)
 try {
     // IMPORTANT: Delete WHERE class_id = ? AND user_id = ?
+    // The database will now automatically delete associated assignments and reminders.
     $sql = "DELETE FROM classes WHERE class_id = ? AND user_id = ?";
             
     $stmt = $pdo->prepare($sql);
