@@ -1,13 +1,15 @@
 // ==============================
-// ASSIGN.JS — Assignment Manager (v2.2)
+// ASSIGN.JS — Assignment Manager (v2.2 - Cleaned + Notes Inline)
 // ✅ Fully uniform with Reminder.html (flat buttons, validation modal, etc.)
+// ✅ No habit code mixed in
+// ✅ Notes displayed inline with Class in the list view (Class • Notes)
 // ==============================
 
 // Global state
 let assignmentsList, emptyState;
-let addModal, editModal, deleteModal, validationModal;
-let assignmentTitle, assignmentClass, assignmentDueDate, assignmentDueTime, assignmentNotes, saveAssignmentBtn;
-let editAssignmentId, editAssignmentTitle, editAssignmentClass, editAssignmentDueDate, editAssignmentDueTime, editAssignmentNotes, saveEditAssignmentBtn;
+let addModal, editModal, deleteModal, validationModal, successModal;
+let assignmentTitle, assignmentClass, assignmentNotes, assignmentDueDate, assignmentDueTime, saveAssignmentBtn; // Added assignmentNotes
+let editAssignmentId, editAssignmentTitle, editAssignmentClass, editAssignmentNotes, editAssignmentDueDate, editAssignmentDueTime, saveEditAssignmentBtn; // Added editAssignmentNotes
 let deleteAssignmentTitle, deleteModalMessage;
 let validationMessageEl;
 let pendingDeleteId = null;
@@ -29,22 +31,23 @@ function initializeElements() {
     editModal = document.getElementById('editAssignmentModal');
     deleteModal = document.getElementById('deleteConfirmationModal');
     validationModal = document.getElementById('validationModal');
+    successModal = document.getElementById('successModal'); // Added success modal element
 
-    // Add form
+    // Add form - INCLUDING NOTES
     assignmentTitle = document.getElementById('assignmentTitle');
     assignmentClass = document.getElementById('assignmentClass');
+    assignmentNotes = document.getElementById('assignmentNotes'); // Get notes element
     assignmentDueDate = document.getElementById('assignmentDueDate');
     assignmentDueTime = document.getElementById('assignmentDueTime');
-    assignmentNotes = document.getElementById('assignmentNotes');
     saveAssignmentBtn = document.getElementById('saveAssignmentBtn');
 
-    // Edit form
+    // Edit form - INCLUDING NOTES
     editAssignmentId = document.getElementById('editAssignmentId');
     editAssignmentTitle = document.getElementById('editAssignmentTitle');
     editAssignmentClass = document.getElementById('editAssignmentClass');
+    editAssignmentNotes = document.getElementById('editAssignmentNotes'); // Get notes element for edit
     editAssignmentDueDate = document.getElementById('editAssignmentDueDate');
     editAssignmentDueTime = document.getElementById('editAssignmentDueTime');
-    editAssignmentNotes = document.getElementById('editAssignmentNotes');
     saveEditAssignmentBtn = document.getElementById('saveEditAssignmentBtn');
 
     // Delete modal
@@ -55,10 +58,9 @@ function initializeElements() {
     validationMessageEl = document.getElementById('validationMessage');
 
     // Validate critical elements
-    if (!deleteAssignmentTitle || !validationMessageEl) {
-        console.error('❌ Critical elements missing. Retrying in 500ms...');
-        setTimeout(initializeElements, 500);
-        return;
+    if (!deleteAssignmentTitle || !validationMessageEl || !successModal) {
+        console.error('❌ Critical elements missing. Check HTML.');
+        return; // Stop initialization if critical elements are missing
     }
 
     // Set default due date/time
@@ -92,6 +94,7 @@ function updateMinTimeForToday() {
 // ======================
 function setupEventListeners() {
     // Add modal
+    document.getElementById('openModalBtn')?.addEventListener('click', openAddModal); // Attach to the button in HTML
     saveAssignmentBtn.addEventListener('click', handleSaveAssignment);
     document.getElementById('closeModalBtn').addEventListener('click', () => closeAddModal());
     document.getElementById('cancelBtn').addEventListener('click', () => closeAddModal());
@@ -111,11 +114,20 @@ function setupEventListeners() {
     document.getElementById('cancelValidationBtn').addEventListener('click', closeValidationModal);
     document.getElementById('tryAgainBtn').addEventListener('click', closeValidationModal);
 
+    // Success modal
+    document.getElementById('successCloseBtn').addEventListener('click', () => closeSuccessModal());
+    document.getElementById('addAnotherBtn').addEventListener('click', () => {
+        closeSuccessModal();
+        openAddModal(); // Re-open add modal
+    });
+    document.getElementById('viewAssignmentsBtn').addEventListener('click', () => closeSuccessModal()); // Just close success modal
+
     // Close on overlay
     addModal.addEventListener('click', e => { if (e.target === addModal) closeAddModal(); });
     editModal.addEventListener('click', e => { if (e.target === editModal) editModal.style.display = 'none'; });
     deleteModal.addEventListener('click', e => { if (e.target === deleteModal) closeDeleteModal(); });
     validationModal.addEventListener('click', e => { if (e.target === validationModal) closeValidationModal(); });
+    successModal.addEventListener('click', e => { if (e.target === successModal) closeSuccessModal(); }); // Optional: close success on overlay click
 }
 
 // ======================
@@ -164,10 +176,16 @@ function closeValidationModal() {
     document.body.style.overflow = 'auto';
 }
 
-// ✅ RESET FORM — LIKE Reminder.html
+function closeSuccessModal() {
+    successModal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// ✅ RESET FORM — LIKE Reminder.html - INCLUDING NOTES
 function resetAddForm() {
     assignmentTitle.value = '';
     assignmentClass.value = '';
+    assignmentNotes.value = ''; // Reset notes field
     const now = new Date();
     assignmentDueDate.value = now.toISOString().split('T')[0];
     assignmentDueTime.value = '23:59';
@@ -177,8 +195,6 @@ function resetAddForm() {
     
     document.querySelectorAll('#addAssignmentModal .reminder-btn').forEach(b => b.classList.remove('active'));
     document.querySelector('#addAssignmentModal .reminder-btn[data-reminder="1_day"]').classList.add('active');
-    
-    assignmentNotes.value = '';
 }
 
 // ✅ SHOW VALIDATION ERROR — LIKE Reminder.html
@@ -192,14 +208,14 @@ function showValidationError(message) {
 function showSuccess(title, message) {
     document.getElementById('successTitle').textContent = title;
     document.getElementById('successMessage').textContent = message;
-    document.getElementById('successModal').style.display = 'flex';
+    successModal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
 }
 
 // ======================
 // VALIDATION
 // ======================
-function validateAssignment(title, className, dueDate, dueTime) {
+function validateAssignment(title, className, notes, dueDate, dueTime) { // Added notes parameter
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const inputDate = new Date(dueDate);
@@ -207,6 +223,7 @@ function validateAssignment(title, className, dueDate, dueTime) {
 
     if (!title.trim()) return 'Title cannot be empty.';
     if (!className.trim()) return 'Class name cannot be empty.';
+    // Note: Notes are optional, so no validation needed here unless you want it mandatory
     if (!dueDate) return 'Due date is required.';
     if (isNaN(inputDate.getTime())) return 'Invalid due date format.';
     if (inputDate < today) return 'Due date cannot be in the past.';
@@ -294,13 +311,13 @@ function createAssignmentItem(ass) {
 
     const div = document.createElement('div');
     div.className = 'assignment-item';
+    // Display Class • Notes in the list view
     div.innerHTML = `
         <div class="assignment-info">
             <img src="images_icons/book.png" alt="Book">
             <div>
                 <h4>${escapeHtml(ass.Title)}</h4>
-                <!-- Updated: Show Class and Notes separated by a bullet -->
-                <p>${escapeHtml(ass.ClassName)} • ${escapeHtml(ass.Notes || 'No notes')}</p>
+                <p>${escapeHtml(ass.ClassName)}${ass.Notes ? ` • ${escapeHtml(ass.Notes)}` : ''}</p> <!-- Display Class • Notes -->
             </div>
         </div>
         <div class="due-time">
@@ -310,7 +327,7 @@ function createAssignmentItem(ass) {
         <button class="edit-btn" title="Edit Assignment" data-id="${ass.AssignmentID}">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M12 20h9"/><path d="M16.5 3.5l4 4L7 21l-4 1 1-4L16.5 3.5z"/>
-                    </svg>
+            </svg>
         </button>
         <button class="delete-btn" data-id="${ass.AssignmentID}">×</button>
     `;
@@ -325,9 +342,9 @@ function openEditModal(ass) {
     editAssignmentId.value = ass.AssignmentID;
     editAssignmentTitle.value = ass.Title || '';
     editAssignmentClass.value = ass.ClassName || '';
+    editAssignmentNotes.value = ass.Notes || ''; // Populate notes field
     editAssignmentDueDate.value = ass.DueDate || '';
     editAssignmentDueTime.value = ass.DueTime || '23:59';
-    editAssignmentNotes.value = ass.Notes || '';
 
     document.querySelectorAll('#editAssignmentModal .priority-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('#editAssignmentModal .reminder-btn').forEach(b => b.classList.remove('active'));
@@ -359,9 +376,9 @@ function handleSaveAssignment(e) {
 
     const title = assignmentTitle.value.trim();
     const className = assignmentClass.value.trim();
+    const notes = assignmentNotes.value.trim(); // Get notes value
     const dueDate = assignmentDueDate.value;
     const dueTime = assignmentDueTime.value;
-    const notes = assignmentNotes.value.trim();
 
     const priorityBtn = document.querySelector('#addAssignmentModal .priority-btn.active');
     const reminderBtn = document.querySelector('#addAssignmentModal .reminder-btn.active');
@@ -371,13 +388,13 @@ function handleSaveAssignment(e) {
         : 'Medium';
     const reminder = reminderBtn ? reminderBtn.dataset.reminder : null;
 
-    const error = validateAssignment(title, className, dueDate, dueTime);
+    const error = validateAssignment(title, className, notes, dueDate, dueTime); // Pass notes to validation
     if (error) {
         showValidationError(error);
         return;
     }
 
-    const data = { Title: title, ClassName: className, DueDate: dueDate, DueTime: dueTime, Priority: priority, Notes: notes, Reminder: reminder };
+    const data = { Title: title, ClassName: className, Notes: notes, DueDate: dueDate, DueTime: dueTime, Priority: priority, Reminder: reminder }; // Include notes in data
 
     fetch('assign.php', {
         method: 'POST',
@@ -408,9 +425,9 @@ function handleSaveEdit(e) {
 
     const title = editAssignmentTitle.value.trim();
     const className = editAssignmentClass.value.trim();
+    const notes = editAssignmentNotes.value.trim(); // Get notes value
     const dueDate = editAssignmentDueDate.value;
     const dueTime = editAssignmentDueTime.value;
-    const notes = editAssignmentNotes.value.trim();
 
     const priorityBtn = document.querySelector('#editAssignmentModal .priority-btn.active');
     const reminderBtn = document.querySelector('#editAssignmentModal .reminder-btn.active');
@@ -419,13 +436,13 @@ function handleSaveEdit(e) {
         : 'Medium';
     const reminder = reminderBtn ? reminderBtn.dataset.reminder : null;
 
-    const error = validateAssignment(title, className, dueDate, dueTime);
+    const error = validateAssignment(title, className, notes, dueDate, dueTime); // Pass notes to validation
     if (error) {
         showValidationError(error);
         return;
     }
 
-    const data = { Title: title, ClassName: className, DueDate: dueDate, DueTime: dueTime, Priority: priority, Notes: notes, Reminder: reminder };
+    const data = { Title: title, ClassName: className, Notes: notes, DueDate: dueDate, DueTime: dueTime, Priority: priority, Reminder: reminder }; // Include notes in data
 
     fetch(`assign.php?id=${id}`, {
         method: 'PUT',
@@ -462,3 +479,68 @@ function handleConfirmDelete() {
             closeDeleteModal();
         });
 }
+
+
+// ===== THEME TOGGLE =====
+const themeToggle = document.getElementById('themeToggle');
+const themeIcon = document.getElementById('themeIcon');
+
+if (localStorage.getItem('theme') === 'light') {
+    document.body.classList.add('light-theme');
+    themeIcon.src = 'images_icons/moon.png';
+} else {
+    themeIcon.src = 'images_icons/sun.png';
+}
+
+themeToggle?.addEventListener('click', () => {
+    document.body.classList.toggle('light-theme');
+    const isLight = document.body.classList.contains('light-theme');
+    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    themeIcon.src = isLight ? 'images_icons/moon.png' : 'images_icons/sun.png';
+});
+
+// ===== HAMBURGER MENU =====
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const sidebar = document.getElementById('sidebar');
+const mainContent = document.querySelector('.main-content');
+
+hamburgerBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    sidebar.classList.toggle('active');
+    mainContent.classList.toggle('shift');
+});
+
+document.addEventListener('click', (e) => {
+    if (sidebar.classList.contains('active') && 
+        !sidebar.contains(e.target) && 
+        e.target !== hamburgerBtn) {
+        sidebar.classList.remove('active');
+        mainContent.classList.remove('shift');
+    }
+});
+
+
+// ===== LOGOUT MODAL =====
+const logoutTrigger = document.querySelector('.bot-nav a[href="#"]');
+const logoutModal = document.getElementById('logoutModal');
+const cancelLogoutBtn = document.getElementById('cancelLogout');
+const confirmLogoutBtn = document.getElementById('confirmLogout');
+
+logoutTrigger?.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (logoutModal) logoutModal.style.display = "flex";
+});
+
+cancelLogoutBtn?.addEventListener('click', () => {
+    if (logoutModal) logoutModal.style.display = "none";
+});
+
+confirmLogoutBtn?.addEventListener('click', () => {
+    window.location.href = "Sign-in.html"; 
+});
+
+window.addEventListener('click', (e) => {
+    if (logoutModal && e.target === logoutModal) {
+        logoutModal.style.display = "none";
+    }
+});

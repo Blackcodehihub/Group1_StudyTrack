@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 // 🔐 DATABASE CONFIG — UPDATE THESE IF NEEDED
 $host = 'localhost';
-$dbname = 'studytrack';
+$dbname = 'studytrack_db';
 $username = 'root';
 $password = ''; // ← set if you have MySQL password
 
@@ -59,10 +59,10 @@ try {
             $data = getJsonInput();
             $title = trim($data['Title'] ?? '');
             $className = trim($data['ClassName'] ?? '');
+            $notes = trim($data['Notes'] ?? ''); // Added notes
             $dueDate = trim($data['DueDate'] ?? '');
             $dueTime = (!empty($data['DueTime']) && $data['DueTime'] !== 'null') ? $data['DueTime'] : null;
             $priority = in_array($data['Priority'], ['Low', 'Medium', 'High']) ? $data['Priority'] : 'Medium';
-            $notes = trim($data['Notes'] ?? '');
             $reminder = in_array($data['Reminder'], ['1_day', '3_days', '1_week']) ? $data['Reminder'] : null;
 
             if (!$title || !$className || !$dueDate) {
@@ -70,10 +70,10 @@ try {
             }
 
             $stmt = $mysqli->prepare("
-                INSERT INTO Assignments (Title, ClassName, DueDate, DueTime, Priority, Notes, Reminder)
+                INSERT INTO Assignments (Title, ClassName, Notes, DueDate, DueTime, Priority, Reminder)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
             ");
-            $stmt->bind_param('sssssss', $title, $className, $dueDate, $dueTime, $priority, $notes, $reminder);
+            $stmt->bind_param('sssssss', $title, $className, $notes, $dueDate, $dueTime, $priority, $reminder);
 
             if (!$stmt->execute()) {
                 throw new Exception('Insert failed: ' . $stmt->error, 500);
@@ -96,10 +96,10 @@ try {
 
             $title = trim($data['Title'] ?? '');
             $className = trim($data['ClassName'] ?? '');
+            $notes = trim($data['Notes'] ?? ''); // Added notes
             $dueDate = trim($data['DueDate'] ?? '');
             $dueTime = (!empty($data['DueTime']) && $data['DueTime'] !== 'null') ? $data['DueTime'] : null;
             $priority = in_array($data['Priority'], ['Low', 'Medium', 'High']) ? $data['Priority'] : 'Medium';
-            $notes = trim($data['Notes'] ?? '');
             $reminder = in_array($data['Reminder'], ['1_day', '3_days', '1_week']) ? $data['Reminder'] : null;
 
             if (!$title || !$className || !$dueDate) {
@@ -108,10 +108,10 @@ try {
 
             $stmt = $mysqli->prepare("
                 UPDATE Assignments 
-                SET Title = ?, ClassName = ?, DueDate = ?, DueTime = ?, Priority = ?, Notes = ?, Reminder = ?, UpdatedAt = NOW()
+                SET Title = ?, ClassName = ?, Notes = ?, DueDate = ?, DueTime = ?, Priority = ?, Reminder = ?, UpdatedAt = NOW()
                 WHERE AssignmentID = ?
             ");
-            $stmt->bind_param('sssssssi', $title, $className, $dueDate, $dueTime, $priority, $notes, $reminder, $id);
+            $stmt->bind_param('sssssssi', $title, $className, $notes, $dueDate, $dueTime, $priority, $reminder, $id);
 
             if (!$stmt->execute()) {
                 throw new Exception('Update failed: ' . $stmt->error, 500);
