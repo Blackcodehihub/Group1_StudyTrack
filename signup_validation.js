@@ -296,15 +296,56 @@ document.addEventListener('DOMContentLoaded', function() {
     checkFormValidity();
 
 
-    // --- 6. Final Form Submission Handling (No Change) ---
-    form.addEventListener('submit', function(event) {
-        // This is the final safety net check that will prevent the page from moving
-        // if the button is somehow enabled when it shouldn't be.
+    // --- 6. Final Form Submission Handling ---
+   
+    form.addEventListener('submit', async function(event) {
+        event.preventDefault(); // Prevent default form submission
+
+        // Final client-side validation (safety)
         if (createAccountBtn.disabled) {
-            event.preventDefault();
             return;
         }
-        // If the button is NOT disabled, the form is submitted to process_signup.php
+
+        // Optional: Show loading state
+        createAccountBtn.disabled = true;
+        createAccountBtn.textContent = "Creating Account...";
+
+        try {
+            const formData = new FormData(form);
+
+            const response = await fetch('process_signup.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            // Even if PHP does header redirect, we handle it here via JS for better UX
+            if (response.redirected && response.url.includes('HomeF.html')) {
+                // Success! But we don't want to go to HomeF.html
+                // Instead: redirect to Sign-in.html with success message
+                window.location.href = 'Sign-in.html?signup=success';
+                return;
+            }
+
+            // If not redirected (e.g., error output from PHP)
+            const text = await response.text();
+            console.log('Server response:', text); // For debugging
+
+            // You can enhance this later with a toast/notification
+            if (response.ok) {
+                // Final success path
+                window.location.href = 'Sign-in.html?signup=success';
+            } else {
+                alert('Signup failed. Please check your information and try again.');
+                createAccountBtn.disabled = false;
+                createAccountBtn.textContent = "Create Account";
+            }
+
+        } catch (error) {
+            console.error('Submission error:', error);
+            alert('Network error. Please try again.');
+            createAccountBtn.disabled = false;
+            createAccountBtn.textContent = "Create Account";
+        }
     });
 
     // Helper function to display errors neatly (FIXED: Better element insertion logic)

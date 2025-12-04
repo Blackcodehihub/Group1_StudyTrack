@@ -20,9 +20,13 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // CORRECT COLUMN NAMES FROM YOUR DB
-    $stmt = $pdo->prepare("SELECT first_name, last_name, email, profile_pic FROM users WHERE user_id = ?");
-    $stmt->execute([$_SESSION['user_id']]);
-    $user = $stmt->fetch();
+    $stmt = $pdo->prepare("
+    SELECT first_name, last_name, email, profile_pic, password_hash
+    FROM users
+    WHERE user_id = ?
+");
+$stmt->execute([$_SESSION['user_id']]);
+$user = $stmt->fetch();
 
     if (!$user) {
         echo json_encode(['success' => false, 'message' => 'User not found']);
@@ -39,7 +43,8 @@ try {
             'avatar' => !empty($user['profile_pic']) 
     ? 'data:image/png;base64,' . base64_encode($user['profile_pic'])
     : 'images_icons/user.png',
-            'plain_password' => $_SESSION['plain_password'] ?? ''
+            'plain_password' => $_SESSION['plain_password'] ?? '',
+            'password_hash' => $user['password_hash'] ?? '',
         ]
     ]);
 
