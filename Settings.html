@@ -324,7 +324,23 @@
 
                     document.getElementById("fullName").value = `${u.first_name || ''} ${u.last_name || ''}`.trim() || "User";
                     document.getElementById("emailAddress").value = u.email;
-                    document.getElementById("avatarPreview").src = u.avatar || "images_icons/user.png";
+                  
+                    const avatarPreview = document.getElementById("avatarPreview");
+
+                    // Check if user has a real avatar (not NULL, not empty)
+                    if (u.avatar && u.avatar.trim() !== "" && u.avatar !== "data:image/png;base64,null") {
+                        // Try to load the real uploaded image
+                        avatarPreview.src = u.avatar;
+
+                        // If it fails (broken/corrupted), fall back to default
+                        avatarPreview.onerror = function() {
+                            this.src = "images_icons/user.png";
+                            this.onerror = null; // prevent infinite loop
+                        };
+                    } else {
+                        // No avatar in database → use default immediately
+                        avatarPreview.src = "images_icons/user.png";
+                    }
 
                     // Password eye toggle
                     const passwordField = document.getElementById("passwordField");
