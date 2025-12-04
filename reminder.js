@@ -57,26 +57,46 @@
             try {
                 const res = await fetch(API_URL);
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                return await res.json();
+                const data = await res.json();
+                if (data.error) throw new Error(data.error);
+                return data;
             } catch (e) {
                 console.error('Load failed:', e);
-                return [];
+                // Return an empty array if the API failed to load the list
+                return []; 
             }
         }
         async function saveReminder(data, id = null) {
             const method = id ? 'PUT' : 'POST';
             const url = id ? `${API_URL}?id=${id}` : API_URL;
+            
+            // Check for authentication error before sending
+            if (data.error === 'Authentication required.') {
+                 throw new Error('You must be logged in to save a reminder.');
+            }
+
             const response = await fetch(url, {
                 method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            return await response.json();
+
+            const responseData = await response.json();
+            
+            if (!response.ok) {
+                 // Throw the server's detailed error message
+                throw new Error(responseData.error || `HTTP ${response.status} error during save.`);
+            }
+            return responseData;
         }
         async function deleteReminder(id) {
             const response = await fetch(`${API_URL}?id=${id}`, { method: 'DELETE' });
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            
+            const responseData = await response.json();
+            if (!response.ok) {
+                // Throw the server's detailed error message
+                throw new Error(responseData.error || `HTTP ${response.status} error during delete.`);
+            }
         }
         // === RENDER ===
         let editingId = null;
@@ -85,26 +105,32 @@
         async function renderReminders() {
             const container = document.querySelector('.card');
             container.querySelectorAll('.class-item').forEach(el => el.remove());
-            const placeholder = container.querySelector('p');
-            if (placeholder && placeholder.textContent.includes('No reminders yet')) {
-                placeholder.remove();
-            }
+            const existingContent = container.querySelector('#reminders-content-placeholder');
+            if (existingContent) existingContent.remove();
+            
             const reminders = await loadReminders();
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.id = 'reminders-content-placeholder';
+            container.appendChild(contentDiv);
+
             if (reminders.length === 0) {
                 const p = document.createElement('p');
                 p.style.cssText = "color:var(--text-dim);text-align:center;padding:60px 0;";
                 p.textContent = "No reminders yet. Click '+ Add Reminder' to create one!";
-                container.appendChild(p);
+                contentDiv.appendChild(p);
                 return;
             }
+            
             reminders.forEach(r => {
-                const due = new Date(`${r.due_date} ${r.due_time}`);
+                const due = new Date(`${r.due_date}T${r.due_time}`);
                 const now = new Date();
                 const isToday = due.toDateString() === now.toDateString();
                 const isOverdue = due < now;
                 const div = document.createElement('div');
                 div.className = 'class-item';
-                div.dataset.id = r.id;
+                // ID is now VARCHAR, used as string
+                div.dataset.id = r.id; 
                 div.innerHTML = `
                     <div class="class-info">
                         <img src="images_icons/book.png" alt="Reminder">
@@ -126,7 +152,7 @@
                     </button>
                     <button class="delete-btn" title="Delete">×</button>
                 `;
-                container.appendChild(div);
+                contentDiv.appendChild(div);
             });
             // Rebind listeners
             document.querySelectorAll('.edit-btn').forEach(btn => {
@@ -159,6 +185,7 @@
         }
         function resetForm() {
             document.getElementById('reminderTitle').value = '';
+            // Reset date to today
             document.getElementById('reminderDueDate').value = new Date().toISOString().split('T')[0];
             document.getElementById('reminderDueTime').value = '12:00';
             document.getElementById('reminderBefore').value = 'None';
@@ -168,8 +195,10 @@
         }
         async function editReminder(id) {
             const reminders = await loadReminders();
-            const rem = reminders.find(r => r.id == id);
+            // CRITICAL FIX: Ensure strict string comparison for VARCHAR ID
+            const rem = reminders.find(r => r.id === id);
             if (!rem) return;
+            
             editingId = id;
             document.getElementById('reminderTitle').value = rem.title;
             document.getElementById('reminderDueDate').value = rem.due_date;
