@@ -379,7 +379,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Form submission handler for EDIT
     editClassForm.addEventListener('submit', handleEditFormSubmission);
-    
+
     function handleEditFormSubmission(event) {
         event.preventDefault();
 
@@ -391,6 +391,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
         editFormMessages.textContent = ''; 
 
+        // --- CRITICAL FIX START: Clean Time Inputs before FormData creation ---
+        // Ensure only HH:MM is in the value fields being submitted, as the browser adds the suffix.
+        
+        // Create a helper function to clean the time string (e.g., "09:00 am" -> "09:00")
+        function cleanTimeValue(timeString) {
+            if (!timeString) return '';
+            // Strip out 'AM', 'PM', 'am', 'pm' and any trailing spaces
+            return timeString.replace(/\s*[ap]m/i, '').trim();
+        }
+        
+        // Temporarily overwrite the input values with the cleaned 24hr version
+        // This ensures FormData captures the correct format.
+        const originalStartTime = editStartTimeInput.value;
+        const originalEndTime = editEndTimeInput.value;
+
+        editStartTimeInput.value = cleanTimeValue(originalStartTime);
+        editEndTimeInput.value = cleanTimeValue(originalEndTime);
+        // --- CRITICAL FIX END ---
+
         const formData = new FormData(editClassForm);
         
         // CRITICAL FIX: Check the state stored in openEditModal and append days
@@ -399,7 +418,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 formData.append('repeat_days[]', day); 
             });
         }
-        
+
         fetch('update_class.php', { 
             method: 'POST',
             body: formData,
@@ -408,6 +427,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .then(response => {
+            // Restore original time values after the fetch attempt, regardless of success/fail
+            editStartTimeInput.value = originalStartTime;
+            editEndTimeInput.value = originalEndTime;
+            
             // Check the HTTP status first
             return response.json().then(data => {
                 if (!response.ok) {
@@ -425,7 +448,6 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 editFormMessages.textContent = data.message || 'Failed to update class.';
                 if (data.errors) {
-                    // Display specific PHP validation errors
                     editFormMessages.innerHTML += '<ul style="margin-left: 20px; text-align: left;">' + data.errors.map(err => `<li>${err}</li>`).join('') + '</ul>';
                 }
                 editFormMessages.style.color = 'red';
