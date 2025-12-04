@@ -5,8 +5,8 @@ StudyTrack is a student productivity system that centralizes class schedules, as
 Steps how to navigate the system:
 
 1. Open XAMPP 
-    > start apache
-    - start mysql
+     start apache
+    * start mysql
 
 2. Open the Web App in browser
     - In browser type "localhost/Group1_StudyTrack/LandingPage.html".
@@ -18,7 +18,7 @@ Steps how to navigate the system:
 4. Sign Up Interface
     - Click Sign in button if already have an account
     - Must input all the fields before the Create Account button can be clickable
-        - Example inputs:
+        > Example inputs:
             - First Name: Jodell 
             - Last Name: Doños
             - Email: jodelldoños101@gmail.com
@@ -36,7 +36,7 @@ Steps how to navigate the system:
     - Click + Add Class 
     - In Add Class Modal
         - Input all fields  before clicking  Save Class button
-            - Example inputs:
+            > Example inputs:
                 - Subject name: CS 201, Data Structure
                 - Instructor: Prof. Jane
                 - Location: BSIT Department CL 2
@@ -54,7 +54,7 @@ Steps how to navigate the system:
     - Click + Add Assigment
     - In Add Assignment Modal:
         - Input all fields before clicking Save Assignment button
-            - Example inputs:
+            > Example inputs:
                 - Title: Linked List Homework
                 - Class: CS 201, Data Structure
                 - Due Date: 04/12/2025
@@ -72,7 +72,7 @@ Steps how to navigate the system:
     - Click + Add Reminder
     - In Add Reminder Modal:
         - Input all fields before clicking Save Reminder button
-            - Example inputs:
+            > Example inputs:
                 - Title: Code Draft for programming
                 - Due Date:  04/12/2025
                 - Time: 12:00 pm
@@ -88,7 +88,7 @@ Steps how to navigate the system:
     - Change theme (Optional)
     - Click + Add Record
     - In Add Record Modal:
-        - Example input:
+        > Example input:
             - Expense Tab:
                 - Enter Amount: 100
                 - Catergory: Food
@@ -103,7 +103,7 @@ Steps how to navigate the system:
     - Click + Add Habit
     - In Add Habit Modal:
         - Input all fields before clicking Save Habit button
-        - Example input:
+        > Example input:
             - Habit Name: Morning Reading
             - Repeat: Mon Wed Fri
             - Start Time: 09:00 am
@@ -120,11 +120,11 @@ Steps how to navigate the system:
     - Browse the Page, can change password, can update profile avatar, and can Delete Account
     - In Change Password Modal:
         - It first verify your email
-            - Example input:
+            > Example input:
                 - Jodell.Doños@ctu.com
         
         - Then you can change your password(Must be atleast 8 character long):
-           - Example input:
+           > Example input:
                - New Password: Jodell@123
                 - Confirm Password: Jodell@123
     
