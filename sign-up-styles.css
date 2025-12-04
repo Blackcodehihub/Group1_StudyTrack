@@ -6,6 +6,10 @@
     font-family: "Inter", sans-serif;
 }
 
+::-webkit-scrollbar{
+    display: none;
+}
+
 body {
     background: #1D1C1C;
     height: 100vh;
