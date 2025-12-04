@@ -323,7 +323,8 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.edit-btn').forEach(button => {
             button.addEventListener('click', function() {
                 const id = this.getAttribute('data-class-id');
-                const classData = classes.find(c => c.class_id.toString() === id);
+                // CRITICAL FIX: Ensure comparison is robust since both are strings
+                const classData = classes.find(c => c.class_id === id); 
                 
                 if (classData) {
                     openEditModal(classData);
@@ -371,13 +372,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     editSelectedDays.add(day);
                     this.classList.add('active');
                 }
-                // IMPORTANT: Day validation needs to be included here, or at least ensure 
-                // the form is valid based on required fields (handled below).
                 checkEditFormValidity(); 
             };
         });
         
-        // CRITICAL FIX: Ensure the form submission can access the selected days
+        // CRITICAL FIX: Store the Set directly on the form element for easy access in the submit handler
         editClassForm.editSelectedDays = editSelectedDays; 
 
         // 3. Attach live validation listeners for edit fields
@@ -386,8 +385,6 @@ document.addEventListener('DOMContentLoaded', function() {
         editEndTimeInput.oninput = checkEditFormValidity;
         
         // 4. Validate and open
-        // IMPORTANT: The validation logic is missing a check for at least one selected day,
-        // but the required fields (subject_name, times) are checked. Let's ensure the initial validation passes.
         checkEditFormValidity();
         editFormMessages.textContent = '';
         openModal(editClassModal);
@@ -409,10 +406,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const formData = new FormData(editClassForm);
         
-        // Add selected days from the temporary state
-        editClassForm.editSelectedDays.forEach(day => {
-            formData.append('repeat_days[]', day); 
-        });
+        // CRITICAL FIX: Check the state stored in openEditModal and append days
+        if (editClassForm.editSelectedDays) {
+            editClassForm.editSelectedDays.forEach(day => {
+                formData.append('repeat_days[]', day); 
+            });
+        }
+        
+        // Note: If no days are selected, 'repeat_days[]' will not be added, which is handled 
+        // correctly by the PHP side (it defaults to NULL).
 
         fetch('update_class.php', { // CRITICAL: New PHP file
             method: 'POST',
@@ -424,6 +426,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => {
             return response.json().then(data => {
                 if (!response.ok) {
+                    // This handles server-side validation errors (400)
                     throw new Error(data.message || 'Server error occurred.');
                 }
                 return data;
@@ -437,6 +440,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 editFormMessages.textContent = data.message || 'Failed to update class.';
                 if (data.errors) {
+                    // Display specific PHP validation errors
                     editFormMessages.innerHTML += '<ul style="margin-left: 20px; text-align: left;">' + data.errors.map(err => `<li>${err}</li>`).join('') + '</ul>';
                 }
                 editFormMessages.style.color = 'red';
@@ -444,6 +448,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => {
             console.error('Fetch error:', error);
+            // This catches network errors or the error thrown from the response.ok check
             editFormMessages.textContent = `Error: ${error.message}`;
             editFormMessages.style.color = 'red';
         });
