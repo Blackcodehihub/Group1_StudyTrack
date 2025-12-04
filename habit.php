@@ -93,6 +93,7 @@ function getJsonInput() {
 
 $method = $_SERVER['REQUEST_METHOD'];
 $action = $_GET['action'] ?? '';
+$filter = $_GET['filter'] ?? 'completed'; // default to 'completed'
 $id = isset($_GET['id']) ? (int)$_GET['id'] : null;
 $USER_ID = 1;
 
@@ -132,27 +133,38 @@ try {
                     $days = array_map('trim', explode(',', $h['repeat_days']));
                     $isScheduledToday = in_array($todayDayName, $days);
                     $isCompletedToday = in_array($h['habit_id'], $completedToday);
-                    return $isScheduledToday && !$isCompletedToday; // Only if scheduled AND not completed
+                    return $isScheduledToday && !$isCompletedToday;
                 });
 
-                // Filter history habits - only habits scheduled for today that ARE completed
                 $historyHabits = array_filter($allHabits, function($h) use ($todayDayName, $completedToday) {
                     $days = array_map('trim', explode(',', $h['repeat_days']));
                     $isScheduledToday = in_array($todayDayName, $days);
                     $isCompletedToday = in_array($h['habit_id'], $completedToday);
-                    return $isScheduledToday && $isCompletedToday; // Only if scheduled AND completed
+                    return $isScheduledToday && $isCompletedToday;
                 });
 
-                // ✅ Calculate streak — STRICT MODE (all habits must be done)
                 $streak = calculateStreak($mysqli, $USER_ID);
 
+                // ✅ New: if filter=all, send all habits (not just today's completed)
+                if ($filter === 'all') {
+                    ob_clean();
+                    echo json_encode([
+                        'today' => array_values($todayHabits),
+                        'history' => [], // unused when filter=all
+                        'all_habits' => array_values($allHabits), // ← ALL habits
+                        'streak' => $streak
+                    ]);
+                    return;
+                }
+
+                // Default: only today's completed in history
                 ob_clean();
                 echo json_encode([
                     'today' => array_values($todayHabits),
-                    'history' => array_values($historyHabits), // Changed: only completed today's habits go to history
+                    'history' => array_values($historyHabits),
                     'streak' => $streak
                 ]);
-            } else {
+            }else {
                 throw new Exception('Invalid action', 400);
             }
             break;
