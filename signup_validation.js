@@ -1,10 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // --- 1. DOM Element Selectors (FIXED: Added emailInput) ---
+    // --- 1. DOM Element Selectors ---
     const form = document.getElementById('signupForm');
     const createAccountBtn = document.getElementById('create-account-btn');
     const passwordInput = document.getElementById('signup-password');
     const confirmPasswordInput = document.getElementById('signup-confirm-password');
-    // 👇 FIX 1: Add the selector for the email input
     const emailInput = document.getElementById('signup-email'); 
     const toggleIcons = document.querySelectorAll('.toggle-password');
     const requiredInputs = form.querySelectorAll('input[required]');
@@ -14,12 +13,69 @@ document.addEventListener('DOMContentLoaded', function() {
     const feedbackMessage = document.getElementById('feedback-message');
     const rulesList = document.getElementById('password-rules');
 
+    // 🔑 NEW Selectors for Modals
+    const openTosModalBtn = document.getElementById('openTosModal');
+    const closeTosModalBtn = document.getElementById('closeTosModal');
+    const tosModal = document.getElementById('tosModal');
+
+    const openPrivacyModalBtn = document.getElementById('openPrivacyModal');
+    const closePrivacyModalBtn = document.getElementById('closePrivacyModal');
+    const privacyModal = document.getElementById('privacyModal');
+    
     // --- NEW STATE VARIABLE ---
     let emailIsRegistered = false;
+    let isCheckingEmail = false; 
     
     // --- INITIAL STATE ---
     confirmPasswordInput.disabled = true; // Disable confirm password initially
 
+    
+    // 🔑 NEW: Modal Control Functions
+    function openModal(modalElement) {
+        modalElement.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(modalElement) {
+        modalElement.classList.remove('active');
+        // Delay overflow reset to allow the transition to finish
+        setTimeout(() => {
+            if (!tosModal.classList.contains('active') && !privacyModal.classList.contains('active')) {
+                document.body.style.overflow = 'auto';
+            }
+        }, 300); 
+    }
+    
+    // 🔑 NEW: Modal Event Listeners
+    if (openTosModalBtn) {
+        openTosModalBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            openModal(tosModal);
+        });
+        closeTosModalBtn.addEventListener('click', function() {
+            closeModal(tosModal);
+        });
+        tosModal.addEventListener('click', function(e) {
+            if (e.target === tosModal) {
+                closeModal(tosModal);
+            }
+        });
+    }
+
+    if (openPrivacyModalBtn) {
+        openPrivacyModalBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            openModal(privacyModal);
+        });
+        closePrivacyModalBtn.addEventListener('click', function() {
+            closeModal(privacyModal);
+        });
+        privacyModal.addEventListener('click', function(e) {
+            if (e.target === privacyModal) {
+                closeModal(privacyModal);
+            }
+        });
+    }
 
     // --- 2. Password Toggle Function (No Change) ---
     toggleIcons.forEach(icon => {
@@ -50,7 +106,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- NEW: Email Validation Logic ---
     let emailCheckTimeout;
-    let isCheckingEmail = false; // <<< NEW STATE VARIABLE
 
     function checkEmailExistence() {
         clearTimeout(emailCheckTimeout);
@@ -64,15 +119,15 @@ document.addEventListener('DOMContentLoaded', function() {
         // Check format first
         if (!emailInput.checkValidity()) {
             emailIsRegistered = false; 
-            isCheckingEmail = false; // Ensure this is false if validation fails early
+            isCheckingEmail = false; 
             checkFormValidity();
             return;
         }
 
         if (email.length > 0) {
             // Set checking state and disable button temporarily
-            isCheckingEmail = true; // <<< Set state to true while waiting
-            checkFormValidity();     // <<< Disable button immediately
+            isCheckingEmail = true;
+            checkFormValidity();
             
             // Debounce the request
             emailCheckTimeout = setTimeout(() => {
@@ -90,19 +145,19 @@ document.addEventListener('DOMContentLoaded', function() {
                             displayError(emailGroup, "This email is already registered.", 'email-error-message');
                         }
                         
-                        isCheckingEmail = false; // <<< Reset state after check
-                        checkFormValidity(); // Re-check validity now that we have the result
+                        isCheckingEmail = false;
+                        checkFormValidity();
                     })
                     .catch(error => {
                         console.error('Error checking email:', error);
                         emailIsRegistered = false; 
-                        isCheckingEmail = false; // <<< Reset state on error
+                        isCheckingEmail = false;
                         checkFormValidity();
                     });
             }, 500); // 500ms delay
         } else {
             emailIsRegistered = false;
-            isCheckingEmail = false; // No email means we aren't checking
+            isCheckingEmail = false; 
             checkFormValidity();
         }
     }
@@ -176,7 +231,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const passwordsMatch = password === confirmPasswordInput.value && password !== '';
 
-        // 👇 FIX: Include isCheckingEmail in the disabled state
         const formIsValid = allRequiredFilled && allRulesMet && passwordsMatch && !emailIsRegistered && !isCheckingEmail;
 
         createAccountBtn.disabled = !formIsValid;
@@ -188,7 +242,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (existingError) existingError.remove();
 
         if (password.length > 0 && confirmPasswordInput.value.length > 0 && !passwordsMatch) {
-             displayError(mismatchGroup, "Passwords do not match.", 'password-error-message');
+              displayError(mismatchGroup, "Passwords do not match.", 'password-error-message');
         }
     }
 
@@ -233,8 +287,7 @@ document.addEventListener('DOMContentLoaded', function() {
         errorElement.style.marginBottom = '15px'; // Add space below
         errorElement.textContent = message;
         
-        // 👇 FIX 3: Insert after the parent element's group (input-row or float-group)
-        // This ensures the error appears correctly below the input box.
+        // Insert after the parent element's group (input-row or float-group)
         inputGroup.parentNode.insertBefore(errorElement, inputGroup.nextSibling);
     }
 });

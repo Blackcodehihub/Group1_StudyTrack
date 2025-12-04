@@ -61,7 +61,10 @@
                 
                 <div class="checkbox-group">
                     <input type="checkbox" id="terms-checkbox" name="terms" required>
-                    <label for="terms-checkbox">I accept the <strong>Terms of Service</strong> and <strong>Privacy Policy</strong></label>
+                    <label for="terms-checkbox">I accept the 
+                        <a href="#" id="openTosModal"><strong>Terms of Service</strong></a> and 
+                        <a href="#" id="openPrivacyModal"><strong>Privacy Policy</strong></a>
+                    </label>
                 </div>
 
 
@@ -84,6 +87,46 @@
         </div>
     </div>
 
+</div>
+
+<div class="modal-overlay tos-modal-overlay" id="tosModal">
+    <div class="modal scrollable-modal">
+        <h2 class="modal-title">StudyTrack: Terms of Service</h2>
+        <span class="close-modal" id="closeTosModal">&times;</span>
+        <div class="modal-content-body">
+            <h3>1. Acceptance of Terms</h3>
+            <p>By accessing or using the StudyTrack application, you agree to be bound by these Terms of Service (ToS). If you disagree with any part of the terms, you may not access the service.</p>
+            
+            <h3>2. User Responsibilities</h3>
+            <p>You are responsible for maintaining the confidentiality of your account password. You are also responsible for all activities that occur under your account.</p>
+            
+            <h3>3. Usage Restrictions</h3>
+            <p>You agree not to use the Service for any unlawful or prohibited activities, including unauthorized copying, distribution, or attempts to disrupt the integrity or security of the Service.</p>
+            
+            <h3>4. Termination</h3>
+            <p>We may terminate or suspend your account immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the ToS.</p>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay privacy-modal-overlay" id="privacyModal">
+    <div class="modal scrollable-modal">
+        <h2 class="modal-title">StudyTrack: Privacy Policy</h2>
+        <span class="close-modal" id="closePrivacyModal">&times;</span>
+        <div class="modal-content-body">
+            <h3>1. Information We Collect</h3>
+            <p>We collect Personal Information (Name, Email) and Usage Data (Class schedules, Assignment deadlines, Wallet records). We do not collect sensitive financial details or academic grades beyond what you explicitly enter.</p>
+            
+            <h3>2. How We Use Information</h3>
+            <p>We use your data to: provide, maintain, and improve the Service; manage your account; and send important notifications related to deadlines and reminders.</p>
+            
+            <h3>3. Data Security</h3>
+            <p>The security of your data is important to us. We use standard encryption and security measures to protect your Personal Information. However, no method of transmission over the Internet is 100% secure.</p>
+            
+            <h3>4. Sharing of Data</h3>
+            <p>We do not sell, trade, or otherwise transfer your Personal Information to outside parties, except to comply with the law, enforce our site policies, or protect ours or others' rights, property, or safety.</p>
+        </div>
+    </div>
 </div>
 
 </body>
