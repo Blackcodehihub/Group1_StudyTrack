@@ -16,7 +16,7 @@ Steps how to navigate the system:
     - Click Get Started or Sign up button
 
 4. Sign Up Interface
-    - Click Sign in button if already have an account
+    - Click Sign in button if you already have an account
     - Must input all the fields before the Create Account button can be clickable
         - Example inputs:
             - First Name: Jodell 
@@ -24,14 +24,34 @@ Steps how to navigate the system:
             - Email: jodelldoños101@gmail.com
             - Password & Confirm Password: Jodell@123
 
-    - After that it will proceed to Home Page
+    - After that it will proceed to Sign In Page
 
-5. Home Interface 
+5. Sign In Interface
+    - Click Sign up button if you don't have an account
+    - Input all the fields before clicking Sign in button
+        - Example inputs:
+            - Email: jodelldoños101@gmail.com
+            - Password: Jodell@123
+    
+    - If forgot your password, just click Forgot Password button
+        - Forgot Password Modal:
+            - Enter your email address and we’ll send you a verification code
+                - Example input:
+                    - Email: jodelldoños101@gmail.com
+            - Enter Verification Code, check inbox of your email for the PIN Code
+                - Example input:
+                    - PIN: 1 4 3 2
+            - Enter New Password and Confirm Password
+                - Example input:
+                    - New Password: jodellgwapo123
+                    - Confirmm Password: jodellgwapo123
+
+6. Home Interface 
     - Change theme (Optional)
     - Select Date Picker if want to view past classes
     - Browse the Page
 
-6. Classes Interface
+7. Classes Interface
     - Change theme (Optional)
     - Click + Add Class 
     - In Add Class Modal
@@ -49,7 +69,7 @@ Steps how to navigate the system:
     - Edit Class (Click pen button) if want to edit existing class
     - Delete Class (Click x button) if want to delete existing class, this action cannot be undone
 
-7. Assignment Interface
+8. Assignment Interface
     - Change theme (Optional)
     - Click + Add Assigment
     - In Add Assignment Modal:
@@ -67,7 +87,7 @@ Steps how to navigate the system:
     - Edit Assignment (Click pen button) if want to edit existing assignment
     - Delete Assignment (Click x button) if want to delete existing assignment, this action cannot be undone 
 
-8. Reminder Interface
+9. Reminder Interface
     - Change theme (Optional)
     - Click + Add Reminder
     - In Add Reminder Modal:
@@ -84,7 +104,7 @@ Steps how to navigate the system:
     - Edit Reminder (Click pen button) if want to edit existing reminder
     - Delete Reminder (Click x button) if want to delete existing reminder, this action cannot be undone
 
-9. Wallet Interface
+10. Wallet Interface
     - Change theme (Optional)
     - Click + Add Record
     - In Add Record Modal:
@@ -98,7 +118,7 @@ Steps how to navigate the system:
     
     - Browse the Page
 
-10. Habit Interface
+11. Habit Interface
     - Change theme (Optional)
     - Click + Add Habit
     - In Add Habit Modal:
@@ -115,7 +135,7 @@ Steps how to navigate the system:
     - Confirm Habit (Click check button) if the habit is you already done
     - Delete Habit (Click x button) if want to delete existing habit in history, this action cannot be undone
 
-11. Settings Interface
+12. Settings Interface
     - Change theme (Optional)
     - Browse the Page, can change password, can update profile avatar, and can Delete Account
     - In Change Password Modal:
@@ -134,8 +154,9 @@ Steps how to navigate the system:
 
     - Delete Account button this will delete all your data, this action cannot be undone
 
-12. Logout Button
+13. Logout Button
     - will be back to login
+    
 
 
 Meet the Team:

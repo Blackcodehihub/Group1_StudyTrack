@@ -147,45 +147,63 @@ function showStep(n) {
     document.getElementById(`step${n}`).classList.add('active');
 }
 
-    // Step 1 → Send Code (No Change)
-    document.getElementById('sendCodeBtn').onclick = async () => {
-        const email = document.getElementById('forgot-email').value.trim();
-        if (!email || !email.includes('@')) {
-            return alert('Please enter a valid email');
-        }
+  // Step 1 → Send Code WITH Email Check
+document.getElementById('sendCodeBtn').onclick = async () => {
+    const email = document.getElementById('forgot-email').value.trim();
+    if (!email || !email.includes('@')) {
+        return alert('Please enter a valid email');
+    }
 
-        const btn = document.getElementById('sendCodeBtn');
-        btn.disabled = true;
-        btn.textContent = 'Sending...';
+    const btn = document.getElementById('sendCodeBtn');
+    btn.disabled = true;
+    btn.textContent = 'Checking...';
 
-        try {
-            const res = await fetch('send_code.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({ email })
-            });
+    try {
+        // 1️⃣ CHECK IF EMAIL EXISTS
+        const checkRes = await fetch('check_email_exists.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ email })
+        });
 
-            const data = await res.json();
+        const checkData = await checkRes.json();
 
-            if (data.success) {
-                resetToken = data.token;   
-                console.log('Token saved:', resetToken); 
-
-                document.getElementById('emailDisplay').textContent = email;
-                showStep(2);
-                document.querySelector('.pin-digit').focus();
-
-             
-            } else {
-                alert(data.message || 'Failed to send code');
-            }
-        } catch (err) {
-            alert('Network error');
-        } finally {
+        if (!checkData.exists) {
             btn.disabled = false;
             btn.textContent = 'Send Code';
+            return alert("Email does not exist in our system.");
         }
-    };
+
+        // 2️⃣ EMAIL EXISTS → NOW SEND CODE
+        btn.textContent = 'Sending...';
+
+        const res = await fetch('send_code.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ email })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+            resetToken = data.token;
+            console.log('Token saved:', resetToken);
+
+            document.getElementById('emailDisplay').textContent = email;
+            showStep(2);
+            document.querySelector('.pin-digit').focus();
+        } else {
+            alert(data.message || 'Failed to send code');
+        }
+
+    } catch (err) {
+        alert('Network error');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Send Code';
+    }
+};
+
 
     // Auto-move between PIN digits (No Change)
     document.querySelectorAll('.pin-digit').forEach((input, idx, inputs) => {
