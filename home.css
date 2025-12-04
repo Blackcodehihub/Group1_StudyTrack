@@ -87,18 +87,12 @@
         .greeting h2 { font-size:22px; }
         .greeting p { color:var(--text-dim); font-size:14px; }
 
+        /* ==================== THEME TOGGLE ==================== */
         .theme-toggle {
             margin-left:auto; background:var(--card); padding:12px; border-radius:50%;
-            cursor:pointer; width:60px; height:60px; display:flex; align-items:center; justify-content:center;
-            transition:all .3s;
+            cursor:pointer; width:50px; height:50px; display:flex; align-items:center; justify-content:center;
         }
-        .theme-toggle img {     
-            width: 180%;
-            max-width: 50px;    
-            height: 120%;
-            max-height: 30px;  
-            transition:all .3s; 
-        }
+        .theme-toggle img { width:42px; height:28px; }
 
         @media (max-width: 600px) {
             .theme-toggle {
