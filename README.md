@@ -18,11 +18,11 @@ Steps how to navigate the system:
 4. Sign Up Interface
     - Click Sign in button if already have an account
     - Must input all the fields before the Create Account button can be clickable
-        Example inputs:
-            First Name: Jodell 
-            Last Name: Doños
-            Email: jodelldoños101@gmail.com
-            Password & Confirm Password: Jodell@123
+        - Example inputs:
+            - First Name: Jodell 
+            - Last Name: Doños
+            - Email: jodelldoños101@gmail.com
+            - Password & Confirm Password: Jodell@123
 
     - After that it will proceed to Home Page
 
@@ -35,15 +35,15 @@ Steps how to navigate the system:
     - Change theme (Optional)
     - Click + Add Class 
     - In Add Class Modal
-        Input all fields  before clicking  Save Class button
-            Example inputs:
-                Subject name: CS 201, Data Structure
-                Instructor: Prof. Jane
-                Location: BSIT Department CL 2
-                Start Time: 09:00 am
-                End Time: 10:30 am
-                Schedule: Monday Tuesday
-                Reminder Time: 5 minutes before
+        - Input all fields  before clicking  Save Class button
+            - Example inputs:
+                - Subject name: CS 201, Data Structure
+                - Instructor: Prof. Jane
+                - Location: BSIT Department CL 2
+                - Start Time: 09:00 am
+                - End Time: 10:30 am
+                - Schedule: Monday Tuesday
+                - Reminder Time: 5 minutes before
     
     - After clicking Save Class button it's either you want to Add another Class or want to View Classes &  Edit
     - Edit Class (Click pen button) if want to edit existing class
@@ -53,15 +53,15 @@ Steps how to navigate the system:
     - Change theme (Optional)
     - Click + Add Assigment
     - In Add Assignment Modal:
-        Input all fields before clicking Save Assignment button
-            Example inputs:
-                Title: Linked List Homework
-                Class: CS 201, Data Structure
-                Due Date: 04/12/2025
-                Due Time: 11:00 am
-                Priority: Low
-                Notes: (Optional for extra details)
-                Reminder: 1 day before
+        - Input all fields before clicking Save Assignment button
+            - Example inputs:
+                - Title: Linked List Homework
+                - Class: CS 201, Data Structure
+                - Due Date: 04/12/2025
+                - Due Time: 11:00 am
+                - Priority: Low
+                - Notes: (Optional for extra details)
+                - Reminder: 1 day before
 
     - After clicking Save Assignment button it's either you want to Add another Assignment or want to View Assignments
     - Edit Assignment (Click pen button) if want to edit existing assignment
@@ -71,14 +71,14 @@ Steps how to navigate the system:
     - Change theme (Optional)
     - Click + Add Reminder
     - In Add Reminder Modal:
-        Input all fields before clicking Save Reminder button
-            Example inputs:
-                Title: Code Draft for programming
-                Due Date:  04/12/2025
-                Time: 12:00 pm
-                Remind me: 1 hour before
-                Priority: Medium
-                Notes: (Optional for extra)
+        - Input all fields before clicking Save Reminder button
+            - Example inputs:
+                - Title: Code Draft for programming
+                - Due Date:  04/12/2025
+                - Time: 12:00 pm
+                - Remind me: 1 hour before
+                - Priority: Medium
+                - Notes: (Optional for extra)
     
     - After clicking Save Reminder button it's either you want to Add another Reminder or want to View Reminders
     - Edit Reminder (Click pen button) if want to edit existing reminder
@@ -88,13 +88,13 @@ Steps how to navigate the system:
     - Change theme (Optional)
     - Click + Add Record
     - In Add Record Modal:
-        Example input:
-            Expense Tab:
-                Enter Amount: 100
-                Catergory: Food
-            Income Tab:
-                Enter Amount: 100
-                Category: Salary
+        - Example input:
+            - Expense Tab:
+                - Enter Amount: 100
+                - Catergory: Food
+            - Income Tab:
+                - Enter Amount: 100
+                - Category: Salary
     
     - Browse the Page
 
@@ -102,13 +102,13 @@ Steps how to navigate the system:
     - Change theme (Optional)
     - Click + Add Habit
     - In Add Habit Modal:
-        Input all fields before clicking Save Habit button
-        Example input:
-            Habit Name: Morning Reading
-            Repeat: Mon Wed Fri
-            Start Time: 09:00 am
-            End Time: 09:30 am
-            Remind me: 15 mins before
+        - Input all fields before clicking Save Habit button
+        - Example input:
+            - Habit Name: Morning Reading
+            - Repeat: Mon Wed Fri
+            - Start Time: 09:00 am
+            - End Time: 09:30 am
+            - Remind me: 15 mins before
 
     - After clicking Save Habit button it's either you want to Add another Habbit or want to View Habits
     - Edit Habit (Click pen button) if want to edit existing habit
@@ -119,16 +119,16 @@ Steps how to navigate the system:
     - Change theme (Optional)
     - Browse the Page, can change password, can update profile avatar, and can Delete Account
     - In Change Password Modal:
-        It first verify your email
-            Example input:
-                Jodell.Doños@ctu.com
+        - It first verify your email
+            - Example input:
+                - Jodell.Doños@ctu.com
         
-        Then you can change your password(Must be atleast 8 character long):
-            Example input:
-                New Password: Jodell@123
-                Confirm Password: Jodell@123
+        - Then you can change your password(Must be atleast 8 character long):
+           - Example input:
+               - New Password: Jodell@123
+                - Confirm Password: Jodell@123
     
-        Click Save then press Ok 
+        -Click Save then press Ok 
 
     - For update profile avatar is you need to click the camera icon then choose a file  then click open
 
@@ -139,12 +139,12 @@ Steps how to navigate the system:
 
 
 Meet the Team:
-    Cariliman, Alkem Boi - Leader / HCI & QA Lead
-    Cuizon, Dexter - Back-end Developer
-    Doños, Jodell - Back-end Developer
-    Lisondra, Jade - Front-end Developer
-    Saquilon, Jhon Loyd - Database Designer
-    Velasco, Dale Emmanuel - Front-end Developer
+- Cariliman, Alkem Boi - Leader / HCI & QA Lead
+- Cuizon, Dexter - Back-end Developer
+- Doños, Jodell - Back-end Developer
+- Lisondra, Jade - Front-end Developer
+- Saquilon, Jhon Loyd - Database Designer
+- Velasco, Dale Emmanuel - Front-end Developer
 
     
 
