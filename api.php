@@ -69,10 +69,10 @@ try {
         PDO::ATTR_EMULATE_PREPARES => false,
     ]);
 
-    // CRITICAL FIX: Update the internal table schema definition for VARCHAR IDs
+    // CRITICAL FIX: Removed class_id from the table creation statement
     $pdo->exec("CREATE TABLE IF NOT EXISTS reminders (
-        id VARCHAR(50) PRIMARY KEY,                                 -- Changed from INT AUTO_INCREMENT
-        user_id VARCHAR(50) NOT NULL,                               -- Added user_id FK
+        id VARCHAR(50) PRIMARY KEY,                                 
+        user_id VARCHAR(50) NOT NULL,                               
         title VARCHAR(255) NOT NULL,
         due_date DATE NOT NULL,
         due_time TIME NOT NULL,
@@ -81,8 +81,7 @@ try {
         notes TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
-    // NOTE: Foreign key constraints should be applied outside of this exec block 
-    // by the main SQL script for stability, but the VARCHAR structure is essential here.
+    // NOTE: FK constraints should be applied separately.
 
 } catch (Exception $e) {
     error_log("DB CONNECTION FAILED: " . $e->getMessage());
@@ -93,13 +92,11 @@ try {
 
 // === API LOGIC ===
 $method = $_SERVER['REQUEST_METHOD'];
-// CRITICAL: ID is now VARCHAR (string), not INT
 $id = isset($_GET['id']) ? filter_var($_GET['id'], FILTER_SANITIZE_FULL_SPECIAL_CHARS) : null; 
 
 try {
     switch ($method) {
         case 'GET':
-            // CRITICAL: Filter results by the authenticated user's ID
             $stmt = $pdo->prepare("SELECT * FROM reminders WHERE user_id = ? ORDER BY due_date ASC, due_time ASC");
             $stmt->execute([$current_user_id]);
             echo json_encode($stmt->fetchAll() ?: []);
@@ -113,10 +110,9 @@ try {
                 exit;
             }
             
-            // CRITICAL: Generate new VARCHAR ID
             $new_reminder_id = generateNextReminderId($pdo);
 
-            // CRITICAL: Include ID and user_id in INSERT statement
+            // CRITICAL FIX: Removed class_id placeholder
             $stmt = $pdo->prepare("INSERT INTO reminders (id, user_id, title, due_date, due_time, remind_before, priority, notes) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
             $stmt->execute([
@@ -141,7 +137,7 @@ try {
             }
             $data = json_decode(file_get_contents('php://input'), true);
             
-            // CRITICAL: Update statement must check both reminder ID AND user_id for security
+            // CRITICAL FIX: Removed class_id column from SET clause
             $stmt = $pdo->prepare("UPDATE reminders SET 
                 title = ?, due_date = ?, due_time = ?, remind_before = ?, priority = ?, notes = ?
                 WHERE id = ? AND user_id = ?");
@@ -152,8 +148,8 @@ try {
                 $data['remind_before'] ?? 'None',
                 $data['priority'] ?? 'medium',
                 $data['notes'] ?? '',
-                $id,                                    // VARCHAR ID
-                $current_user_id                        // VARCHAR USER_ID
+                $id,                                    
+                $current_user_id                        
             ]);
             echo json_encode(['success' => true]);
             break;
@@ -164,7 +160,6 @@ try {
                 echo json_encode(['error' => 'ID required']);
                 exit;
             }
-            // CRITICAL: Delete statement must check both reminder ID AND user_id for security
             $stmt = $pdo->prepare("DELETE FROM reminders WHERE id = ? AND user_id = ?");
             $stmt->execute([$id, $current_user_id]);
             echo json_encode(['success' => true]);
