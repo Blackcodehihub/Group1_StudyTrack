@@ -41,7 +41,8 @@
                     <img src="images_icons/user.png" alt="User">
                 </div>
                 <div class="greeting">
-                    <h2>Good afternoon, User</h2>
+                    <!-- CRITICAL FIX: Greeting is now dynamic, using the span for the name -->
+                    <h2 id="userGreeting">Loading Greeting...</h2>
                     <p id="current-date">Loading...</p>
                 </div>
                 <button class="theme-toggle" id="themeToggle">
@@ -57,6 +58,7 @@
                 </div>
                 <div class="class-box-container" id="classBoxContainer">
                     <!-- Classes will be dynamically loaded here -->
+                    <div class="loading">Loading classes...</div>
                 </div>
             </section>
 
@@ -66,7 +68,7 @@
                     <div class="habit-row">
                         <div class="habit-line">
                             <img src="images_icons/active-habit.png" alt="Active">
-                            <span>Active habit</span>
+                            <span>Total Habits</span>
                             <strong id="active-habits-count">0</strong>
                         </div>
                         <div class="habit-line">
@@ -83,7 +85,7 @@
                     <div class="habit-footer">
                         <div class="circle-wrapper">
                             <div class="circle-progress">
-                                <svg>
+                                <svg viewBox="0 0 120 120">
                                     <circle class="circle-bg" cx="60" cy="60" r="55"></circle>
                                     <circle class="circle-fill" id="habit-fill-circle" cx="60" cy="60" r="55"></circle>
                                 </svg>
@@ -98,7 +100,7 @@
                     <h3>Streak Stats</h3>
                     <div class="streak-item">
                         <img src="images_icons/gold_fire.png" alt="Current"> Current Streak:
-                        <span><strong id="current-streak" style="margin-left: 10px;">0 days</strong></span>
+                        <span style="margin-left: 10px;"><strong id="current-streak">0 days</strong></span>
                     </div>
                     <div class="streak-item">
                         <img src="images_icons/trophy.png" alt="Best"> Best Streak:
