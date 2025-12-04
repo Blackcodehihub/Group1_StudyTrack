@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 // 🔐 DATABASE CONFIG — UPDATE THESE IF NEEDED
 $host = 'localhost';
-$dbname = 'studytrack_db';
+$dbname = 'studytrack';
 $username = 'root';
 $password = ''; // ← set if you have MySQL password
 

@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const createAccountBtn = document.getElementById('create-account-btn');
     const passwordInput = document.getElementById('signup-password');
     const confirmPasswordInput = document.getElementById('signup-confirm-password');
+    const emailInput = document.getElementById('signup-email'); 
     const toggleIcons = document.querySelectorAll('.toggle-password');
     const requiredInputs = form.querySelectorAll('input[required]');
     
@@ -12,9 +13,69 @@ document.addEventListener('DOMContentLoaded', function() {
     const feedbackMessage = document.getElementById('feedback-message');
     const rulesList = document.getElementById('password-rules');
 
+    // 🔑 NEW Selectors for Modals
+    const openTosModalBtn = document.getElementById('openTosModal');
+    const closeTosModalBtn = document.getElementById('closeTosModal');
+    const tosModal = document.getElementById('tosModal');
+
+    const openPrivacyModalBtn = document.getElementById('openPrivacyModal');
+    const closePrivacyModalBtn = document.getElementById('closePrivacyModal');
+    const privacyModal = document.getElementById('privacyModal');
+    
+    // --- NEW STATE VARIABLE ---
+    let emailIsRegistered = false;
+    let isCheckingEmail = false; 
+    
     // --- INITIAL STATE ---
     confirmPasswordInput.disabled = true; // Disable confirm password initially
 
+    
+    // 🔑 NEW: Modal Control Functions
+    function openModal(modalElement) {
+        modalElement.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(modalElement) {
+        modalElement.classList.remove('active');
+        // Delay overflow reset to allow the transition to finish
+        setTimeout(() => {
+            if (!tosModal.classList.contains('active') && !privacyModal.classList.contains('active')) {
+                document.body.style.overflow = 'auto';
+            }
+        }, 300); 
+    }
+    
+    // 🔑 NEW: Modal Event Listeners
+    if (openTosModalBtn) {
+        openTosModalBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            openModal(tosModal);
+        });
+        closeTosModalBtn.addEventListener('click', function() {
+            closeModal(tosModal);
+        });
+        tosModal.addEventListener('click', function(e) {
+            if (e.target === tosModal) {
+                closeModal(tosModal);
+            }
+        });
+    }
+
+    if (openPrivacyModalBtn) {
+        openPrivacyModalBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            openModal(privacyModal);
+        });
+        closePrivacyModalBtn.addEventListener('click', function() {
+            closeModal(privacyModal);
+        });
+        privacyModal.addEventListener('click', function(e) {
+            if (e.target === privacyModal) {
+                closeModal(privacyModal);
+            }
+        });
+    }
 
     // --- 2. Password Toggle Function (No Change) ---
     toggleIcons.forEach(icon => {
@@ -43,6 +104,63 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // --- NEW: Email Validation Logic ---
+    let emailCheckTimeout;
+
+    function checkEmailExistence() {
+        clearTimeout(emailCheckTimeout);
+        const email = emailInput.value.trim();
+        const emailGroup = emailInput.parentNode;
+        
+        // Remove existing custom error messages
+        const existingError = emailGroup.parentNode.querySelector('.email-error-message'); 
+        if (existingError) existingError.remove();
+        
+        // Check format first
+        if (!emailInput.checkValidity()) {
+            emailIsRegistered = false; 
+            isCheckingEmail = false; 
+            checkFormValidity();
+            return;
+        }
+
+        if (email.length > 0) {
+            // Set checking state and disable button temporarily
+            isCheckingEmail = true;
+            checkFormValidity();
+            
+            // Debounce the request
+            emailCheckTimeout = setTimeout(() => {
+                fetch(`check_email.php?email=${encodeURIComponent(email)}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Server response not OK');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        emailIsRegistered = data.exists;
+                        
+                        if (emailIsRegistered) {
+                            displayError(emailGroup, "This email is already registered.", 'email-error-message');
+                        }
+                        
+                        isCheckingEmail = false;
+                        checkFormValidity();
+                    })
+                    .catch(error => {
+                        console.error('Error checking email:', error);
+                        emailIsRegistered = false; 
+                        isCheckingEmail = false;
+                        checkFormValidity();
+                    });
+            }, 500); // 500ms delay
+        } else {
+            emailIsRegistered = false;
+            isCheckingEmail = false; 
+            checkFormValidity();
+        }
+    }
 
     // --- 4. Validation Logic ---
 
@@ -55,7 +173,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
 
-    // Function to update the live visual feedback
+    // Function to update the live visual feedback (No Change)
     function updatePasswordFeedback() {
         const password = passwordInput.value;
         const rulesMet = validatePassword(password);
@@ -97,7 +215,7 @@ document.addEventListener('DOMContentLoaded', function() {
         checkFormValidity();
     }
 
-    // Function to check overall form validity and enable/disable button (UPDATED)
+    // Function to check overall form validity and enable/disable button (FIXED: Added emailIsRegistered check)
     function checkFormValidity() {
         let allRequiredFilled = true;
         
@@ -111,54 +229,65 @@ document.addEventListener('DOMContentLoaded', function() {
         const rulesMet = validatePassword(password);
         const allRulesMet = Object.values(rulesMet).every(status => status === true);
         
-        // --- NEW: Strict Password Match Check ---
         const passwordsMatch = password === confirmPasswordInput.value && password !== '';
 
-        // Form is only valid if ALL required fields are filled, ALL rules are met, AND passwords match.
-        const formIsValid = allRequiredFilled && allRulesMet && passwordsMatch;
+        const formIsValid = allRequiredFilled && allRulesMet && passwordsMatch && !emailIsRegistered && !isCheckingEmail;
 
         createAccountBtn.disabled = !formIsValid;
         
         // Display a mismatch error for better UX
         const mismatchGroup = confirmPasswordInput.parentNode;
-        const existingError = mismatchGroup.parentNode.querySelector('.error-message');
+        const existingError = mismatchGroup.parentNode.querySelector('.password-error-message');
         
         if (existingError) existingError.remove();
 
         if (password.length > 0 && confirmPasswordInput.value.length > 0 && !passwordsMatch) {
-             displayError(mismatchGroup, "Passwords do not match.");
+              displayError(mismatchGroup, "Passwords do not match.", 'password-error-message');
         }
     }
 
-    // --- 5. Event Listeners (No Change) ---
+    // --- 5. Event Listeners ---
+    // Added listener for email input
+    emailInput.addEventListener('input', checkEmailExistence); 
+    emailInput.addEventListener('input', checkFormValidity);
+
     passwordInput.addEventListener('input', updatePasswordFeedback);
     passwordInput.addEventListener('input', checkFormValidity);
     confirmPasswordInput.addEventListener('input', checkFormValidity);
     
     requiredInputs.forEach(input => {
-        input.addEventListener('input', checkFormValidity);
+        // Only attach listeners to non-email inputs
+        if (input.id !== 'signup-email') { 
+            input.addEventListener('input', checkFormValidity);
+        }
     });
 
+    // Initial check
     checkFormValidity();
 
 
-    // --- 6. Final Form Submission Handling (Cleaned up - less needed now) ---
+    // --- 6. Final Form Submission Handling (No Change) ---
     form.addEventListener('submit', function(event) {
-        // Since button is disabled if invalid, this is mostly a final safety net
+        // This is the final safety net check that will prevent the page from moving
+        // if the button is somehow enabled when it shouldn't be.
         if (createAccountBtn.disabled) {
             event.preventDefault();
             return;
         }
-        // No need for redundant password checking here, as checkFormValidity
-        // already ensured a match before enabling the button.
+        // If the button is NOT disabled, the form is submitted to process_signup.php
     });
 
-    // Helper function to display errors neatly
-    function displayError(inputGroup, message) {
+    // Helper function to display errors neatly (FIXED: Better element insertion logic)
+    function displayError(inputGroup, message, className = 'error-message') {
         const errorElement = document.createElement('p');
-        errorElement.className = 'error-message';
+        errorElement.className = className;
         errorElement.style.color = '#ff4d4d';
+        errorElement.style.fontSize = '0.9em'; // Slightly smaller font for errors
+        errorElement.style.marginTop = '-10px'; // Move it closer to the input
+        errorElement.style.marginBottom = '15px'; // Add space below
         errorElement.textContent = message;
-        inputGroup.insertAdjacentElement('afterend', errorElement);
+        
+        // Insert after the parent element's group (input-row or float-group)
+        inputGroup.parentNode.insertBefore(errorElement, inputGroup.nextSibling);
     }
 });

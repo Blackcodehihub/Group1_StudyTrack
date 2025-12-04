@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 // ✅ MySQL CONFIG — XAMPP defaults
 $host = 'localhost';
-$dbname = 'studytrack_db';   // Your existing database
+$dbname = 'studytrack';   // Your existing database
 $username = 'root';
 $password = '';              // Default XAMPP: no password
 

@@ -15,6 +15,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const formMessages = document.getElementById('form-messages');
     const classesListContainer = document.getElementById('classes-list-container'); 
 
+    // EDIT Modal Selectors (NEW)
+    const editClassModal = document.getElementById('editClassModal');
+    const closeEditModalBtn = document.getElementById('closeEditModalBtn');
+    const cancelEditBtn = document.getElementById('cancelEditBtn');
+    const editClassForm = document.getElementById('edit-class-form');
+    const saveEditClassBtn = document.getElementById('save-edit-class-btn');
+    const editClassTitle = document.getElementById('editClassTitle');
+    const editSubjectNameInput = document.getElementById('edit_subject_name');
+    const editStartTimeInput = document.getElementById('edit_start_time');
+    const editEndTimeInput = document.getElementById('edit_end_time');
+    const editDayButtons = document.querySelectorAll('#editClassModal .day-btn');
+    const editFormMessages = document.getElementById('edit-form-messages');
+
     // Success Modal Elements
     const successModal = document.getElementById('successModal');
     const addAnotherClassBtn = document.getElementById('addAnotherClassBtn');
@@ -63,14 +76,21 @@ document.addEventListener('DOMContentLoaded', function() {
             return `
                 <div class="class-item" data-class-id="${cls.class_id}">
                     <div class="class-info">
-                        <img src="book.png" alt="Book">
+                        <img src="images_icons/book.png" alt="Book">
                         <div>
                             <h4>${cls.subject_name}${instructorText}</h4>
                             <p>${days} ${formattedStartTime} - ${formattedEndTime}${locationText}</p>
                         </div>
                     </div>
                     <div class="class-time">${formattedStartTime}</div>
-                    <button class="delete-btn" data-class-id="${cls.class_id}" data-subject-name="${cls.subject_name}">×</button>
+
+                    <button class="edit-btn" title="Edit Class" data-class-id="${cls.class_id}" data-subject-name="${cls.subject_name}">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 20h9"></path>
+                            <path d="M16.5 3.5l4 4L7 21l-4 1 1-4L16.5 3.5z"></path>
+                        </svg>
+                    </button>
+                    <button class="delete-btn" data-class-id="${cls.class_id}" data-subject-name="${cls.subject_name}">x</button>
                 </div>
             `;
         }).join('');
@@ -78,6 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
         classesListContainer.innerHTML = html;
         
         attachDeleteListeners(); 
+        attachEditListeners(classes); // CRITICAL: Call new function
     }
 
 
@@ -134,6 +155,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     closeModalBtn.addEventListener('click', () => closeModal(addClassModal));
     cancelModalBtn.addEventListener('click', () => closeModal(addClassModal));
+
+    // Attach listeners - EDIT CLASS MODAL (NEW)
+    closeEditModalBtn.addEventListener('click', () => closeModal(editClassModal));
+    cancelEditBtn.addEventListener('click', () => closeModal(editClassModal));
 
     // Attach listeners - DELETE CONFIRMATION MODAL (FIXED)
     deleteCloseBtn.addEventListener('click', () => closeModal(deleteConfirmationModal));
@@ -265,7 +290,168 @@ document.addEventListener('DOMContentLoaded', function() {
             formMessages.style.color = 'red';
         });
     });
+
+    // --- Helper function for edit validation ---
+    function checkEditFormValidity() {
+        let isValid = true;
+        
+        if (editSubjectNameInput.value.trim() === '' || editStartTimeInput.value.trim() === '' || editEndTimeInput.value.trim() === '') {
+            isValid = false;
+        }
+
+        if (isValid && editStartTimeInput.value && editEndTimeInput.value) {
+            if (startTimeInput.value >= endTimeInput.value) {
+                isValid = false;
+            }
+        }
+        
+        // RECOMMENDED ADDITION: Check if at least one day is selected
+        if (editClassForm.editSelectedDays && editClassForm.editSelectedDays.size === 0) {
+            // You might want to handle this visually, but for basic validation:
+            // isValid = false; // Uncomment if a day is strictly required
+        }
+        
+        saveEditClassBtn.disabled = !isValid;
+        return isValid;
+    }
+
+    // --- 7. EDIT WORKFLOW LISTENERS & FUNCTIONS (NEW) ---
     
+    let currentEditClass = null; // State to hold the class data being edited
+
+    function attachEditListeners(classes) {
+        document.querySelectorAll('.edit-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const id = this.getAttribute('data-class-id');
+                const classData = classes.find(c => c.class_id.toString() === id);
+                
+                if (classData) {
+                    openEditModal(classData);
+                }
+            });
+        });
+    }
+
+    // classes.js (Locate and replace the entire openEditModal function)
+
+    function openEditModal(cls) {
+        currentEditClass = cls;
+        
+        // 1. Populate fields
+        document.getElementById('edit_class_id').value = cls.class_id;
+        editClassTitle.textContent = cls.subject_name;
+        editSubjectNameInput.value = cls.subject_name || '';
+        document.getElementById('edit_instructor').value = cls.instructor || '';
+        document.getElementById('edit_location').value = cls.location || '';
+        editStartTimeInput.value = cls.start_time || '09:00';
+        editEndTimeInput.value = cls.end_time || '10:15';
+        // Note: The reminder value needs to be an integer string or empty string
+        document.getElementById('edit_reminder_time').value = cls.reminder_time_minutes ? String(cls.reminder_time_minutes) : ''; 
+        
+        // 2. Set Repeat Days buttons and initialize the state
+        const daysArray = cls.repeat_days ? cls.repeat_days.split(',') : [];
+        // CRITICAL FIX: Initialize the Set with the existing days
+        const editSelectedDays = new Set(daysArray); 
+
+        editDayButtons.forEach(button => {
+            const day = button.getAttribute('data-day');
+            // Reset/set the visual state based on existing days
+            button.classList.remove('active');
+            if (editSelectedDays.has(day)) {
+                button.classList.add('active');
+            }
+            
+            // Setup click handler for toggling days
+            button.onclick = function(e) {
+                e.preventDefault(); 
+                if (editSelectedDays.has(day)) {
+                    editSelectedDays.delete(day);
+                    this.classList.remove('active');
+                } else {
+                    editSelectedDays.add(day);
+                    this.classList.add('active');
+                }
+                // IMPORTANT: Day validation needs to be included here, or at least ensure 
+                // the form is valid based on required fields (handled below).
+                checkEditFormValidity(); 
+            };
+        });
+        
+        // CRITICAL FIX: Ensure the form submission can access the selected days
+        editClassForm.editSelectedDays = editSelectedDays; 
+
+        // 3. Attach live validation listeners for edit fields
+        editSubjectNameInput.oninput = checkEditFormValidity;
+        editStartTimeInput.oninput = checkEditFormValidity;
+        editEndTimeInput.oninput = checkEditFormValidity;
+        
+        // 4. Validate and open
+        // IMPORTANT: The validation logic is missing a check for at least one selected day,
+        // but the required fields (subject_name, times) are checked. Let's ensure the initial validation passes.
+        checkEditFormValidity();
+        editFormMessages.textContent = '';
+        openModal(editClassModal);
+    }
+    
+    // Form submission handler for EDIT
+    editClassForm.addEventListener('submit', handleEditFormSubmission);
+    
+    function handleEditFormSubmission(event) {
+        event.preventDefault();
+
+        if (!checkEditFormValidity()) {
+            editFormMessages.textContent = 'Please fill in required fields and ensure End Time is after Start Time.';
+            editFormMessages.style.color = 'red';
+            return;
+        }
+
+        editFormMessages.textContent = ''; 
+
+        const formData = new FormData(editClassForm);
+        
+        // Add selected days from the temporary state
+        editClassForm.editSelectedDays.forEach(day => {
+            formData.append('repeat_days[]', day); 
+        });
+
+        fetch('update_class.php', { // CRITICAL: New PHP file
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => {
+            return response.json().then(data => {
+                if (!response.ok) {
+                    throw new Error(data.message || 'Server error occurred.');
+                }
+                return data;
+            });
+        })
+        .then(data => {
+            if (data.success) {
+                closeModal(editClassModal);
+                openModal(successModal); 
+                fetchAndRenderClasses(); 
+            } else {
+                editFormMessages.textContent = data.message || 'Failed to update class.';
+                if (data.errors) {
+                    editFormMessages.innerHTML += '<ul style="margin-left: 20px; text-align: left;">' + data.errors.map(err => `<li>${err}</li>`).join('') + '</ul>';
+                }
+                editFormMessages.style.color = 'red';
+            }
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+            editFormMessages.textContent = `Error: ${error.message}`;
+            editFormMessages.style.color = 'red';
+        });
+    }
+    
+    // --- 8. DELETE WORKFLOW LISTENERS (No change, but moved after new edit logic) ---
+    // ... (Existing attachDeleteListeners and confirmDeleteBtn.addEventListener remains here) ...
+
     // --- 6. DELETE WORKFLOW LISTENERS ---
 
     function attachDeleteListeners() {

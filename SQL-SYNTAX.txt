@@ -1,0 +1,70 @@
+LOGS
+
+USE studytrack_db;
+
+CREATE TABLE logs (
+    log_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,                               -- The ID of the user who performed the action (NULL if system action)
+    table_name VARCHAR(50) NOT NULL,           -- Which table was affected (e.g., 'users', 'classes')
+    action_type ENUM('INSERT', 'UPDATE', 'DELETE') NOT NULL,
+    old_value TEXT,                            -- JSON or string representation of the data BEFORE the change
+    new_value TEXT,                            -- JSON or string representation of the data AFTER the change
+    action_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+-- CLASS TIMESTAMP AUTO UPDATE TRIGGER
+
+USE studytrack_db;
+
+-- Sets the 'updated_at' column to the current timestamp just before any UPDATE occurs.
+CREATE TRIGGER trg_classes_update_timestamp
+BEFORE UPDATE ON classes
+FOR EACH ROW
+SET NEW.updated_at = NOW();
+
+-- CLASS DELETE TRIGGER
+
+USE studytrack_db;
+
+-- Creates a log entry AFTER a row is deleted from the 'classes' table.
+-- We capture the deleted (OLD) data.
+CREATE TRIGGER trg_log_class_deletion
+AFTER DELETE ON classes
+FOR EACH ROW
+INSERT INTO logs (user_id, table_name, action_type, old_value, new_value)
+VALUES (
+    OLD.user_id,       -- The user who owned the deleted class
+    'classes',
+    'DELETE',
+    -- Concatenate OLD values into a readable format for logging
+    CONCAT(
+        'Class ID: ', OLD.class_id, 
+        ', Subject: ', OLD.subject_name,
+        ', Days: ', OLD.repeat_days
+    ),
+    NULL               -- No 'new value' for a DELETE action
+);
+
+-- CLASS AFTER INSERT TRIGGER
+
+USE studytrack_db;
+
+-- Creates a log entry AFTER a new row is inserted into the 'classes' table.
+-- We capture the newly added (NEW) data.
+CREATE TRIGGER trg_log_class_insertion
+AFTER INSERT ON classes
+FOR EACH ROW
+INSERT INTO logs (user_id, table_name, action_type, old_value, new_value)
+VALUES (
+    NEW.user_id,        -- The user who created the new class
+    'classes',
+    'INSERT',
+    NULL,               -- No 'old value' for an INSERT action
+    -- Concatenate NEW values into a readable format for logging
+    CONCAT(
+        'Class ID: ', NEW.class_id, 
+        ', Subject: ', NEW.subject_name,
+        ', Days: ', NEW.repeat_days
+    )
+);
+
