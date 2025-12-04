@@ -36,7 +36,7 @@ if (empty($current_user_id)) {
 }
 
 // 3. RETRIEVE AND SANITIZE INPUTS
-$class_id          = filter_input(INPUT_POST, 'class_id', FILTER_SANITIZE_NUMBER_INT);
+$class_id          = filter_input(INPUT_POST, 'class_id', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 $subject_name      = filter_input(INPUT_POST, 'subject_name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 $instructor        = filter_input(INPUT_POST, 'instructor', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 $location          = filter_input(INPUT_POST, 'location', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -50,12 +50,35 @@ $reminder_time_minutes = !empty($reminder_time_val) ? (int)$reminder_time_val : 
 
 // 4. SERVER-SIDE VALIDATION
 $errors = [];
+// Check required fields first
 if (empty($class_id)) { $errors[] = "Class ID is missing for update."; }
 if (empty($subject_name)) { $errors[] = "Subject name is required."; }
 if (empty($start_time) || empty($end_time)) { $errors[] = "Start and End times are required."; }
-if (!preg_match("/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/", $start_time)) { $errors[] = "Invalid Start Time format. Use HH:MM."; }
-if (!preg_match("/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/", $end_time)) { $errors[] = "Invalid End Time format. Use HH:MM."; }
-if (empty($errors) && strtotime($start_time) >= strtotime($end_time)) { $errors[] = "End time must be after Start time."; }
+
+// Time Format Check
+if (!empty($start_time) && !preg_match("/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/", $start_time)) { 
+    $errors[] = "Invalid Start Time format. Use HH:MM."; 
+}
+if (!empty($end_time) && !preg_match("/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/", $end_time)) { 
+    $errors[] = "Invalid End Time format. Use HH:MM."; 
+}
+
+// Time Logic Check (CRITICAL FIX: Use DateTime objects for reliability)
+if (empty($errors) && !empty($start_time) && !empty($end_time)) { 
+    try {
+        $start = DateTime::createFromFormat('H:i', $start_time);
+        $end = DateTime::createFromFormat('H:i', $end_time);
+
+        // Check if parsing failed or if start time is greater than or equal to end time
+        if (!$start || !$end || $start >= $end) {
+             $errors[] = "End time must be after Start time."; 
+        }
+    } catch (\Exception $e) {
+        // Fallback catch for unexpected time issues
+        $errors[] = "Time comparison failed.";
+    }
+}
+
 
 if (!empty($errors)) {
     http_response_code(400); 
@@ -78,16 +101,15 @@ try {
         $end_time,
         $repeat_days_string,
         $reminder_time_minutes,
-        $class_id,
-        $current_user_id
+        $class_id,            // VARCHAR ID
+        $current_user_id      // VARCHAR ID from session
     ]);
 
     if ($stmt->rowCount() > 0) {
         echo json_encode(['success' => true, 'message' => 'Class updated successfully!']);
     } else {
         // Class not found or no changes were made
-        http_response_code(404);
-        echo json_encode(['success' => false, 'message' => 'Class not found or no changes detected.']);
+        echo json_encode(['success' => false, 'message' => 'Class found, but no changes were detected, or you do not have permission.']);
     }
 
 } catch (\PDOException $e) {
