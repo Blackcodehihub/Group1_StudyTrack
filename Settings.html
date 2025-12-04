@@ -421,7 +421,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             currentUserEmail = u.email;
             plainPassword = u.plain_password || "12345678";
-            passwordHash = u.password_hash || "";  // <--- NEW
+            passwordHash = u.password_hash || "";  
 
             // Fill fields
             document.getElementById("fullName").value =
@@ -468,8 +468,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 isVisible = !isVisible;
             });
 
-            // (Optional) Log password hash for debugging only:
-            // console.log("User password hash:", passwordHash);
+         
         });
 
 

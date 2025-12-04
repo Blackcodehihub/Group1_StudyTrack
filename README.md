@@ -44,7 +44,7 @@ Steps how to navigate the system:
             - Enter New Password and Confirm Password
                 - Example input:
                     - New Password: jodellgwapo123
-                    - Confirmm Password: jodellgwapo123
+                    - Confirm Password: jodellgwapo123
 
 6. Home Interface 
     - Change theme (Optional)
