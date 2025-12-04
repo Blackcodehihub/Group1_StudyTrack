@@ -5,7 +5,7 @@ StudyTrack is a student productivity system that centralizes class schedules, as
 Steps how to navigate the system:
 
 1. Open XAMPP 
-    - start apache
+    > start apache
     - start mysql
 
 2. Open the Web App in browser
