@@ -138,6 +138,13 @@ Steps how to navigate the system:
     - will be back to login
 
 
+Meet the Team:
+    Cariliman, Alkem Boi - Leader / HCI & QA Lead
+    Cuizon, Dexter - Back-end Developer
+    Doños, Jodell - Back-end Developer
+    Lisondra, Jade - Front-end Developer
+    Saquilon, Jhon Loyd - Database Designer
+    Velasco, Dale Emmanuel - Front-end Developer
 
     
 

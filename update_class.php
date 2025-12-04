@@ -108,8 +108,20 @@ try {
     if ($stmt->rowCount() > 0) {
         echo json_encode(['success' => true, 'message' => 'Class updated successfully!']);
     } else {
-        // Class not found or no changes were made
-        echo json_encode(['success' => false, 'message' => 'Class found, but no changes were detected, or you do not have permission.']);
+        // Assume success if no change was made, preventing client-side failure.
+        // Check if the class exists before assuming success:
+        $check_sql = "SELECT class_id FROM classes WHERE class_id = ? AND user_id = ?";
+        $check_stmt = $pdo->prepare($check_sql);
+        $check_stmt->execute([$class_id, $current_user_id]);
+
+        if ($check_stmt->fetch()) {
+             // Class found, but no changes made -> Treat as success.
+             echo json_encode(['success' => true, 'message' => 'Class found. No changes were applied as the data was identical.']);
+        } else {
+             // Class not found or access denied (Original failure condition).
+             http_response_code(404);
+             echo json_encode(['success' => false, 'message' => 'Class not found or access denied.']);
+        }
     }
 
 } catch (\PDOException $e) {
